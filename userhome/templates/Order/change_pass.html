@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %} パスワード変更 {% endblock %}
+
+{% block main %}
+<div class="form-container">
+    <div class="form-frame">
+        <form action="{% url 'userhome:changepass' %}" method="post">
+            {% csrf_token %}
+            <label for="password">現在のパスワード:</label>
+            <input type="password" id="new_password" name="new_password" placeholder="Enter password">
+            <br>
+            <label for="new_password">新しいパスワード:</label>
+            <input type="password" id="new_password" name="new_password" placeholder="Enter new password">
+             <br>
+            <label for="new_password">新しいパスワード(確認):</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm new password">
+            <br>
+            <input type="submit" value="変更" />
+        </form>
+    </div>
+</div>
+<ul>
+    <li><a >戻る</a></li>
+</ul>
+{% endblock %}

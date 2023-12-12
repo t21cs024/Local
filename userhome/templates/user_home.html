@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %} 社員メニュー画面 {% endblock %}
+
+{% block main %}
+<ul>
+
+<li><a href="{% url 'userhome:buyitem' %}">食品購入</a></li>
+<li><a href="{% url 'userhome:buyhistory' %}">食品購入履歴</a></li>
+<li><a href="{% url 'userhome:changepass' %}">パスワード変更</a></li>
+</ul>
+
+
+{% endblock %}
