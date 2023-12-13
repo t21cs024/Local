@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "userhome.apps.userhomeConfig",
     "superuserhome.apps.superuserhomeConfig",
-    "orderedit.apps.ordereditConfig",
+    "login.apps.loginConfig",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -82,30 +82,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    },
-    "superusers": {
-        "NAME": "superuser_data",
-        "ENGINE": "django.db.backends.mysql",
-        "SUPERUSER": "mysql_superuser",
-        "PASSWORD": "private",
-    },
-    "users": {
-        "NAME": "user_data",
-        "ENGINE": "django.db.backends.mysql",
-        "USER": "mysql_user",
-        "PASSWORD": "12345678",
-    },
-    "mail": {
-        "NAME": "mail_data",
-        "ENGINE": "django.db.backends.mysql",
-    },
-    "company": {
-        "NAME": "company_data",
-        "ENGINE": "django.db.backends.mysql",
-    },
-    "order": {
-        "NAME": "order_data",
-        "ENGINE": "django.db.backends.mysql",
     },
 }
 

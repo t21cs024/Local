@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %} 既存商品表示 {% endblock %}
+
+{% block main %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像の羅列</title>
+    <style>
+        /* スタイルを追加して画像を横に並べる */
+        .image-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .image-container img {
+            max-width: 30%; /* 画像の幅を調整 */
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+<h2>画像の羅列</h2>
+
+<div class="image-container">
+    <img src="../../static/Order/images/background.png" alt="Image 1">
+    <img src="../../static/Order/images/background.png" alt="Image 2">
+    <img src="../../static/Order/images/background.png" alt="Image 3">
+</div>
+
+</body>
+</html>
+
+
+{% endblock %}

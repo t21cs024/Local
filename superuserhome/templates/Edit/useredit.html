@@ -1,10 +1,16 @@
 {% block title %} 社員管理画面 {% endblock %}
 
 {% block main %}
-<center>
-<li><a href="{% url 'superuserhome:SignUp' %}">新規社員登録</a></li>
 
-<form action="{% url 'superuserhome:SignUp' %}" method="post">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<body>
+<center>
+
+<li><a href="{% url 'superuserhome:signup' %}">新規社員登録</a></li>
+
+<form action="{% url 'superuserhome:signup' %}" method="post">
 <p>ID<p>
 {% csrf_token %}
 {{ User_id }}
@@ -13,8 +19,15 @@
 </center>
 
 
-<li><a href="{% url 'signup' %}">戻る</a></li>
+<label for="email">社員ID:</label>
+<input type="text" id="id" name="id" class="custom-input" required>
+<a href="{% url 'superuserhome:userinformation' %}">社員情報</a>
+</form>
 
 
+</center>
+
+<a href="/superuserhome">ホームに戻る</a>
+</body>
 
 {% endblock %}

@@ -7,6 +7,8 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls.base import reverse_lazy
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 # Create your views here.
 '''
 def Superuserhome(request):
