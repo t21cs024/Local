@@ -1,33 +1,32 @@
+{% extends "base.html" %}
 {% block title %} 社員管理画面 {% endblock %}
 
 {% block main %}
 
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <body>
 <center>
-
-<li><a href="{% url 'superuserhome:signup' %}">新規社員登録</a></li>
-
-<form action="{% url 'superuserhome:signup' %}" method="post">
-<p>ID<p>
-{% csrf_token %}
-{{ User_id }}
-<input type="submit" value="社員情報変更"/>
-</form>
-</center>
-
-
-<label for="email">社員ID:</label>
-<input type="text" id="id" name="id" class="custom-input" required>
+<div>
+<a href="{% url 'superuserhome:signup' %}">新規社員登録</a>
+</div>
+<div>
 <a href="{% url 'superuserhome:userinformation' %}">社員情報</a>
+</div>
+<!-- これは行コメントアウトです 
+<form action="{% url 'superuserhome:signup' %}" method="post">
+	<label for="email">社員ID:</label>
+	<input type="text" id="id" name="id" class="custom-input" required>
+	<a href="{% url 'superuserhome:userinformation' %}">社員情報</a>
 </form>
+<form action="{% url 'superuserhome:userinformation' %}" method="post">
+    {% csrf_token %}
+    <label for="id">社員ID:</label>
+    <input type="text" id="id" name="id" class="custom-input" required>
+    <button type="submit">社員情報</button>
+</form>
+-->
 
 
 </center>
-
 <a href="/superuserhome">ホームに戻る</a>
 </body>
-
 {% endblock %}
