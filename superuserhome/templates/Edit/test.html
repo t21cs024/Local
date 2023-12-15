@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %} 個別リスト {% endblock %}
+
+{% block main %}
+<table class="table">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>名前</th>
+      <th>パスワード</th>
+      <th>メール</th>
+      <th>権限</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for user in data_from_database %}
+    <tr>
+      <td scope="row">{{ user.user_id }}</td>
+      <td>{{ user.name }}</td>
+      <td>{{ user.user_pass }}</td>
+      <td>{{ user.user_mail }}</td>
+      <td>{{ user.user_authority }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
