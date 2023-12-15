@@ -3,8 +3,10 @@
 {% block title %} 既存商品表示 {% endblock %}
 
 {% block main %}
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,25 +17,107 @@
             display: flex;
             justify-content: space-between;
         }
-
         .image-container img {
             max-width: 30%; /* 画像の幅を調整 */
             height: auto;
+        }
+        /* テーブルのスタイル */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            margin-top: 20px; /* 必要に応じて調整 */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        @media only screen and (max-width: 600px) {
+            /* スクリーンの幅が600px以下の場合のスタイル */
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            /* ヘッダー行の非表示 */
+            thead tr {
+                display: none;
+            }
+
+            /* 行ごとの余白とボーダーの調整 */
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td:before {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+            }
+
+            /* 各セルの内容を表示 */
+            td:nth-of-type(1):before {
+                content: "ID";
+            }
+
+            td:nth-of-type(2):before {
+                content: "Name";
+            }
+
+            td:nth-of-type(3):before {
+                content: "Count";
+            }
+
+            td:nth-of-type(4):before {
+                content: "Buy Date";
+            }
+
+            td:nth-of-type(5):before {
+                content: "Status";
+            }
         }
     </style>
 </head>
 <body>
 
-<h2>画像の羅列</h2>
+<h2>既存商品一覧</h2>
 
-<div class="image-container">
-    <img src="../../static/Order/images/background.png" alt="Image 1">
-    <img src="../../static/Order/images/background.png" alt="Image 2">
-    <img src="../../static/Order/images/background.png" alt="Image 3">
-</div>
+
+
+
+
+<table>
+	<body>
+	{% for item in object_list %}
+    <td>
+    　<dl><img src="../../../static/images/ringo.png" alt="Image 3"></dl>
+      <dl scope="row">{{ item.id }}</dl>
+      <dl>{{ item.name }}</dl>
+      <dl>{{ item.count }}</dl>
+      <dl>{{ item.buy_date }}</dl>
+      <dl>{% if item.buy == False %} <font color='red'>Not yet</font> {% endif %}
+        {% if item.buy == True %} Yet {% endif %}</dl>
+    </td>
+  {% endfor %}
+	</body>
+
+</table>
 
 </body>
 </html>
-
+<ul>
+<li><a href="/superuserhome/orderedit">戻る</a></li>
+</ul>
 
 {% endblock %}
