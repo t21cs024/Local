@@ -1,13 +1,11 @@
-{% extends "base.html" %}
-
 {% block title %} 食品購入管理画面 {% endblock %}
 
 {% block main %}
-
+<h2>食品購入管理</h2>
 <ul>
 <li><a href="{% url 'superuserhome:olditem' %}">既存商品の表示</a></li>
 <li><a href="{% url 'superuserhome:newitem' %}">新商品の追加</a></li>
-<li><a >戻る</a></li>
+<li><a href="/superuserhome">戻る</a></li>
 </ul>
 
 {% endblock %}

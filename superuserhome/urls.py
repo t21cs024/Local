@@ -4,8 +4,7 @@ Created on 2023/12/12
 @author: t21cs011
 '''
 from django.urls import path,include
-from .views import SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView
-from .views import UserEditView,UserInformationView,SignUpView,TestView
+from .views import SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView,UserInformationView,SignUpView,TestView
 
 app_name = 'superuserhome'
 urlpatterns = [

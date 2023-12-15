@@ -9,7 +9,7 @@ from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls.base import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import SignUpForm,UserIdForm
+from .forms import SignUpForm,UserIdForm,ItemBuy,ItemIdForm, ItemForm
 
 # Create your views here.
 class SuperUserHomeView(TemplateView):
@@ -27,10 +27,26 @@ class UserEditView(TemplateView):
 class OrderEditView(TemplateView):
     model = Item
     template_name = "Edit/orderedit.html"
+    success_url=reverse_lazy('superuserhome')
+
+    def post(self, request, *args, **kwargs):
+        item_id = self.request.POST.get('item_id')
+        item = get_object_or_404(Item, pk=item_id)
+        item_status = self.request.POST.get('item_status')
+        item.buy = item_status
+        item.save()
+        return HttpResponseRedirect(reverse('shoppinglist:list'))
     
-class NewItemView(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = ItemBuy()
+        return context
+    
+class NewItemView(CreateView):
     model = Item
+    fields = ('name', 'item_url', 'count', 'buy_date')
     template_name = "Edit/Item/newitem.html"
+    success_url = '/superuserhome/orderedit'
     
 class SignUpView(TemplateView):
     model = User
@@ -94,5 +110,12 @@ class TestView(TemplateView):
 class OldItemView(TemplateView):
     model = Item
     template_name = "Edit/Item/olditem.html"
+    fields =('name')
+
+
+
+    def get(self, request, *args, **kwargs):
+        object_list = Item.objects.all()
+        return render(request, self.template_name, {'object_list':object_list})
     
     

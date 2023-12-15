@@ -4,7 +4,7 @@ Created on 2023/12/15
 @author: t21cs011
 '''
 from django import forms
-from .models import User
+from .models import User,Item
 
 class ItemBuy(forms.Form):
     status = (
@@ -20,8 +20,8 @@ class ItemIdForm(forms.Form):
 
 class ItemForm(forms.ModelForm):
     class Meta:
-        model = User
-        fields = ['name']
+        model = Item
+        fields = ['name', 'item_url', 'count', 'buy_date']
 
 class SignUpForm(forms.Form):
     id = forms.CharField(label='ID', required=True)
