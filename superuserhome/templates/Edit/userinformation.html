@@ -4,34 +4,12 @@
 
 <center>
 
-<form action="{% url 'superuserhome:userinformation'  %}" method="post">
+<form action="{% url 'superuserhome:userinformation'%}" method="post">
     {% csrf_token %}
     {{ form_id }}
     <input type="submit"/>
 </form>
 
-{% if user %}
-    <dl>
-        <dt>ID</dt><dd>{{ user.user_id }}</dd>
-        <dt>名前</dt><dd>{{ user.name }}</dd>
-        <dt>password</dt><dd>{{ user.user_pass }}</dd>
-        <dt>メールアドレス</dt><dd>{{ user.user_mail }}</dd>
-        <dt>権限</dt><dd>{{ user.user_authority }}</dd>
-    </dl>
-    
-    <script>
-        // フォームのsubmit時にURLにuseridを追加してリダイレクトする
-        document.querySelector('form').addEventListener('submit', function() {
-            var userId = "{{ user.user_id }}";
-            this.action = "{% url 'superuserhome:userinformation' %}" + userId + "/";
-        });
-    </script>
-{% endif %}
-
-<form method="post" action="{% url 'superuserhome:deductionoutput' %}">
-	{% csrf_token %}
-	<button type="submit" name="start_button">控除額出力</button>
-</form>
 
 
 <!-- これは行コメントアウトです 

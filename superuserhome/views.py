@@ -16,6 +16,7 @@ from .forms import SignUpForm,UserIdForm,ItemBuy
 import csv
 # test
 from django.http import HttpResponse
+from pip._vendor.typing_extensions import Self
 
 # Create your views here.
 class SuperUserHomeView(TemplateView):
@@ -81,6 +82,8 @@ class SignUpView(TemplateView):
 
         # フォームが無効な場合は再度入力を促す
         return render(request, self.template_name, {'form': form})
+    
+    
 
 class UserInformationView(TemplateView):
     model = User
@@ -88,23 +91,43 @@ class UserInformationView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         user_id = self.request.POST.get('user_id')
-        user = User.objects.get(pk=user_id)
+        user = get_object_or_404(User, user_id=user_id)
+        # user_idが存在しない場合はHTTP 404 Not Found
+        return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_id'] = UserIdForm()
-        context['user'] = user
-        return self.render_to_response(context)
-
+        return context
+    
+    
+class UserInformationDetailView(TemplateView):
+    model = User
+    template_name = "Edit/userinformation_detail.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_id'] = UserIdForm()
         return context
 
+    def get(self, request, *args, **kwargs):
+        user_id = self.kwargs.get('user_id')
+        user = get_object_or_404(User, pk=user_id)
+        context = self.get_context_data()
+        context['user'] = user
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        user_id = self.request.POST.get('user_id')
+        user = get_object_or_404(User, pk=user_id)
+        return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
+
+
 class DeductionOutputView(TemplateView):
     # ! for test to use User Model 
-    def post(self, request):
-        # POSTメソッドが許可されるための空の実装
-                # CSVデータを生成
+    
+    def post(self, request, *args, **kwargs):
+        # CSVデータを生成
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="users.csv"'
 
@@ -112,14 +135,13 @@ class DeductionOutputView(TemplateView):
         writer = csv.writer(response)
         
         # ヘッダー行を書き込む
-        writer.writerow(['User Name'])
-        
-        writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
+        writer.writerow(['Deduction Information'])
 
-        # データ行を書き込む
-        users = User.objects.all()
-        for user in users:
-            writer.writerow([user.name])
+        # データを書き込む
+        # URLからuser_idを取得
+        user_id = kwargs.get('user_id')
+        user = get_object_or_404(User, pk=user_id)
+        writer.writerow([user.name])
 
         return response
 

@@ -34,3 +34,5 @@ class SignUpForm(forms.Form):
 
 class UserIdForm(forms.Form):
     user_id = forms.IntegerField(label='ID')
+
+
