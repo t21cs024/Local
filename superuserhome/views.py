@@ -1,15 +1,21 @@
-from django.views.generic import ListView
+#from django.views.generic import ListView
 from .models import User,Item
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.views.generic.edit import CreateView,UpdateView,DeleteView
+#from django.views.generic.edit import CreateView,UpdateView,DeleteView
+from django.views.generic.edit import CreateView
 from django.urls.base import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import SignUpForm,UserIdForm,ItemBuy,ItemIdForm, ItemForm
+#from django.utils.decorators import method_decorator
+#from django.contrib.auth.decorators import login_required, user_passes_test
+#from .forms import SignUpForm,UserIdForm,ItemBuy,ItemIdForm, ItemForm
+from .forms import SignUpForm,UserIdForm,ItemBuy
+#CSV関連のライブラリ
+import csv
+# test
+from django.http import HttpResponse
 
 # Create your views here.
 class SuperUserHomeView(TemplateView):
@@ -94,7 +100,28 @@ class UserInformationView(TemplateView):
         context['form_id'] = UserIdForm()
         return context
 
+class DeductionOutputView(TemplateView):
+    # ! for test to use User Model 
+    def post(self, request):
+        # POSTメソッドが許可されるための空の実装
+                # CSVデータを生成
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="users.csv"'
 
+        # CSVライターを初期化
+        writer = csv.writer(response)
+        
+        # ヘッダー行を書き込む
+        writer.writerow(['User Name'])
+        
+        writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
+
+        # データ行を書き込む
+        users = User.objects.all()
+        for user in users:
+            writer.writerow([user.name])
+
+        return response
 
 class TestView(TemplateView):
     model = User

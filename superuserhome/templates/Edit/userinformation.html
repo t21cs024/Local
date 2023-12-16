@@ -18,7 +18,21 @@
         <dt>メールアドレス</dt><dd>{{ user.user_mail }}</dd>
         <dt>権限</dt><dd>{{ user.user_authority }}</dd>
     </dl>
+    
+    <script>
+        // フォームのsubmit時にURLにuseridを追加してリダイレクトする
+        document.querySelector('form').addEventListener('submit', function() {
+            var userId = "{{ user.user_id }}";
+            this.action = "{% url 'superuserhome:userinformation' %}" + userId + "/";
+        });
+    </script>
 {% endif %}
+
+<form method="post" action="{% url 'superuserhome:deductionoutput' %}">
+	{% csrf_token %}
+	<button type="submit" name="start_button">控除額出力</button>
+</form>
+
 
 <!-- これは行コメントアウトです 
 <form action="{% url 'superuserhome:signup' %}" method="post">
