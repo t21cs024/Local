@@ -23,3 +23,15 @@ class Item(models.Model):
     
     def __str__(self):
         return '{}({})'.format(self.name,self.buy_date)
+    
+class PurchaseHistory(models.Model):
+    # 外部キー
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    buy_month = models.PositiveIntegerField(default = 1)
+    buy_amount = models.PositiveIntegerField(default = 0)
+
+
+    def __str__(self):
+        return '{} : ({}月)'.format(self.user_id,self.buy_month)
+    
+    
