@@ -4,7 +4,7 @@ Created on 2023/12/08
 @author: t21cs011
 '''
 from django.urls import path
-from .views import UserHomeView ,BuyItemView ,BuyHistoryView ,ChangePassView
+from .views import UserHomeView ,BuyItemView ,BuyHistoryView ,change_password
 '''
 from .views import ItemList, ItemAddView, ItemShowView, ItemEditView, ItemDeleteView
 '''
@@ -13,6 +13,6 @@ urlpatterns = [
     path('',UserHomeView.as_view()),
     path('buyitem/',BuyItemView.as_view(), name='buyitem'),
     path('buyhistory/',BuyHistoryView.as_view(),name='buyhistory'),
-    path('changepass/',ChangePassView.as_view(), name='changepass'),
+    path('changepass/',change_password, name='changepass'),
        ]
 
