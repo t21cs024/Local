@@ -180,7 +180,7 @@ class DeductionOutputView(TemplateView):
         writer = csv.writer(response)
         
         # データ書き込み（必要に応じて追加）
-        header = ['社員番号','氏名','購入月','控除額']
+        header = ['社員番号', '氏名', '購入月', '控除額']
         writer.writerow(header)
         body = [user.user_id, user.name, history.buy_month, history.buy_amount]
         writer.writerow(body)
