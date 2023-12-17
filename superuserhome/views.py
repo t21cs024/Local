@@ -88,11 +88,25 @@ class SignUpView(TemplateView):
 class UserInformationView(TemplateView):
     model = User
     template_name = "Edit/userinformation.html"
+    
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        # エラーメッセージを取得
+        error_message = messages.get_messages(request)
+        context['error_message'] = error_message
+        return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         user_id = self.request.POST.get('user_id')
-        user = get_object_or_404(User, user_id=user_id)
+        #user = get_object_or_404(User, user_id=user_id)
         # user_idが存在しない場合はHTTP 404 Not Found
+                # 購入履歴が見つからない場合は再度入力を促す
+        try:
+            User.objects.get(pk=user_id)
+        except (User.DoesNotExist):
+            messages.error(request, '該当するユーザが見つかりませんでした。再度入力してください。')
+            return redirect('superuserhome:userinformation')
+        
         return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
 
     def get_context_data(self, **kwargs):
@@ -125,23 +139,24 @@ class UserInformationDetailView(TemplateView):
         user = get_object_or_404(User, pk=user_id)
         return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
 
-from django.http import HttpResponseBadRequest
+from django.contrib import messages
 
 class PreDeductionOutputView(TemplateView):
+    
     def post(self, request, *args, **kwargs):
-        # URLからuser_id,buy_monthを取得
+        # URLからuser_idを取得
         user_id = kwargs.get('user_id')
         # buy_monthを取得
         buy_month = self.request.POST.get('buy_month')  
 
-        # フォームにbuy_monthが含まれている場合にリダイレクト
+        # フォームにbuy_monthが含まれている場合,控除情報出力ページにリダイレクト
         if buy_month:
             return HttpResponseRedirect(reverse('superuserhome:redeductionoutput', kwargs={'user_id': user_id, 'buy_month': buy_month}))
         else:
-            # エラー処理（必要に応じて追加）
             # フォームが無効な場合は再度入力を促す
-            return redirect('superuserhome:deductionoutput', user_id=user_id)
-            #return HttpResponseRedirect(reverse('superuserhome:deductionoutput', kwargs={'user_id': user_id}))
+            messages.error(request, 'フォームが無効です。再度入力してください。')
+            return redirect('superuserhome:userinformation_detail', user_id=user_id)
+
 
 class DeductionOutputView(TemplateView):
     template_name = 'deduction_output.html'
@@ -152,6 +167,21 @@ class DeductionOutputView(TemplateView):
         return context
     
     def get(self, request, *args, **kwargs):
+        
+        # URLからuser_id,buy_monthを取得
+        user_id = kwargs.get('user_id')
+        buy_month = kwargs.get('buy_month')
+
+        # 購入履歴が見つからない場合は再度入力を促す
+        user = get_object_or_404(User, pk=user_id)
+        history = get_object_or_404(PurchaseHistory, user_id=user, buy_month=buy_month)
+        '''
+        try:
+            user = User.objects.get(pk=user_id)
+            history = PurchaseHistory.objects.get(user_id=user, buy_month=buy_month)
+        except (PurchaseHistory.DoesNotExist):
+            return redirect('superuserhome:userinformation_detail', user_id=user_id)
+        '''
         # CSVデータを生成
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="users.csv"'
@@ -159,16 +189,8 @@ class DeductionOutputView(TemplateView):
         
         # ヘッダー
         writer.writerow(['Deduction Information'])
-        # URLからuser_id,buy_monthを取得
-        user_id = kwargs.get('user_id')
-        buy_month = kwargs.get('buy_month')
-        
-        user = get_object_or_404(User, pk=user_id)
-        history = get_object_or_404(PurchaseHistory, user_id=user, buy_month=buy_month)
-        
         # csvに書き込むデータ群（必要に応じて追加）
         user_data = [user.user_id, user.name, history.buy_month, history.buy_amount]
-
         writer.writerow(user_data)
         return response
 

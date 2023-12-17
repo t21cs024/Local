@@ -2,6 +2,14 @@
 {% block title %} 社員管理画面 {% endblock %}
 {% block main %}
 
+<!-- 該当するユーザが存在しない場合のエラーメッセージを表示 -->
+{% if messages %}
+    {% for message in messages %}
+      <font color='red'>{{ message }}
+    {% endfor %}
+    <font color='black'>
+{% endif %}
+
 <center>
 
 <form action="{% url 'superuserhome:userinformation'%}" method="post">
@@ -9,20 +17,6 @@
     {{ form_id }}
     <input type="submit"/>
 </form>
-
-
-
-<!-- これは行コメントアウトです 
-<form action="{% url 'superuserhome:signup' %}" method="post">
-	 <label for="id">社員ID:</label>
-    <input type="text" id="id" name="id" class="custom-input" required>
-    <button type="submit">社員情報</button>
-    </form>
-<label for="id">控除額:</label>
-<input type="text" id="month" name="month" class="custom-input" required>
-<span>月</span>
-<button type="submit" name="start_button">控除額出力</button>
--->
 
 </center>
 
