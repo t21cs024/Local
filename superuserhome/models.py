@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class User(models.Model):
-    # unique=True 同ユーザー名の複数回登録を防止
+    # unique=True 同ユーザーIDの複数回登録を防止
     user_id = models.IntegerField(unique = True)
     name = models.CharField(max_length = 100)
     user_name = models.CharField(max_length = 30, null = True, unique = True)
@@ -27,11 +27,13 @@ class Item(models.Model):
 class PurchaseHistory(models.Model):
     # 外部キー
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    # 購入月
     buy_month = models.PositiveIntegerField(default = 1)
+    # その月の購入額
     buy_amount = models.PositiveIntegerField(default = 0)
 
 
     def __str__(self):
-        return '{} : ({}月)'.format(self.user_id,self.buy_month)
+        return '{} : {}月'.format(self.user_id,self.buy_month)
     
     

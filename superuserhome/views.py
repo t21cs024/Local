@@ -128,15 +128,13 @@ class UserInformationDetailView(TemplateView):
     def get(self, request, *args, **kwargs):
         user_id = self.kwargs.get('user_id')
         user = get_object_or_404(User, pk=user_id)
-        history = get_object_or_404(PurchaseHistory, pk=user_id)
         context = self.get_context_data()
         context['user'] = user
-        context['history'] = history
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
         user_id = self.request.POST.get('user_id')
-        user = get_object_or_404(User, pk=user_id)
+        user = get_object_or_404(User, user_id=user_id)
         return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
 
 from django.contrib import messages
@@ -167,31 +165,25 @@ class DeductionOutputView(TemplateView):
         return context
     
     def get(self, request, *args, **kwargs):
-        
         # URLからuser_id,buy_monthを取得
         user_id = kwargs.get('user_id')
         buy_month = kwargs.get('buy_month')
 
-        # 購入履歴が見つからない場合は再度入力を促す
+        # オブジェクトの取得 見つからない場合は404
         user = get_object_or_404(User, pk=user_id)
         history = get_object_or_404(PurchaseHistory, user_id=user, buy_month=buy_month)
-        '''
-        try:
-            user = User.objects.get(pk=user_id)
-            history = PurchaseHistory.objects.get(user_id=user, buy_month=buy_month)
-        except (PurchaseHistory.DoesNotExist):
-            return redirect('superuserhome:userinformation_detail', user_id=user_id)
-        '''
-        # CSVデータを生成
+
+        # CSVデータ生成
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename="users.csv"'
+        # CSVデータを生成
+        response['Content-Disposition'] = 'attachment; filename="Salary_information.csv"'
         writer = csv.writer(response)
         
-        # ヘッダー
-        writer.writerow(['Deduction Information'])
-        # csvに書き込むデータ群（必要に応じて追加）
-        user_data = [user.user_id, user.name, history.buy_month, history.buy_amount]
-        writer.writerow(user_data)
+        # データ書き込み（必要に応じて追加）
+        header = ['社員番号','氏名','購入月','控除額']
+        writer.writerow(header)
+        body = [user.user_id, user.name, history.buy_month, history.buy_amount]
+        writer.writerow(body)
         return response
 
 class TestView(TemplateView):
