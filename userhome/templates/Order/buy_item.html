@@ -1,8 +1,16 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>食品購入</title>
+</head>
+<body>
+    <h1>QR Code Scanner</h1>
+    <img src="{{ url_for('video_feed') }}" />
+</body>
 
-{% block title %} 食品購入 {% endblock %}
+<ul>
+  <li><a href='/userhome'>戻る</a></li>
+</ul>
+</html>
 
-{% block main %}
-
-
-{% endblock %}
