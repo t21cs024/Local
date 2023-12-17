@@ -35,4 +35,5 @@ class SignUpForm(forms.Form):
 class UserIdForm(forms.Form):
     user_id = forms.IntegerField(label='ID')
 
-
+class MonthForm(forms.Form):
+    buy_month = forms.IntegerField(label='Month')

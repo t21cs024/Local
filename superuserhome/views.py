@@ -1,5 +1,5 @@
 #from django.views.generic import ListView
-from .models import User,Item
+from .models import User,Item,PurchaseHistory
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
@@ -11,7 +11,7 @@ from django.urls.base import reverse_lazy
 #from django.utils.decorators import method_decorator
 #from django.contrib.auth.decorators import login_required, user_passes_test
 #from .forms import SignUpForm,UserIdForm,ItemBuy,ItemIdForm, ItemForm
-from .forms import SignUpForm,UserIdForm,ItemBuy
+from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm
 #CSV関連のライブラリ
 import csv
 # test
@@ -108,13 +108,16 @@ class UserInformationDetailView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_id'] = UserIdForm()
+        context['form_month'] = MonthForm()
         return context
 
     def get(self, request, *args, **kwargs):
         user_id = self.kwargs.get('user_id')
         user = get_object_or_404(User, pk=user_id)
+        history = get_object_or_404(PurchaseHistory, pk=user_id)
         context = self.get_context_data()
         context['user'] = user
+        context['history'] = history
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
@@ -122,27 +125,51 @@ class UserInformationDetailView(TemplateView):
         user = get_object_or_404(User, pk=user_id)
         return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
 
+from django.http import HttpResponseBadRequest
+
+class PreDeductionOutputView(TemplateView):
+    def post(self, request, *args, **kwargs):
+        # URLからuser_id,buy_monthを取得
+        user_id = kwargs.get('user_id')
+        # buy_monthを取得
+        buy_month = self.request.POST.get('buy_month')  
+
+        # フォームにbuy_monthが含まれている場合にリダイレクト
+        if buy_month:
+            return HttpResponseRedirect(reverse('superuserhome:redeductionoutput', kwargs={'user_id': user_id, 'buy_month': buy_month}))
+        else:
+            # エラー処理（必要に応じて追加）
+            # フォームが無効な場合は再度入力を促す
+            return redirect('superuserhome:deductionoutput', user_id=user_id)
+            #return HttpResponseRedirect(reverse('superuserhome:deductionoutput', kwargs={'user_id': user_id}))
 
 class DeductionOutputView(TemplateView):
-    # ! for test to use User Model 
+    template_name = 'deduction_output.html'
     
-    def post(self, request, *args, **kwargs):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_month'] = MonthForm()
+        return context
+    
+    def get(self, request, *args, **kwargs):
         # CSVデータを生成
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="users.csv"'
-
-        # CSVライターを初期化
         writer = csv.writer(response)
         
-        # ヘッダー行を書き込む
+        # ヘッダー
         writer.writerow(['Deduction Information'])
-
-        # データを書き込む
-        # URLからuser_idを取得
+        # URLからuser_id,buy_monthを取得
         user_id = kwargs.get('user_id')
+        buy_month = kwargs.get('buy_month')
+        
         user = get_object_or_404(User, pk=user_id)
-        writer.writerow([user.name])
+        history = get_object_or_404(PurchaseHistory, user_id=user, buy_month=buy_month)
+        
+        # csvに書き込むデータ群（必要に応じて追加）
+        user_data = [user.user_id, user.name, history.buy_month, history.buy_amount]
 
+        writer.writerow(user_data)
         return response
 
 class TestView(TemplateView):
