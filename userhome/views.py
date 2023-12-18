@@ -12,6 +12,12 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
+'''
+from flask import Flask, render_template, Response
+import cv2
+from pyzbar import pyzbar
+'''
+
 
 # Create your views here.
 
@@ -22,6 +28,32 @@ class UserHomeView(TemplateView):
 class BuyItemView(TemplateView):
     model = Item
     template_name = 'Order/buy_item.html'
+
+'''
+    app = Flask(__name__)
+    def gen_frames():
+        camera = cv2.VideoCapture(0)  # カメラを開く
+        while True:
+            success, frame = camera.read()  # カメラからフレームを読み込む
+            if not success:
+                break
+            else:
+                ret, buffer = cv2.imencode('.jpg', frame)
+                frame = buffer.tobytes()
+                yield (b'--frame\r\n'
+                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # フレームをストリームする
+
+    @app.route('/')
+    def buy_item():
+        return render_template('buy_item.html')
+
+    @app.route('/video_feed')
+    def video_feed():
+        return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+        if __name__ == '__main__':
+            app.run(debug=True)
+'''
     
 class BuyHistoryView(TemplateView):
     model = Item
@@ -43,35 +75,6 @@ def change_password(request):
         form = PasswordChangeForm(request.user)
     return render(request, 'Order/change_pass.html', {'form': form})
 
-'''
-from flask import Flask, render_template, Response
-import cv2
-from pyzbar import pyzbar
 
-app = Flask(__name__)
-
-def gen_frames():
-    camera = cv2.VideoCapture(0)  # カメラを開く
-    while True:
-        success, frame = camera.read()  # カメラからフレームを読み込む
-        if not success:
-            break
-        else:
-            ret, buffer = cv2.imencode('.jpg', frame)
-            frame = buffer.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # フレームをストリームする
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/video_feed')
-def video_feed():
-    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-if __name__ == '__main__':
-    app.run(debug=True)
-'''
     
     
