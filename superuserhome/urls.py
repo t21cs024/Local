@@ -15,7 +15,6 @@ urlpatterns = [
     path('userinformation/<int:user_id>/', UserInformationDetailView.as_view(), name='userinformation_detail'),
     path('signup/',SignUpView.as_view(), name='signup'),
     path('test/',TestView.as_view(), name='test'),
-    #path('deductionoutput/<int:user_id>/',DeductionOutputView.as_view(), name='deductionoutput'),
     path('deductionoutput/<int:user_id>/',PreDeductionOutputView.as_view(), name='deductionoutput'),
     path('deductionoutput/<int:user_id>/<int:buy_month>/',DeductionOutputView.as_view(), name='redeductionoutput'),
     path('orderedit/olditem/', OldItemView.as_view(), name='olditem'),
