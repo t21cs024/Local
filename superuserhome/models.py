@@ -30,5 +30,7 @@ class PurchaseHistory(models.Model):
     buy_month = models.PositiveIntegerField(default = 1)
     # その月の購入額
     buy_amount = models.PositiveIntegerField(default = 0)
+
     def __str__(self):
         return '{} : {}月'.format(self.user_id,self.buy_month)
+
