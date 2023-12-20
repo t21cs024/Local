@@ -1,4 +1,5 @@
 from django.db import models
+
 # Create your models here.
 class User(models.Model):
     # unique=True 同ユーザーIDの複数回登録を防止
@@ -11,6 +12,8 @@ class User(models.Model):
     
     def __str__(self):
         return self.name
+    
+    
 class Item(models.Model):
     name = models.CharField(max_length=100)
     item_url = models.URLField(blank = True,null = True)
@@ -33,4 +36,20 @@ class PurchaseHistory(models.Model):
 
     def __str__(self):
         return '{} : {}月'.format(self.user_id,self.buy_month)
+    
+# 商品を発注する企業（１社と想定）
+class OrderingCompany(models.Model):
+    # 企業ID
+    company_id = models.PositiveIntegerField(default = 1)
+    # 企業名
+    company_name = models.CharField(max_length=50)
+    # 住所
+    company_address = models.CharField(max_length=50)
+    # メールアドレス
+    user_mail = models.EmailField(blank = False, null = True)
+    # 電話番号
+    phone_number = models.CharField(max_length=15)
+
+    def __str__(self):
+        return '{}'.format(self.company_name)
 
