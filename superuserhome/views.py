@@ -51,7 +51,7 @@ class OrderEditView(TemplateView):
     
 class NewItemView(CreateView):
     model = Item
-    fields = ('name', 'item_url', 'count', 'buy_date')
+    fields = ('name', 'item_url', 'count', 'price', 'buy_date')
     template_name = "Edit/Item/newitem.html"
     success_url = '/superuserhome/orderedit'
     
@@ -207,5 +207,7 @@ class OldItemView(TemplateView):
     def get(self, request, *args, **kwargs):
         object_list = Item.objects.all()
         return render(request, self.template_name, {'object_list':object_list})
+    
+    
     
     

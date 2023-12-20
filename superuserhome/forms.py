@@ -21,7 +21,7 @@ class ItemIdForm(forms.Form):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ['name', 'item_url', 'count', 'buy_date']
+        fields = ['name', 'item_url', 'count', 'price','buy_date']
 
 class SignUpForm(forms.Form):
     id = forms.CharField(label='ID', required=True)
@@ -37,3 +37,4 @@ class UserIdForm(forms.Form):
 
 class MonthForm(forms.Form):
     buy_month = forms.IntegerField(label=False, min_value=1, max_value=12)
+

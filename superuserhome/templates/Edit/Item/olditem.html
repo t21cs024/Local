@@ -79,11 +79,14 @@
                 content: "Count";
             }
 
-            td:nth-of-type(4):before {
+			 td:nth-of-type(4):before {
+                content: "Price";
+            }
+            td:nth-of-type(5):before {
                 content: "Buy Date";
             }
 
-            td:nth-of-type(5):before {
+            td:nth-of-type(6):before {
                 content: "Status";
             }
         }
@@ -105,6 +108,7 @@
       <dl scope="row">{{ item.id }}</dl>
       <dl>{{ item.name }}</dl>
       <dl>{{ item.count }}</dl>
+      <dl>{{ item.price }}</dl>
       <dl>{{ item.buy_date }}</dl>
       <dl>{% if item.buy == False %} <font color='red'>Not yet</font> {% endif %}
         {% if item.buy == True %} Yet {% endif %}</dl>
