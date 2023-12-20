@@ -14,6 +14,7 @@ class Item(models.Model):
     count = models.PositiveIntegerField(default = 0)
     buy_date = models.DateField(blank = True,null = True)
     #shop = models.ForeignKey(Shop,blank = True,null = True,verbose_name = 'shop',on_delete = models.PROTECT)
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True) 
     buy = models.BooleanField(default = False)
     
     def __str__(self):

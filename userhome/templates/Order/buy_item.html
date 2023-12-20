@@ -5,10 +5,34 @@
     <title>食品購入</title>
 </head>
 <body>
-    <h1>QR Code Scanner</h1>
-    <img src="{{ url_for('video_feed') }}" />
-</body>
+  <video id="qr-video" width="300" height="200" autoplay></video>
+  <script src="https://rawgit.com/cozmo/jsQR/master/dist/jsQR.js"></script>
+  <script>
+    const video = document.getElementById('qr-video');
 
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+      .then((stream) => {
+        video.srcObject = stream;
+        video.play();
+        const canvasElement = document.createElement('canvas');
+        const canvas = canvasElement.getContext('2d');
+        setInterval(() => {
+          canvasElement.width = video.videoWidth;
+          canvasElement.height = video.videoHeight;
+          canvas.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+          const imageData = canvas.getImageData(0, 0, video.videoWidth, video.videoHeight);
+          const code = jsQR(imageData.data, imageData.width, imageData.height);
+          if (code) {
+            console.log('QRコードの内容:', code.data);
+            // ここでQRコードのデータを利用する処理を記述します
+          }
+        }, 100);
+      })
+      .catch((err) => {
+        console.error('カメラのアクセスを許可してください:', err);
+      });
+  </script>
+</body>
 <ul>
   <li><a href='/userhome'>戻る</a></li>
 </ul>

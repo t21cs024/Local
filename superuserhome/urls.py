@@ -16,5 +16,6 @@ urlpatterns = [
     path('test/',TestView.as_view(), name='test'),
     path('deductionoutput/<int:user_id>/',PreDeductionOutputView.as_view(), name='deductionoutput'),
     path('deductionoutput/<int:user_id>/<int:buy_month>/',DeductionOutputView.as_view(), name='redeductionoutput'),
+    path('orderedit/newitem/', NewItemView.as_view(), name='newitem'),
     path('orderedit/olditem/', OldItemView.as_view(), name='olditem'),
     ]
