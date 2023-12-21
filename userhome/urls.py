@@ -5,6 +5,7 @@ Created on 2023/12/08
 '''
 from django.urls import path
 from .views import UserHomeView ,BuyItemView ,BuyHistoryView ,change_password, CartContentsView
+from superuserhome.views import OrderConfirmedView
 '''
 from .views import ItemList, ItemAddView, ItemShowView, ItemEditView, ItemDeleteView
 '''
@@ -15,5 +16,6 @@ urlpatterns = [
     path('buyhistory/',BuyHistoryView.as_view(),name='buyhistory'),
     path('changepass/',change_password, name='changepass'),
     path('cartcontents/',CartContentsView.as_view(), name='cartcontents'),
+    path('sendordermail/',OrderConfirmedView.as_view(), name='sendordermail'),
        ]
 

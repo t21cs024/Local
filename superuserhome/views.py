@@ -17,6 +17,8 @@ import csv
 # test
 from django.http import HttpResponse
 from pip._vendor.typing_extensions import Self
+from django.contrib import messages
+from django.core.mail import send_mail
 
 # Create your views here.
 class SuperUserHomeView(TemplateView):
@@ -137,8 +139,6 @@ class UserInformationDetailView(TemplateView):
         user = get_object_or_404(User, user_id=user_id)
         return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
 
-from django.contrib import messages
-
 class PreDeductionOutputView(TemplateView):
     
     def post(self, request, *args, **kwargs):
@@ -202,12 +202,46 @@ class OldItemView(TemplateView):
     template_name = "Edit/Item/olditem.html"
     fields =('name')
 
-
-
     def get(self, request, *args, **kwargs):
         object_list = Item.objects.all()
         return render(request, self.template_name, {'object_list':object_list})
     
+
+class OrderConfirmedView(TemplateView):
+    template_name = "Order/buy_item.html"
     
+    def get(self, request):
+        self.send_order_mail(request)
+        return redirect('userhome:buyitem')
     
+    def send_order_mail(self, request):
+        """題名"""
+        subject = "題名"
+        """本文"""
+        message = "本文です\nこんにちは。メールを送信しました"
+        """送信元メールアドレス"""
+        from_email = "t21cs024@gmail.com"
+        """宛先メールアドレス"""
+        recipient_list = [
+            "t21cs024@gmail.com"
+            ]
+
+        send_mail(subject, message, from_email, recipient_list)
+        #return redirect('userhome:buyitem')
     
+'''
+def SendOrderMailView(request):
+    """題名"""
+    subject = "題名"
+    """本文"""
+    message = "本文です\nこんにちは。メールを送信しました"
+    """送信元メールアドレス"""
+    from_email = "t21cs024@gmail.com"
+    """宛先メールアドレス"""
+    recipient_list = [
+        "t21cs024@gmail.com"
+        ]
+
+    send_mail(subject, message, from_email, recipient_list)
+    return redirect('userhome:buyitem')
+'''
