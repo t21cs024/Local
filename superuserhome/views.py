@@ -1,24 +1,20 @@
-#from django.views.generic import ListView
-from .models import User,Item,PurchaseHistory
+from .models import User,Item,PurchaseHistory,Company
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-#from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.views.generic.edit import CreateView
 from django.urls.base import reverse_lazy
-#from django.utils.decorators import method_decorator
-#from django.contrib.auth.decorators import login_required, user_passes_test
-#from .forms import SignUpForm,UserIdForm,ItemBuy,ItemIdForm, ItemForm
 from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm
-#CSV関連のライブラリ
+#CSV関連
 import csv
 # test
 from django.http import HttpResponse
-from pip._vendor.typing_extensions import Self
+# 発注メール送信関連
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.db.models import F
 
 # Create your views here.
 class SuperUserHomeView(TemplateView):
@@ -136,7 +132,7 @@ class UserInformationDetailView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         user_id = self.request.POST.get('user_id')
-        user = get_object_or_404(User, user_id=user_id)
+        get_object_or_404(User, user_id=user_id)
         return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
 
 class PreDeductionOutputView(TemplateView):
@@ -211,37 +207,69 @@ class OrderConfirmedView(TemplateView):
     template_name = "Order/buy_item.html"
     
     def get(self, request):
-        self.send_order_mail(request)
+        # 在庫が重み付けによって決められた個数未満であり、発注メールを送信していないItemオブジェクトを取得
+        items_below_amount = Item.objects.filter(count__lt=F('minimum_amount'), send_email = False)
+        # 条件に該当するオブジェクトが存在する場合、発注メール送信メソッド呼び出し
+        if items_below_amount.exists():
+            self.send_order_mail(request, items_below_amount)
         return redirect('userhome:buyitem')
     
-    def send_order_mail(self, request):
+    def send_order_mail(self, request, items_below_amount):
+        # 自社（発注元企業）オブジェクトの取得 見つからない場合は404(発注元企業のIDは1を想定)
+        own_company = get_object_or_404(Company, company_id = 1)
+        # 発注先企業オブジェクトの取得 見つからない場合は404(発注企業のIDは2を想定)
+        supplier_company = get_object_or_404(Company, company_id = 2)
+        
         """題名"""
-        subject = "題名"
+        subject = f"商品注文のお願い（{own_company.company_name})"
         """本文"""
-        message = "本文です\nこんにちは。メールを送信しました"
-        """送信元メールアドレス"""
-        from_email = "t21cs024@gmail.com"
-        """宛先メールアドレス"""
+        message = (
+            f"{supplier_company.company_name}\n"
+            f"ご担当　{supplier_company.manager_name}様\n"
+            "\n"
+            "いつもお世話になっております。\n"
+            f"{own_company.company_name}の{own_company.manager_name}でございます。\n"
+            "お世話になります中、以下の商品の発注を希望いたします。詳細は以下の通りです。\n"
+
+            )
+        roop_count = 0
+        for item in items_below_amount:
+            message += (
+                "\n"
+                f"商品{roop_count+1}：\n"
+                f"・商品名　：{item.name}\n"
+                f"・数　量　：{item.order_quantity}\n"
+                )
+            # 発注メールを送信したitemはフラグを立てておく（重複メール送信を防ぐため）
+            # 商品が到着し、在庫情報追加する際Falseに戻してください
+            item.send_email = True
+            item.save()
+            roop_count+=1
+        
+        message += (
+            "\n"
+            f"・納入場所：弊社  {own_company.company_name}（住所：{own_company.company_address}）\n"
+            "\n"
+            "ご不明な点がございましたら、"
+            f"担当の{own_company.manager_name}（連絡先：{own_company.manager_phone_number}/{own_company.manager_mail}）までご連絡くださいませ。\n"
+            "何卒、よろしくお願い申し上げます。\n"
+            "\n"
+            "────────────────────────\n"
+            f"{own_company.company_name}\n"
+            f"{own_company.manager_name}\n"
+            f"{own_company.company_address}\n"
+            f"TEL：{own_company.manager_phone_number}\n"
+            f"Email：{own_company.company_mail}\n"
+            "URL：https://www.ycc.co.jp/\n"
+            "────────────────────────\n"
+            )
+
+        """送信元メールアドレス（企業DBから取得）"""
+        from_email = own_company.company_mail
+        
+        """宛先メールアドレス（企業DBから取得）"""
         recipient_list = [
-            "t21cs024@gmail.com"
+            supplier_company.company_mail
             ]
-
         send_mail(subject, message, from_email, recipient_list)
-        #return redirect('userhome:buyitem')
     
-'''
-def SendOrderMailView(request):
-    """題名"""
-    subject = "題名"
-    """本文"""
-    message = "本文です\nこんにちは。メールを送信しました"
-    """送信元メールアドレス"""
-    from_email = "t21cs024@gmail.com"
-    """宛先メールアドレス"""
-    recipient_list = [
-        "t21cs024@gmail.com"
-        ]
-
-    send_mail(subject, message, from_email, recipient_list)
-    return redirect('userhome:buyitem')
-'''

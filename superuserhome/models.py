@@ -5,11 +5,12 @@ from django.template.defaultfilters import default
 class User(models.Model):
     '''
     データ例
-    User id：1
-    Name：a
-    User name：a
-    User pass：a
-    User mail：a@gmail.com
+    
+    User id   ：1
+    Name      ：a
+    User name ：a
+    User pass ：a
+    User mail ：a@gmail.com
     User authority：False
     '''
     # unique=True 同ユーザーIDの複数回登録を防止
@@ -27,15 +28,16 @@ class User(models.Model):
 class Item(models.Model):
     '''
     データ例
-    Name：apple
-    Item url：apple.png
-    Count：10
-    Buy date：2023-12-20
-    Price：100
-    Buy：False    
-    Order quantity：5
-    Minimum amount：5
-    Send email：False
+    
+    Name     ：apple
+    Item url ：apple.png
+    Count    ：10
+    Buy date ：2023-12-20
+    Price    ：100
+    Buy      ：False    
+    Order quantity ：5
+    Minimum amount ：5
+    Send email     ：False
     '''
     name = models.CharField(max_length=100)
     item_url = models.URLField(blank = True,null = True)
@@ -60,8 +62,8 @@ class PurchaseHistory(models.Model):
     '''
     データ例
 
-    User id：1
-    Buy month：1
+    User id   ：1
+    Buy month ：1
     Buy amount：1000
     '''
     # 外部キー
@@ -74,27 +76,37 @@ class PurchaseHistory(models.Model):
     def __str__(self):
         return '{} : {}月'.format(self.user_id,self.buy_month)
     
-# 商品を発注する企業（１社と想定）
-class OrderingCompany(models.Model):
+# 企業
+class Company(models.Model):
     '''
     データ例
 
-    Company id：1    (必ず１としてください）
-    Company name：abc
-    Company address：111
-    Company mail：t21cs〇○○@gmail.com    （自分で管理できるメールアドレスにしてください）
-    Phone number：111
+    Company id      ：1  (１は自社、２は発注企業）
+    Company name    ：株式会社ワイ・シー・シー
+    Company address ：111
+    Company mail    ：t21cs○○○@gmail.com （!!必ず自分で管理できるメールアドレスにしてください。id=1送信元メールアドレス、id=2送信先メールアドレス）
+    （id=1で登録する送信元メールアドレスは、user.txtで記述したメールアドレスと同一のものとしてください）
+    Phone number    ：111
+    Manager Name    ：田中太郎
+    Manager phone number：1111        （署名に使用）
+    Manager mail    ：aa@gmail.com    （署名に使用。こちらのメールアドレスは適当でいいです）
     '''
-    # 企業ID
-    company_id = models.PositiveIntegerField(default = 1)
+    # 企業ID(unique=True 同ユーザーIDの複数回登録を防止)
+    company_id = models.PositiveIntegerField(default=1,unique = True)
     # 企業名
     company_name = models.CharField(max_length=50)
-    # 住所
-    company_address = models.CharField(max_length=50)
-    # メールアドレス
-    company_mail = models.EmailField(blank = False, null = True)
-    # 電話番号
-    phone_number = models.CharField(max_length=15)
+    # 企業住所
+    company_address = models.CharField(max_length=100)
+    # 企業メールアドレス
+    company_mail = models.EmailField()
+    # 企業電話番号
+    company_phone_number = models.CharField(max_length=15)
+    # 担当者名
+    manager_name = models.CharField(max_length=50)
+    # 担当者電話番号
+    manager_phone_number = models.CharField(max_length=15)
+    # 担当者メールアドレス
+    manager_mail = models.EmailField()
 
     def __str__(self):
         return '{}'.format(self.company_name)
