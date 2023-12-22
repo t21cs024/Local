@@ -4,7 +4,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
-from django.views.generic.edit import CreateView
+from django.views.generic import ListView
+from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls.base import reverse_lazy
 from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm
 #CSV関連
@@ -15,6 +16,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.db.models import F
+from datetime import datetime, timedelta
 
 # Create your views here.
 class SuperUserHomeView(TemplateView):
@@ -229,15 +231,23 @@ class OrderConfirmedView(TemplateView):
             "\n"
             "いつもお世話になっております。\n"
             f"{own_company.company_name}の{own_company.manager_name}でございます。\n"
-            "お世話になります中、以下の商品の発注を希望いたします。詳細は以下の通りです。\n"
-
+            "\n"
+            "このたびは貴社の商品を発注したく連絡いたしました。\n"
+            "なお、具体的には以下の内容にて発注を考えており、ご了承いただいたのち注文書を発行いたします。ご確認いただければ幸いです。\n"
             )
         roop_count = 0
         for item in items_below_amount:
+            # 発注する商品が複数ある場合
+            if items_below_amount.count() >= 2:
+                message += (
+                    "\n"
+                    f"商品{roop_count+1}：\n"
+                    )
+            else:
+                message += ("\n")
             message += (
-                "\n"
-                f"商品{roop_count+1}：\n"
                 f"・商品名　：{item.name}\n"
+                f"・商品ID　：{item.id}\n"
                 f"・数　量　：{item.order_quantity}\n"
                 )
             # 発注メールを送信したitemはフラグを立てておく（重複メール送信を防ぐため）
@@ -245,10 +255,16 @@ class OrderConfirmedView(TemplateView):
             item.send_email = True
             item.save()
             roop_count+=1
-        
+
+        # 現在の日付から納品希望日の計算（発注メールを送信した１週間後を指定）
+        delivery_date = datetime.now() + timedelta(weeks=1)
+        # フォーマットを整える
+        desired_delivery_date = delivery_date.strftime("%Y年%m月%d日")
+        if items_below_amount.count() >= 2:
+            message += "\n"
         message += (
-            "\n"
             f"・納入場所：弊社  {own_company.company_name}（住所：{own_company.company_address}）\n"
+            f"・納品希望日：{desired_delivery_date}）\n"
             "\n"
             "ご不明な点がございましたら、"
             f"担当の{own_company.manager_name}（連絡先：{own_company.manager_phone_number}/{own_company.manager_mail}）までご連絡くださいませ。\n"
@@ -259,7 +275,7 @@ class OrderConfirmedView(TemplateView):
             f"{own_company.manager_name}\n"
             f"{own_company.company_address}\n"
             f"TEL：{own_company.manager_phone_number}\n"
-            f"Email：{own_company.company_mail}\n"
+            f"Email：{own_company.manager_mail}\n"
             "URL：https://www.ycc.co.jp/\n"
             "────────────────────────\n"
             )
@@ -272,4 +288,6 @@ class OrderConfirmedView(TemplateView):
             supplier_company.company_mail
             ]
         send_mail(subject, message, from_email, recipient_list)
+        
+    
     

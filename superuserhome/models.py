@@ -86,23 +86,24 @@ class Company(models.Model):
     Company address ：111
     Company mail    ：t21cs○○○@gmail.com （!!必ず自分で管理できるメールアドレスにしてください。id=1送信元メールアドレス、id=2送信先メールアドレス）
     （id=1で登録する送信元メールアドレスは、user.txtで記述したメールアドレスと同一のものとしてください）
-    Phone number    ：111
-    Manager Name    ：田中太郎
+    （id=2で登録する送信先メールアドレスは，gmail以外でも大丈夫です）
+    Company phone number    ：111
+    Manager name    ：田中太郎
     Manager phone number：1111        （署名に使用）
-    Manager mail    ：aa@gmail.com    （署名に使用。こちらのメールアドレスは適当でいいです）
+    Manager mail    ：tanaka@gmail.com    （署名に使用。こちらのメールアドレスは適当でいいです）
     '''
     # 企業ID(unique=True 同ユーザーIDの複数回登録を防止)
     company_id = models.PositiveIntegerField(default=1,unique = True)
     # 企業名
-    company_name = models.CharField(max_length=50)
+    company_name = models.CharField(blank = True, max_length=50)
     # 企業住所
-    company_address = models.CharField(max_length=100)
+    company_address = models.CharField(blank = True, max_length=100)
     # 企業メールアドレス
     company_mail = models.EmailField()
     # 企業電話番号
     company_phone_number = models.CharField(max_length=15)
     # 担当者名
-    manager_name = models.CharField(max_length=50)
+    manager_name = models.CharField(blank = True, max_length=50)
     # 担当者電話番号
     manager_phone_number = models.CharField(max_length=15)
     # 担当者メールアドレス
