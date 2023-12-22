@@ -264,10 +264,10 @@ class OrderConfirmedView(TemplateView):
             message += "\n"
         message += (
             f"・納入場所：弊社  {own_company.company_name}（住所：{own_company.company_address}）\n"
-            f"・納品希望日：{desired_delivery_date}）\n"
+            f"・納品希望日：{desired_delivery_date}\n"
             "\n"
             "ご不明な点がございましたら、"
-            f"担当の{own_company.manager_name}（連絡先：{own_company.manager_phone_number}/{own_company.manager_mail}）までご連絡くださいませ。\n"
+            f"担当の{own_company.manager_name}（連絡先：{own_company.manager_phone_number} / {own_company.manager_mail}）までご連絡くださいませ。\n"
             "何卒、よろしくお願い申し上げます。\n"
             "\n"
             "────────────────────────\n"
