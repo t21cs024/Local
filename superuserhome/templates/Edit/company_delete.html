@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %} Delete {% endblock %}
+
+{% block main %}
+<form action="{% url 'superuserhome:companydelete' pk=company.company_id %}" method="post">
+{% csrf_token %}
+{{ form }}
+<table class="table">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>企業名</th>
+      <th>住所</th>
+      <th>企業メールアドレス</th>
+      <th>企業電話番号</th>
+      <th>担当者名</th>
+      <th>担当者電話番号</th>
+      <th>担当者メールアドレス</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+      <td scope="row">{{ company.company_id }}</td>
+      <td>{{ company.company_name }}</td>
+      <td>{{ company.company_address }}</td>
+      <td>{{ company.company_mail }}</td>
+      <td>{{ company.company_phone_number }}</td>
+      <td>{{ company.manager_name }}</td>
+      <td>{{ company.manager_phone_number }}</td>
+      <td>{{ company.manager_mail }}</td>
+      </tr>
+  </tbody>
+</table>
+<br>
+削除しますか？
+<input type="submit" value="削除する"/>
+</form>
+
+<li><a href="/superuserhome">戻る</a></li>
+
+{% endblock %}
