@@ -1,5 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import default
+from django.core.validators import MinValueValidator
 
 # Create your models here.
 class User(models.Model):
@@ -46,6 +47,12 @@ class Item(models.Model):
     #shop = models.ForeignKey(Shop,blank = True,null = True,verbose_name = 'shop',on_delete = models.PROTECT)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     buy = models.BooleanField(default = False)
+    
+    # 以下は発注の重み付け機能のため追加したフィールド
+    # 発注重み(三桁未満の小数であり，重みは0未満にならない)
+    order_weight = models.DecimalField(max_digits = 3, decimal_places = 2, validators=[MinValueValidator(0.01)], default = 1)
+    # 最終発注日
+    last_order_date = models.DateField(blank = True, null = True)
     
     # 以下は発注メール送信機能のため追加したフィールド
     # 発注個数（重み付けで変更されることを想定）

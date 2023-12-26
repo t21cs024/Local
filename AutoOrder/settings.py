@@ -53,7 +53,7 @@ EMAIL_PORT = 587 # gmail
 your_gmail@gmail（送信元メールアドレスになります）
 your_passward（16文字のアプリパスワード)
 ------
-アプリパスワードについて参考文献 https://www.bing.com/ck/a?!&&p=cb32ea67cde15b3dJmltdHM9MTcwMzAzMDQwMCZpZ3VpZD0zNjAyMzAwYi1mZTcxLTYxZTgtMzdhZi0yMzlkZmY5YjYwODYmaW5zaWQ9NTIwNA&ptn=3&ver=2&hsh=3&fclid=3602300b-fe71-61e8-37af-239dff9b6086&psq=ttps%3a%2f%2fcodelab.website%2fdjango-send-gmail%2f%23%3a%7e%3atext%3d%255BDjango%255DGmail%2520%e3%81%ae%e3%83%a1%e3%83%bc%e3%83%ab%e3%82%a2%e3%83%89%e3%83%ac%e3%82%b9%e3%81%8b%e3%82%89%e3%83%a1%e3%83%bc%e3%83%ab%e3%82%92%e9%80%81%e4%bf%a1%e3%81%a7%e3%81%8d%e3%82%8b%e3%82%88%e3%81%86%e3%81%ab%e3%81%99%e3%82%8b%25201%2520%e5%89%8d%e6%8f%90%e6%9d%a1%e4%bb%b6%2520Python%2520%253A%25203.9.1%2520...%2cGmail%2520%e3%81%ab%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3%e3%81%97%e3%81%be%e3%81%99%e3%80%82%2520...%25205%2520E%2520%e3%83%a1%e3%83%bc%e3%83%ab%e8%a8%ad%e5%ae%9a%2520...%2520%e3%81%9d%e3%81%ae%e4%bb%96%e3%81%ae%e3%82%a2%e3%82%a4%e3%83%86%e3%83%a0&u=a1aHR0cHM6Ly9jb2RlbGFiLndlYnNpdGUvZGphbmdvLXNlbmQtZ21haWwv&ntb=1
+アプリパスワードについて参考文献 https://codelab.website/django-send-gmail/
 '''
 with open(BASE_DIR /'user.txt','r') as f:
     datalist = f.readlines()
