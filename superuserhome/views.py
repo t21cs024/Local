@@ -12,11 +12,13 @@ from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm
 import csv
 # test
 from django.http import HttpResponse
-# 発注メール送信関連
+# 発注関連
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.db.models import F
+from django.db.models import F, Q
 from datetime import timedelta, date
+from decimal import Decimal
+
 
 # Create your views here.
 class SuperUserHomeView(TemplateView):
@@ -209,13 +211,53 @@ class OrderConfirmedView(TemplateView):
     template_name = "Order/buy_item.html"
     
     def get(self, request):
+        """
+        購入によって在庫数をデクリメントする処理をここに記述
+        （ stateの変更は下記で行うため不要です ）
+        """
+        
         # 在庫が重み付けによって決められた個数未満であり、発注メールを送信していないOrderオブジェクトを外部キーを通して取得
-        #items_below_amount = Order.objects.filter(item__count__lt=F('minimum_amount'), send_email = False)
         items_below_amount = Order.objects.filter(item__count__lt=F('minimum_amount'), item__state = 'in stock')
+        # 在庫数0以下で，stateが"売り切れ"になっていない商品オブジェクトを取得
+        items_out_of_stock = Item.objects.filter( Q(count__lte = 0) & (Q(state = 'in stock')|Q(state = 'ordered')) )
+        # 条件に該当するオブジェクトが存在する場合、重み増加メソッド呼び出し
+        if items_out_of_stock.exists():
+            self.increase_weight(request, items_out_of_stock)
         # 条件に該当するオブジェクトが存在する場合、発注メール送信メソッド呼び出し
         if items_below_amount.exists():
             self.send_order_mail(request, items_below_amount)
+        # 重みで変更した発注数をメール内容に反映させるため，メールを送信してから在庫数0の商品は状態を「売り切れ」にする
+        if items_out_of_stock.exists():
+            # 購入によって在庫が0になった商品の重みを増やしたら，状態を"売り切れ"にする
+            for item in items_out_of_stock:
+                item.state = 'sold out'
+                item.save()
+                
         return redirect('userhome:buyitem')
+    
+    def increase_weight(self, request, items_out_of_stock):
+        for item in items_out_of_stock:
+            # idを外部キーとしてOrderオブジェクトの取得 見つからない場合は404
+            order = get_object_or_404(Order, pk=item.id)
+            if order.last_sold_out_date is not None:
+            # 前回の売り切れ日からの差が小さいほど1に近い値を加える．最低でも0.5を加える
+                date_difference = date.today() - order.last_sold_out_date
+                # 傾き
+                a = -3/(40**2)
+                increase = a*(date_difference.days)**2 + 1
+                if increase <= 0:
+                    increase = 0.5
+            else:
+                # 前回の売り切れ日データがないときも0.5加える
+                increase = 0.5
+            order.order_weight += Decimal(increase)
+            if order.order_weight >= 2.00:
+                # 重みの最大値は2.00とする
+                order.order_weight = 2.00
+            # 重みの更新
+            order.last_sold_out_date = date.today()
+            order.order_quantity *= order.order_weight
+            order.save()    
     
     def send_order_mail(self, request, items_below_amount):
         # 自社（発注元企業）オブジェクトの取得 見つからない場合は404(発注元企業のIDは1を想定)
@@ -253,16 +295,15 @@ class OrderConfirmedView(TemplateView):
                 f"・商品ID　：{item.id}\n"
                 f"・数　量　：{order_item.order_quantity}\n"
                 )
-            # 今日の日付を取得
-            today = date.today()
+            
             # 発注メールを送信したitemはOrderにフラグを立てておく（重複メール送信を防ぐため）
             # 商品が到着し、在庫情報追加する際state = 'in stock'にしてください
             item.state = 'ordered'
             item.save()
             roop_count+=1
 
-        # 現在の日付から納品希望日の計算（発注メールを送信した１週間後を指定）
-        delivery_date = today + timedelta(weeks=1)
+        # 今日の日付から納品希望日の計算（発注メールを送信した１週間後を指定）
+        delivery_date = date.today() + timedelta(weeks=1)
         # フォーマットを整える
         desired_delivery_date = delivery_date.strftime("%Y年%m月%d日")
         if items_below_amount.count() >= 2:

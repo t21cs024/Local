@@ -1,6 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import default
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
+from audioop import max
 
 # Create your models here.
 class User(models.Model):
@@ -63,14 +64,16 @@ class Order(models.Model):
     Order quantity ：5
     Minimum amount ：5
     '''
-    # 外部キー
-    item = models.ForeignKey(Item, on_delete=models.CASCADE, null = True)
+    # 外部キー(一意)
+    item = models.OneToOneField(Item, on_delete=models.CASCADE, null = True)
     # 発注重み(三桁未満の小数 重みの最小値は0.01であり，0未満にならない)
-    order_weight = models.DecimalField(max_digits = 3, decimal_places = 2, validators = [MinValueValidator(0.01)], default = 1)
+    order_weight = models.DecimalField(max_digits = 3, decimal_places = 2, validators = [MinValueValidator(0.01) ,MaxValueValidator(2.00)], default = 1)
     # 発注個数（重み付けで変更されることを想定）
     order_quantity = models.PositiveIntegerField(default = 5)
     # 最低個数：在庫がこれ以下になった商品を発注する
     minimum_amount = models.PositiveIntegerField(default = 5)
+    # 前回の売り切れ日（商品登録する際はnullを想定）
+    last_sold_out_date = models.DateField(blank = True, null = True)
 
     def __str__(self):
         return '{} [発注重み:{}] '.format(self.item, self.order_weight)
@@ -83,8 +86,8 @@ class PurchaseHistory(models.Model):
     Buy month ：1
     Buy amount：1000
     '''
-    # 外部キー
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
+    # 外部キー(一意)
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE, null = True)
     # 購入月
     buy_month = models.PositiveIntegerField(default = 1)
     # その月の購入額
