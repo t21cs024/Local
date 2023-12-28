@@ -1,4 +1,4 @@
-from .models import User,Item,PurchaseHistory,Company
+from .models import User,Item,PurchaseHistory,Company,Order
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
@@ -16,7 +16,7 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.db.models import F
-from datetime import datetime, timedelta
+from datetime import timedelta, date
 
 # Create your views here.
 class SuperUserHomeView(TemplateView):
@@ -209,8 +209,9 @@ class OrderConfirmedView(TemplateView):
     template_name = "Order/buy_item.html"
     
     def get(self, request):
-        # 在庫が重み付けによって決められた個数未満であり、発注メールを送信していないItemオブジェクトを取得
-        items_below_amount = Item.objects.filter(count__lt=F('minimum_amount'), send_email = False)
+        # 在庫が重み付けによって決められた個数未満であり、発注メールを送信していないOrderオブジェクトを外部キーを通して取得
+        #items_below_amount = Order.objects.filter(item__count__lt=F('minimum_amount'), send_email = False)
+        items_below_amount = Order.objects.filter(item__count__lt=F('minimum_amount'), item__state = 'in stock')
         # 条件に該当するオブジェクトが存在する場合、発注メール送信メソッド呼び出し
         if items_below_amount.exists():
             self.send_order_mail(request, items_below_amount)
@@ -236,8 +237,10 @@ class OrderConfirmedView(TemplateView):
             "なお、具体的には以下の内容にて発注を考えており、ご了承いただいたのち注文書を発行いたします。ご確認いただければ幸いです。\n"
             )
         roop_count = 0
-        for item in items_below_amount:
-            # 発注する商品が複数ある場合
+        for order_item in items_below_amount:
+            # Orderからidを外部キーとしてItemオブジェクトの取得 見つからない場合は404
+            item = get_object_or_404(Item, pk=order_item.id)
+            # 発注する商品が複数ある場合と１つの場合で分岐（本文の体裁のため）
             if items_below_amount.count() >= 2:
                 message += (
                     "\n"
@@ -248,16 +251,18 @@ class OrderConfirmedView(TemplateView):
             message += (
                 f"・商品名　：{item.name}\n"
                 f"・商品ID　：{item.id}\n"
-                f"・数　量　：{item.order_quantity}\n"
+                f"・数　量　：{order_item.order_quantity}\n"
                 )
-            # 発注メールを送信したitemはフラグを立てておく（重複メール送信を防ぐため）
-            # 商品が到着し、在庫情報追加する際Falseに戻してください
-            item.send_email = True
+            # 今日の日付を取得
+            today = date.today()
+            # 発注メールを送信したitemはOrderにフラグを立てておく（重複メール送信を防ぐため）
+            # 商品が到着し、在庫情報追加する際state = 'in stock'にしてください
+            item.state = 'ordered'
             item.save()
             roop_count+=1
 
         # 現在の日付から納品希望日の計算（発注メールを送信した１週間後を指定）
-        delivery_date = datetime.now() + timedelta(weeks=1)
+        delivery_date = today + timedelta(weeks=1)
         # フォーマットを整える
         desired_delivery_date = delivery_date.strftime("%Y年%m月%d日")
         if items_below_amount.count() >= 2:
