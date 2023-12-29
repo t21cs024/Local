@@ -40,10 +40,7 @@ class Item(models.Model):
     name = models.CharField(max_length=100)
     item_url = models.URLField(blank = True,null = True)
     count = models.PositiveIntegerField(default = 0)
-    buy_date = models.DateField(blank = True,null = True)
-    #shop = models.ForeignKey(Shop,blank = True,null = True,verbose_name = 'shop',on_delete = models.PROTECT)
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    buy = models.BooleanField(default = False)
     # 商品の状態を管理する（商品が届き,在庫情報を変更する際"在庫あり"にされることを想定）
     STATE_CHOICES = [
         ('in stock', '在庫あり'),

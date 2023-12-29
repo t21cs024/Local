@@ -4,7 +4,6 @@
 
 {% block main %}
 
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -106,12 +105,14 @@
     <td>
     　<dl><img src="../../../static/images/ringo.png" alt="Image 3"></dl>
       <dl scope="row">{{ item.id }}</dl>
-      <dl>{{ item.name }}</dl>
+      <dl>{{ item.name }}</a></dl>
       <dl>{{ item.count }}</dl>
       <dl>{{ item.price }}</dl>
-      <dl>{{ item.buy_date }}</dl>
-      <dl>{% if item.buy == False %} <font color='red'>Not yet</font> {% endif %}
-        {% if item.buy == True %} Yet {% endif %}</dl>
+      <dl>{% if item.state == 'sold out' %} <font color='red'>売り切れ</font> {% endif %}
+        {% if item.state == 'ordered' %} <font color='blue'> 発注済み</font> {% endif %}
+        {% if item.state == 'in stock' %} 在庫あり {% endif %}</dl>
+      <dl><a href="{% url 'superuserhome:stockedit' item_id=item.id %}">[在庫追加]</a></dl>
+      <dl><a href="{% url 'superuserhome:discardedit' item_id=item.id %}">[廃棄]</a></dl>
     </td>
   {% endfor %}
 	</body>

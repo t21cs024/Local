@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls.base import reverse_lazy
-from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm
+from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm,CountForm
 #CSV関連
 import csv
 # test
@@ -53,7 +53,7 @@ class OrderEditView(TemplateView):
     
 class NewItemView(CreateView):
     model = Item
-    fields = ('name', 'item_url', 'count', 'price', 'buy_date')
+    fields = ('name', 'item_url', 'count', 'price', 'state')
     template_name = "Edit/Item/newitem.html"
     success_url = '/superuserhome/orderedit'
     
@@ -100,9 +100,7 @@ class UserInformationView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         user_id = self.request.POST.get('user_id')
-        #user = get_object_or_404(User, user_id=user_id)
-        # user_idが存在しない場合はHTTP 404 Not Found
-                # 購入履歴が見つからない場合は再度入力を促す
+        # 該当するユーザが見つからない場合は再度入力を促す
         try:
             User.objects.get(pk=user_id)
         except (User.DoesNotExist):
@@ -254,8 +252,9 @@ class OrderConfirmedView(TemplateView):
             if order.order_weight >= 2.00:
                 # 重みの最大値は2.00とする
                 order.order_weight = 2.00
-            # 重みの更新
+                # 前回の売り切れ日を今日にする
             order.last_sold_out_date = date.today()
+            # 重みの更新
             order.order_quantity *= order.order_weight
             order.save()    
     
@@ -356,4 +355,96 @@ class CompanyDeleteView(DeleteView):
     model = Company
     template_name = 'Edit/company_delete.html'
     success_url = reverse_lazy('superuserhome:companymanage')
+    
+class ItemEditView(TemplateView):
+    template_name = 'Edit/Item/itemedit.html'
+    
+    def get(self, request, *args, **kwargs):
+        item_id = self.kwargs.get('item_id')
+        item = get_object_or_404(Item, pk=item_id)
+        context = self.get_context_data()
+        context['item'] = item
+        return self.render_to_response(context)
+    
+    def post(self, request, *args, **kwargs):
+        item_id = self.request.POST.get('item_id')
+        item = Item.objects.get(pk=item_id)
+        context = super().get_context_data(**kwargs)
+        context['form_count'] = CountForm()
+        context['item'] = item
+        return self.render_to_response(context)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_count'] = CountForm()
+        return context
+    
+class ItemStockEditView(ItemEditView):
+    template_name = 'Edit/Item/itemstockedit.html'
+    # テンプレートだけ異なり，メソッドは同様なのでItemEditViewを継承
+    
+class ItemInventoryControlView(TemplateView):
+    def post(self, request, *args, **kwargs):
+        # urlからitem id，item idからItemオブジェクト，postからクリックされたボタンの種類を取得
+        item_id = self.kwargs.get('item_id')
+        item = Item.objects.get(pk=item_id)
+        action = request.POST.get('action')
+        # クリックされたボタンに対応した在庫操作を行う
+        if action == "alldiscard":
+            self.discard(request, item, item.count)
+        else:
+            # 「在庫追加」または「廃棄」ボタンがクリックされた場合，フォームから個数を取り出し在庫操作
+            count = self.request.POST.get('count')
+            if action == "addstock":
+                self.addstock(item, int(count))
+            elif action == "discard":
+                self.discard(request, item, int(count))
+        return redirect('superuserhome:olditem')
+    
+    def addstock(self, item, count):
+        # フォームで送信された個数分在庫をインクリメント
+        item.count += count
+        # 在庫を追加した（発注完了した）ので状態を「在庫あり」に変更する
+        item.state = 'in stock' 
+        item.save()  
+        
+    def discard(self, request, item, count):
+        # フォームで送信された個数分在庫をデクリメント
+        if item.count <= count:
+            self.decrease_weight(request, item, item.count)
+        # 在庫がマイナスになるのを防ぐ
+            item.count = 0
+        else:
+            self.decrease_weight(request, item, count)
+            item.count -= count
+            item.save()
+        # idを外部キーとしてOrderオブジェクトの取得 見つからない場合は404
+        order = get_object_or_404(Order, pk=item.id)
+        if item.count < order.minimum_amount:
+            # 廃棄によって規定の個数未満であり、発注メールを送信していないOrderオブジェクトを外部キーを通して取得
+            items_below_amount = Order.objects.filter(item = item, item__state = "in stock")
+            if items_below_amount.exists():
+                # 条件に該当するオブジェクトが存在する場合、発注メール送信メソッド呼び出し
+                OrderConfirmedView().send_order_mail(request,items_below_amount)
+            # 状態の上書き
+        if item.count == 0:
+            item.state = 'sold out'
+            item.save()
+            
+    def decrease_weight(self, request, item, count):
+        if item.count != 0:
+            # idを外部キーとしてOrderオブジェクトの取得 見つからない場合は404
+            order = get_object_or_404(Order, pk=item.id)
+            # 個数に対する廃棄個数の割合から，重みを減らす値を決定する
+            decrease = count/item.count
+            order.order_weight -= Decimal(decrease)
+            if order.order_weight <= 0.01:
+                # 重みの最小値は0.01とする
+                order.order_weight = 0.01
+            # 重みの更新
+            order.order_quantity *= order.order_weight
+            # 発注個数は少なくとも一つ
+            if order.order_quantity <= 1:
+                order.order_quantity = 1
+            order.save()
     
