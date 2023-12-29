@@ -5,6 +5,7 @@ Created on 2023/12/12
 '''
 from django.urls import path,include
 from .views import SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView
+
 app_name = 'superuserhome'
 urlpatterns = [
     path('',SuperUserHomeView.as_view()),

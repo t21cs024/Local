@@ -37,3 +37,4 @@ class UserIdForm(forms.Form):
 
 class MonthForm(forms.Form):
     buy_month = forms.IntegerField(label=False, min_value=1, max_value=12)
+
