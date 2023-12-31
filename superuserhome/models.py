@@ -81,8 +81,8 @@ class PurchaseHistory(models.Model):
     Buy month ：1
     Buy amount：1000
     '''
-    # 外部キー(一意)
-    user_id = models.OneToOneField(User, on_delete=models.CASCADE, null = True)
+# 外部キー
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
     # 購入月
     buy_month = models.PositiveIntegerField(default = 1)
     # その月の購入額
