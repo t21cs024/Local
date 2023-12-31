@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,24 +48,20 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587 # gmail
 
-# user.txtから読み込んだ設定を使って変数にセット(user.txtはbd.sqliteと同じフォルダに置き，コミットしないでください)
+# user.txtから読み込んだ設定を使って変数にセット(user.txtはmanage.pyの一つ上のフォルダ(SDPLまたはgit?)に置き，コミットしないでください)
 '''
 ---user.txt---
 your_gmail@gmail（送信元メールアドレスになります）
 your_passward（16文字のアプリパスワード)
-------
+----------------
 アプリパスワードについて参考文献 https://codelab.website/django-send-gmail/
 '''
-with open(BASE_DIR /'user.txt','r') as f:
-    datalist = f.readlines()
 # 送信元メールアドレス
-EMAIL_HOST_USER = datalist[0]
-EMAIL_HOST_PASSWORD = datalist[1]
-EMAIL_USE_TLS = True
+prent_directory = os.path.abspath(os.path.join(BASE_DIR, '..'))
+path = os.path.join(prent_directory, 'user.txt')
+with open(path,'r') as f:
+    datalist = f.readlines()
 
-with open(BASE_DIR /'user.txt','r') as f:
-    datalist = f.readlines()
-# 送信元メールアドレス
 EMAIL_HOST_USER = datalist[0]
 EMAIL_HOST_PASSWORD = datalist[1]
 EMAIL_USE_TLS = True
