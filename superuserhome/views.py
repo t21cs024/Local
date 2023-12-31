@@ -308,7 +308,7 @@ class OrderConfirmedView(TemplateView):
                 )
             
             # 発注メールを送信したitemはOrderにフラグを立てておく（重複メール送信を防ぐため）
-            # 商品が到着し、在庫情報追加する際state = 'in stock'にしてください
+            # 商品が到着し、在庫情報追加する際state = 'in stock'に
             item.state = 'ordered'
             item.save()
             roop_count+=1
@@ -368,8 +368,8 @@ class CompanyDeleteView(DeleteView):
     template_name = 'Edit/company_delete.html'
     success_url = reverse_lazy('superuserhome:companymanage')
     
-class ItemEditView(TemplateView):
-    template_name = 'Edit/Item/itemedit.html'
+class ItemDiscardView(TemplateView):
+    template_name = 'Edit/Item/itemediscard.html'
     
     def get(self, request, *args, **kwargs):
         item_id = self.kwargs.get('item_id')
@@ -391,9 +391,9 @@ class ItemEditView(TemplateView):
         context['form_count'] = CountForm()
         return context
     
-class ItemStockEditView(ItemEditView):
+class ItemStockEditView(ItemDiscardView):
     template_name = 'Edit/Item/itemstockedit.html'
-    # テンプレートだけ異なり，メソッドは同様なのでItemEditViewを継承
+    # テンプレートだけ異なり，メソッドは同様なのでItemDiscardViewを継承
     
 class ItemInventoryControlView(TemplateView):
     def post(self, request, *args, **kwargs):
