@@ -62,6 +62,13 @@ EMAIL_HOST_USER = datalist[0]
 EMAIL_HOST_PASSWORD = datalist[1]
 EMAIL_USE_TLS = True
 
+with open(BASE_DIR /'user.txt','r') as f:
+    datalist = f.readlines()
+# 送信元メールアドレス
+EMAIL_HOST_USER = datalist[0]
+EMAIL_HOST_PASSWORD = datalist[1]
+EMAIL_USE_TLS = True
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

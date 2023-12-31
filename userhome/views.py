@@ -45,10 +45,9 @@ def change_password(request):
         form = PasswordChangeForm(request.user)
     return render(request, 'Order/change_pass.html', {'form': form})
 
-
 class CartContentsView(TemplateView):
     model = Item
     template_name = 'Order/cart_contents.html'
 
-    
+
     

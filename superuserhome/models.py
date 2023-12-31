@@ -21,19 +21,31 @@ class User(models.Model):
     user_pass = models.CharField(max_length = 100, null = True)
     user_mail = models.EmailField(blank = False, null = True)
     user_authority = models.BooleanField(default = False) 
-    
+
     def __str__(self):
         return self.name
-    
     
 class Item(models.Model):
     '''
     データ例
+<<<<<<< HEAD
     Name     ：apple
     Item url ：apple.png
     Count    ：10
     Price    ：100
     State    ：在庫あり    
+=======
+    
+    Name     ：apple
+    Item url ：apple.png
+    Count    ：10
+    Buy date ：2023-12-20
+    Price    ：100
+    Buy      ：False    
+    Order quantity ：5
+    Minimum amount ：5
+    Send email     ：False
+>>>>>>> refs/remotes/choose_remote_name/ログイン機能追加
     '''
     name = models.CharField(max_length=100)
     item_url = models.URLField(blank = True,null = True)
@@ -126,4 +138,5 @@ class Company(models.Model):
 
     def __str__(self):
         return '{}'.format(self.company_name)
+
 

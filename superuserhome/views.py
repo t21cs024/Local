@@ -18,9 +18,12 @@ from django.core.mail import send_mail
 from django.db.models import F, Q
 from datetime import timedelta, date
 from decimal import Decimal
+# test
+from pip._vendor.typing_extensions import Self
+import qrcode
+import os
 
-
-# Create your views here.
+# Create your views here.   
 class SuperUserHomeView(TemplateView):
     model = User
     template_name = 'superuser_home.html'
@@ -127,13 +130,11 @@ class UserInformationView(TemplateView):
 class UserInformationDetailView(TemplateView):
     model = User
     template_name = "Edit/userinformation_detail.html"
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_id'] = UserIdForm()
         context['form_month'] = MonthForm()
         return context
-
     def get(self, request, *args, **kwargs):
         user_id = self.kwargs.get('user_id')
         user = get_object_or_404(User, pk=user_id)
@@ -213,9 +214,8 @@ class OldItemView(TemplateView):
         object_list = Item.objects.all()
         return render(request, self.template_name, {'object_list':object_list})
     
-
 class OrderConfirmedView(TemplateView):
-    template_name = "Order/buy_item.html"
+    template_name = "Order/buy_item.html"  
     
     def get(self, request):
         """
@@ -346,6 +346,27 @@ class OrderConfirmedView(TemplateView):
             ]
         send_mail(subject, message, from_email, recipient_list)
         
+class QrCodeView(TemplateView):
+    model = Item
+    template_name = "Edit/Item/qrcode/qrcode.html"
+    
+    def get(self, request, *args, **kwargs):
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(str('item_id'))
+        qr.make(fit=True)
+
+        # 生成したQRコードをHttpResponseに設定
+        img = qr.make_image(fill_color="black", back_color="white")
+        response = HttpResponse(content_type="image/png")
+        img.save(response, format="PNG")
+            
+        return response
+    
 class CompanyManagementView(ListView):
     model = Company
     template_name = 'Edit/company_management.html'

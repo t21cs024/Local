@@ -24,7 +24,23 @@
           const code = jsQR(imageData.data, imageData.width, imageData.height);
           if (code) {
             console.log('QRコードの内容:', code.data);
-            // ここでQRコードのデータを利用する処理を記述します
+            
+         // Djangoビューに商品情報をリクエスト
+            fetch(`/get_item_info/${code.data}/`)
+                .then(response => response.json())
+                .then(data => {
+                    // 商品情報を表示
+                    productInfoDiv.innerHTML = `
+                        <img src="${data.image_url}" alt="${data.name}" width="100">
+                        <p>${data.name}</p>
+                        <p>${data.price}円</p>
+                        <label for="quantity">個数:</label>
+                        <input type="number" id="quantity" name="quantity" value="1" min="1">
+                        <button onclick="purchase('${code.data}')">購入する</button>
+                        <button onclick="goBack()">戻る</button>
+                    `;
+                })
+                .catch(error => console.error('商品情報の取得エラー:', error));
           }
         }, 100);
       })
@@ -35,9 +51,7 @@
 </body>
 <ul>
 
-<!-- メール送信機能のためにカート機能のurlやhtmlは仮置き -->
   <li><a href="{% url 'userhome:cartcontents' %}">カートに移動する</a></li>
-  
   <li><a href='/userhome'>戻る</a></li>
 </ul>
 </html>
