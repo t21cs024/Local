@@ -109,7 +109,7 @@
       <dl>{{ item.count }}</dl>
       <dl>{{ item.price }}</dl>
       <dl>{% if item.state == 'sold out' %} <font color='red'>売り切れ</font> {% endif %}
-        {% if item.state == 'ordered' %} <font color='blue'> 発注済み</font> {% endif %}
+        {% if item.state == 'ordered' %} <font color='orange'> 発注済み</font> {% endif %}
         {% if item.state == 'in stock' %} 在庫あり {% endif %}</dl>
       <dl><a href="{% url 'superuserhome:stockedit' item_id=item.id %}">[在庫追加]</a></dl>
       <dl><a href="{% url 'superuserhome:discardedit' item_id=item.id %}">[廃棄]</a></dl>

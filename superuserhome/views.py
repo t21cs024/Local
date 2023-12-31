@@ -57,6 +57,15 @@ class NewItemView(CreateView):
     template_name = "Edit/Item/newitem.html"
     success_url = '/superuserhome/orderedit'
     
+    # 新しいItemを追加したとき，それを外部キーにもつOrderも同時に生成
+    def form_valid(self, form):
+        # Itemのインスタンスを作成・保存
+        item = form.save()
+        # Orderのインスタンス作成・保存 その他のフィールドはデフォルト値，またはnullに設定する
+        order = Order(item=item)
+        order.save()
+        return super().form_valid(form)
+    
 class SignUpView(TemplateView):
     model = User
     fields = ('user_id', 'name','user_menu', 'user_pass', 'user_mail','user_authority')
@@ -252,6 +261,9 @@ class OrderConfirmedView(TemplateView):
             if order.order_weight >= 2.00:
                 # 重みの最大値は2.00とする
                 order.order_weight = 2.00
+                # 重みの更新を行った結果1.00以下ならば1.20に補正（発注個数が増えるように補正）
+            elif order.order_weight <= 1.00:
+                order.order_weight = 1.20
                 # 前回の売り切れ日を今日にする
             order.last_sold_out_date = date.today()
             # 重みの更新
@@ -404,8 +416,11 @@ class ItemInventoryControlView(TemplateView):
     def addstock(self, item, count):
         # フォームで送信された個数分在庫をインクリメント
         item.count += count
-        # 在庫を追加した（発注完了した）ので状態を「在庫あり」に変更する
-        item.state = 'in stock' 
+        # idを外部キーとしてOrderオブジェクトの取得 見つからない場合は404
+        order = get_object_or_404(Order, pk=item.id)
+        # 在庫数が発注メールが送信される個数以上になった場合に状態を「在庫あり」に
+        if order.minimum_amount <= item.count:
+            item.state = 'in stock' 
         item.save()  
         
     def discard(self, request, item, count):
@@ -432,19 +447,31 @@ class ItemInventoryControlView(TemplateView):
             item.save()
             
     def decrease_weight(self, request, item, count):
+        # 在庫数が0の商品を破棄しても重みの更新は行わない
         if item.count != 0:
             # idを外部キーとしてOrderオブジェクトの取得 見つからない場合は404
             order = get_object_or_404(Order, pk=item.id)
-            # 個数に対する廃棄個数の割合から，重みを減らす値を決定する
-            decrease = count/item.count
-            order.order_weight -= Decimal(decrease)
-            if order.order_weight <= 0.01:
+            # 廃棄個数から，重みを減らす値を決定する
+            decrease = Decimal(count/100)
+            before_order_quantity = order.order_quantity
+            order.order_weight -= decrease
+            if order.order_weight >= 1.00:
+                # 廃棄されたら発注個数が減るように補正
+                order.order_weight = 0.85
+            elif order.order_weight <= 0.01:
                 # 重みの最小値は0.01とする
                 order.order_weight = 0.01
-            # 重みの更新
+            # 発注個数の更新
             order.order_quantity *= order.order_weight
-            # 発注個数は少なくとも一つ
-            if order.order_quantity <= 1:
-                order.order_quantity = 1
+            # 発注最低個数の更新(発注個数最低個数（発注個数より減少は緩やかにする）
+            order.minimum_amount -= order.order_weight * 10
+            if order.minimum_amount <= 10:
+                order.minimum_amount = 10
+            # 重み減少が少なく，発注個数が変化していなければ補正
+            if before_order_quantity <= order.order_quantity:
+                order.order_quantity -= 1
+            # 発注メールが送信される個数未満に発注個数をしない
+            if order.order_quantity <= order.minimum_amount:
+                order.order_quantity = order.minimum_amount
             order.save()
     

@@ -10,7 +10,7 @@
 <dt>個数</dt><dd>{{ item.count }}</dd>
 <dt>単価</dt><dd>{{ item.price }}</dd>
 <dt>状態</dt><dd>{% if item.state == 'sold out' %} <span style="color: red;">売り切れ</span> {% endif %}
-        {% if item.state == 'ordered' %} <span style="color: blue;">発注済み</span> {% endif %}
+        {% if item.state == 'ordered' %} <span style="color: orange;">発注済み</span> {% endif %}
         {% if item.state == 'in stock' %}在庫あり{% endif %}</dd>
 </dl>
 {% endif %}
