@@ -293,6 +293,29 @@ class OrderConfirmedView(TemplateView):
             ]
         send_mail(subject, message, from_email, recipient_list)    
     
+class CompanyManagementView(ListView):
+    model = Company
+    template_name = 'Edit/company_management.html'
+    success_url = 'superuserhome/'
+
+class CompanyAddView(CreateView):
+    model = Company
+    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
+    template_name = 'Edit/company_add.html'
+    success_url = reverse_lazy('superuserhome:companymanage')
+
+class CompanyEditView(UpdateView):
+    model = Company
+    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
+    template_name = 'Edit/company_edit.html'
+    success_url = reverse_lazy('superuserhome:companymanage')
+
+class CompanyDeleteView(DeleteView):
+    model = Company
+    template_name = 'Edit/company_delete.html'
+    success_url = reverse_lazy('superuserhome:companymanage')    
+
+
 class QrCodeView(TemplateView):
     model = Item
     template_name = "Edit/Item/qrcode/qrcode.html"

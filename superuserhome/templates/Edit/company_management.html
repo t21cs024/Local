@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %} 企業管理画面 {% endblock %}
+
+{% block main %}
+
+<table class="table">
+  <thead class="table-dark">
+    <tr>
+      <th>ID</th>
+      <th>企業名</th>
+      <th>住所</th>
+      <th>企業メールアドレス</th>
+      <th>企業電話番号</th>
+      <th>担当者名</th>
+      <th>担当者電話番号</th>
+      <th>担当者メールアドレス</th>
+      <th>編集</th>
+      <th>削除</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for company in object_list %}
+    <tr>
+      <td scope="row">{{ company.company_id }}</td>
+      <td>{{ company.company_name }}</td>
+      <td>{{ company.company_address }}</td>
+      <td>{{ company.company_mail }}</td>
+      <td>{{ company.company_phone_number }}</td>
+      <td>{{ company.manager_name }}</td>
+      <td>{{ company.manager_phone_number }}</td>
+      <td>{{ company.manager_mail }}</td>
+      <td><a href="{% url 'superuserhome:companyedit' pk=company.company_id %}">[編集]</a></td>
+      <td><a href="{% url 'superuserhome:companydelete' pk=company.company_id %}">[削除]</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<ul>
+<li><a href="{% url 'superuserhome:companyadd' %}">企業追加</a></li>
+<li><a href="/superuserhome">戻る</a></li>
+</ul>
+
+
+
+{% endblock %}
