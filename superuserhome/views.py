@@ -21,6 +21,7 @@ from datetime import datetime, timedelta
 from pip._vendor.typing_extensions import Self
 import qrcode
 import os
+from .forms import ImageUploadForm
 
 # Create your views here.   
 class SuperUserHomeView(TemplateView):
@@ -315,6 +316,11 @@ class CompanyDeleteView(DeleteView):
     template_name = 'Edit/company_delete.html'
     success_url = reverse_lazy('superuserhome:companymanage')    
 
+
+class ImageUploadView(CreateView):
+    template_name = "Edit/Item/image-upload.html"
+    form_class = ImageUploadForm
+    success_url = "/superuserhome/orderedit"
 
 class QrCodeView(TemplateView):
     model = Item

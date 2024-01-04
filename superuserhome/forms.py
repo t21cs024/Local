@@ -4,7 +4,7 @@ Created on 2023/12/15
 @author: t21cs011
 '''
 from django import forms
-from .models import User,Item
+from .models import User,Item,ImageUpload
 
 class ItemBuy(forms.Form):
     status = (
@@ -37,3 +37,8 @@ class UserIdForm(forms.Form):
 
 class MonthForm(forms.Form):
     buy_month = forms.IntegerField(label=False, min_value=1, max_value=12)
+    
+class ImageUploadForm(forms.ModelForm):
+    class Meta:
+        model = ImageUpload
+        fields = "__all__"

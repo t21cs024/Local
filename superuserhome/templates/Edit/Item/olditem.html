@@ -38,58 +38,10 @@
         th {
             background-color: #f2f2f2;
         }
-
-        @media only screen and (max-width: 600px) {
-            /* スクリーンの幅が600px以下の場合のスタイル */
-            table, thead, tbody, th, td, tr {
+        table, thead, tbody, th, td, tr {
                 display: block;
             }
 
-            /* ヘッダー行の非表示 */
-            thead tr {
-                display: none;
-            }
-
-            /* 行ごとの余白とボーダーの調整 */
-            td {
-                border: none;
-                position: relative;
-                padding-left: 50%;
-            }
-
-            td:before {
-                position: absolute;
-                top: 6px;
-                left: 6px;
-                width: 45%;
-                padding-right: 10px;
-                white-space: nowrap;
-            }
-
-            /* 各セルの内容を表示 */
-            td:nth-of-type(1):before {
-                content: "ID";
-            }
-
-            td:nth-of-type(2):before {
-                content: "Name";
-            }
-
-            td:nth-of-type(3):before {
-                content: "Count";
-            }
-
-			 td:nth-of-type(4):before {
-                content: "Price";
-            }
-            td:nth-of-type(5):before {
-                content: "Buy Date";
-            }
-
-            td:nth-of-type(6):before {
-                content: "Status";
-            }
-        }
     </style>
 </head>
 <body>
@@ -104,7 +56,7 @@
 	<body>
 	{% for item in object_list %}
     <td>
-    　<dl><img src="../../../static/images/ringo.png" alt="Image 3"></dl>
+    　<dl><img src="../../../../media/img/{{ item.id }}.png" alt="Image {{ item.id }}"></dl>
       <dl scope="row">{{ item.id }}</dl>
       <dl>{{ item.name }}</dl>
       <dl>{{ item.count }}</dl>
