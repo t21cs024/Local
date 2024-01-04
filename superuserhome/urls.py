@@ -4,7 +4,7 @@ Created on 2023/12/12
 @author: t21cs011
 '''
 from django.urls import path,include
-from .views import SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView
+from .views import SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView
 app_name = 'superuserhome'
 urlpatterns = [
     path('',SuperUserHomeView.as_view()),
@@ -18,4 +18,8 @@ urlpatterns = [
     path('deductionoutput/<int:user_id>/<int:buy_month>/',DeductionOutputView.as_view(), name='redeductionoutput'),
     path('orderedit/newitem/', NewItemView.as_view(), name='newitem'),
     path('orderedit/olditem/', OldItemView.as_view(), name='olditem'),
+    path('companymanage/', CompanyManagementView.as_view(), name='companymanage'),
+    path('companymanage/companyadd/', CompanyAddView.as_view(), name='companyadd'),
+    path('companymanage/companyedit/<int:pk>/', CompanyEditView.as_view(), name='companyedit'),
+    path('companymanage/companydelete/<int:pk>/', CompanyDeleteView.as_view(), name='companydelete'),
     ]
