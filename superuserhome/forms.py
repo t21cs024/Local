@@ -42,3 +42,4 @@ class ImageUploadForm(forms.ModelForm):
     class Meta:
         model = ImageUpload
         fields = "__all__"
+
