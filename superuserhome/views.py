@@ -22,6 +22,7 @@ from decimal import Decimal
 from pip._vendor.typing_extensions import Self
 import qrcode
 import os
+from .forms import ImageUploadForm
 
 # Create your views here.   
 class SuperUserHomeView(TemplateView):
@@ -344,8 +345,37 @@ class OrderConfirmedView(TemplateView):
         recipient_list = [
             supplier_company.company_mail
             ]
-        send_mail(subject, message, from_email, recipient_list)
-        
+        send_mail(subject, message, from_email, recipient_list)    
+    
+class CompanyManagementView(ListView):
+    model = Company
+    template_name = 'Edit/company_management.html'
+    success_url = 'superuserhome/'
+
+class CompanyAddView(CreateView):
+    model = Company
+    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
+    template_name = 'Edit/company_add.html'
+    success_url = reverse_lazy('superuserhome:companymanage')
+
+class CompanyEditView(UpdateView):
+    model = Company
+    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
+    template_name = 'Edit/company_edit.html'
+    success_url = reverse_lazy('superuserhome:companymanage')
+
+class CompanyDeleteView(DeleteView):
+    model = Company
+    template_name = 'Edit/company_delete.html'
+    success_url = reverse_lazy('superuserhome:companymanage')    
+
+
+class ImageUploadView(CreateView):
+    template_name = "Edit/Item/image-upload.html"
+    form_class = ImageUploadForm
+    success_url = "/superuserhome/orderedit"
+
+
 class QrCodeView(TemplateView):
     model = Item
     template_name = "Edit/Item/qrcode/qrcode.html"
@@ -366,28 +396,6 @@ class QrCodeView(TemplateView):
         img.save(response, format="PNG")
             
         return response
-    
-class CompanyManagementView(ListView):
-    model = Company
-    template_name = 'Edit/company_management.html'
-    success_url = 'superuserhome/'
-        
-class CompanyAddView(CreateView):
-    model = Company
-    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
-    template_name = 'Edit/company_add.html'
-    success_url = reverse_lazy('superuserhome:companymanage')
-
-class CompanyEditView(UpdateView):
-    model = Company
-    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
-    template_name = 'Edit/company_edit.html'
-    success_url = reverse_lazy('superuserhome:companymanage')
-    
-class CompanyDeleteView(DeleteView):
-    model = Company
-    template_name = 'Edit/company_delete.html'
-    success_url = reverse_lazy('superuserhome:companymanage')
     
 class ItemDiscardView(TemplateView):
     template_name = 'Edit/Item/itemediscard.html'

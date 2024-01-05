@@ -4,7 +4,7 @@ Created on 2023/12/15
 @author: t21cs011
 '''
 from django import forms
-from .models import User,Item
+from .models import User,Item,ImageUpload
 
 class ItemBuy(forms.Form):
     status = (
@@ -40,4 +40,9 @@ class MonthForm(forms.Form):
     
 class CountForm(forms.Form):
     count = forms.IntegerField(label='個数', min_value=1)
+
+class ImageUploadForm(forms.ModelForm):
+    class Meta:
+        model = ImageUpload
+        fields = "__all__"
 

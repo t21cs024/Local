@@ -3,6 +3,12 @@ from django.template.defaultfilters import default
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 # Create your models here.
+
+def savePath(instance, filename):
+    ext = filename.split('.')[-1]
+    new_name = instance.title
+    return f'img/{new_name}.{ext}'
+
 class User(models.Model):
     '''
     データ例
@@ -91,6 +97,13 @@ class PurchaseHistory(models.Model):
     def __str__(self):
         return '{} : {}月'.format(self.user_id,self.buy_month)
     
+class ImageUpload(models.Model):
+    title = models.CharField(max_length=100)
+    img = models.ImageField(upload_to=savePath)#こちらの通り
+
+    def __str__(self):
+        return self.title
+
 # 企業
 class Company(models.Model):
     '''

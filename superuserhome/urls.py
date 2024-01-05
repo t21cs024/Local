@@ -5,6 +5,8 @@ Created on 2023/12/12
 '''
 from django.urls import path,include
 from .views import SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView
+from .views import ImageUploadView
+from . import views
 
 app_name = 'superuserhome'
 urlpatterns = [
@@ -27,4 +29,5 @@ urlpatterns = [
     path('companymanage/companyadd/', CompanyAddView.as_view(), name='companyadd'),
     path('companymanage/companyedit/<int:pk>/', CompanyEditView.as_view(), name='companyedit'),
     path('companymanage/companydelete/<int:pk>/', CompanyDeleteView.as_view(), name='companydelete'),
+    path("orderedit/image_upload/", ImageUploadView.as_view(), name="image-upload"),
     ]
