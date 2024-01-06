@@ -3,11 +3,29 @@
 {% block title %} 総務部担当者メニュー画面 {% endblock %}
 
 {% block main %}
+
 <ul>
+<center>
+<div class="btn">
 <li><a href="{% url 'superuserhome:useredit' %}">社員管理</a></li>
 <li><a href="{% url 'superuserhome:orderedit' %}">食品購入管理</a></li>
 <li><a href="{% url 'superuserhome:companymanage' %}">企業管理</a></li>
+</div>
+</center>
 </ul>
 
+<a href="/login">
+  <button type="button" class="btn btn-secondary">ログアウト</button>
+</a>
+
+
+<!--  
+<div class = "btn">
+<li><a href="{% url 'superuserhome:orderedit' %}">食品購入管理</a></li>
+<li><a href="{% url 'superuserhome:companymanage' %}">企業管理</a></li>
+</div>
+</center>
+</ul>
+-->
 
 {% endblock %}

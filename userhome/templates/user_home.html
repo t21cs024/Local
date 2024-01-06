@@ -3,12 +3,15 @@
 {% block title %} 社員メニュー画面 {% endblock %}
 
 {% block main %}
-<ul>
 
+<ul>
+<center>
+<div class="btn">
 <li><a href="{% url 'userhome:buyitem' %}">食品購入</a></li>
 <li><a href="{% url 'userhome:buyhistory' %}">食品購入履歴</a></li>
 <li><a href="{% url 'userhome:changepass' %}">パスワード変更</a></li>
+</div>
+</center>
 </ul>
-
 
 {% endblock %}

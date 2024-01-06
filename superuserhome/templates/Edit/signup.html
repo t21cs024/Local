@@ -1,7 +1,8 @@
+{% extends "base.html" %}
+{%load static%}
 {% block title %} 社員管理画面 {% endblock %}
-{% load static %}
 
-{% block content %}
+{% block main %}
     <title>新規社員登録</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +30,8 @@
         <input type="radio" name="authority" value="社員">社員
 
         <div>
-				<a href="{% url 'superuserhome:useredit' %}">戻る</a>
+				<a href="{% url 'superuserhome:useredit' %}">
+  				<button type="button" class="btn btn-outline-secondary"">戻る</button></a>
 				<button type="submit">登録</button>
         </div>
 </form>

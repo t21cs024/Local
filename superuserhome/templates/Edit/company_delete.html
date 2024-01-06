@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %} Delete {% endblock %}
+{% block title %} 企業削除 {% endblock %}
 
 {% block main %}
 <form action="{% url 'superuserhome:companydelete' pk=company.company_id %}" method="post">
@@ -39,5 +39,4 @@
 
 <li><a href="/superuserhome">戻る</a></li>
 
->>>>>>> refs/remotes/choose_remote_name/ログイン機能追加
 {% endblock %}

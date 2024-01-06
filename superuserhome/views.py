@@ -371,7 +371,7 @@ class CompanyDeleteView(DeleteView):
 
 
 class ImageUploadView(CreateView):
-    template_name = "Edit/Item/image-upload.html"
+    template_name = "Edit/Item/image_upload.html"
     form_class = ImageUploadForm
     success_url = "/superuserhome/orderedit"
 
