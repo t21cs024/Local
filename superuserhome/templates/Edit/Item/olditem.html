@@ -64,8 +64,14 @@
       <dl>{% if item.state == 'sold out' %} <font color='red'>売り切れ</font> {% endif %}
         {% if item.state == 'ordered' %} <font color='orange'> 発注済み</font> {% endif %}
         {% if item.state == 'in stock' %} 在庫あり {% endif %}</dl>
+      <dl><a href="{% url 'superuserhome:qrcode' item_id=item.id %}">[QRコードを表示]</a></dl>
       <dl><a href="{% url 'superuserhome:stockedit' item_id=item.id %}">[在庫追加]</a></dl>
-      <dl><a href="{% url 'superuserhome:discardedit' item_id=item.id %}">[廃棄]</a></dl>      
+      <dl><a href="{% url 'superuserhome:discardedit' item_id=item.id %}">[廃棄]</a></dl> 
+      <dl><a href="{% url 'superuserhome:imagedelete' image_title=item.id %}">[画像削除]</a></dl>
+
+
+        <dl><a href="{% url 'superuserhome:itemedit' pk=item.id %}">[編集]</a></dl>
+        <dl><a href="{% url 'superuserhome:itemdelete' pk=item.id %}">[削除]</a></dl>     
     </td>
   {% endfor %}
 	</body>

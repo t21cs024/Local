@@ -4,7 +4,7 @@ Created on 2023/12/12
 @author: t21cs011
 '''
 from django.urls import path,include
-from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView
+from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView,ItemEditView,ItemDeleteView
 from . import views
 
 app_name = 'superuserhome'
@@ -25,6 +25,9 @@ urlpatterns = [
     path('orderedit/olditem/stockedit/<int:item_id>/', ItemStockEditView.as_view(), name='stockedit'),
     path('orderedit/olditem/itemdiscard/<int:item_id>/', ItemInventoryControlView.as_view(), name='itemaddstock'),
     path('orderedit/olditem/itemaddstock/<int:item_id>/', ItemInventoryControlView.as_view(), name='itemdiscard'),
+    path('orderedit/olditem/itemedit/<int:pk>/', ItemEditView.as_view(), name='itemedit'),
+    path('orderedit/olditem/itemdelete/<int:pk>/', ItemDeleteView.as_view(), name='itemdelete'),
+    path('orderedit/olditem/imagedelete/<int:image_title>/', views.delete_image, name='imagedelete'),
     path('companymanage/', CompanyManagementView.as_view(), name='companymanage'),
     path('companymanage/companyadd/', CompanyAddView.as_view(), name='companyadd'),
     path('companymanage/companyedit/<int:pk>/', CompanyEditView.as_view(), name='companyedit'),
