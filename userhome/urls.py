@@ -15,7 +15,7 @@ urlpatterns = [
     path('buyitem/',BuyItemView.as_view(), name='buyitem'),
     path('buyhistory/',BuyHistoryView.as_view(),name='buyhistory'),
     path('changepass/',change_password, name='changepass'),
-    path('cartcontents/',CartContentsView.as_view(), name='cartcontents'),
+    path('buyitem/cartcontents/',CartContentsView.as_view(), name='cartcontents'),
     path('sendordermail/',OrderConfirmedView.as_view(), name='sendordermail'),
        ]
 

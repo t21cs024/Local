@@ -6,6 +6,18 @@
 
 {% block main %}
 
+{% if cart_is_empty %}
+    <p>カートは空です。</p>
+{% else %}
+
+  {% for cart_item in cart_items %}
+  	<p>{{ cart_item.product.name }} - Quantity: {{ cart_item.quantity }} - Price: ${{ cart_item.product.price }}</p>
+  {% endfor %}
+  
+  <p>Total Price: ${{ total_price }}</p>
+  
+{% endif %}
+
 <ul>
   <li><a href="{% url 'userhome:sendordermail' %}">注文確定</a></li>
   <li><a href='/userhome/buyitem'>戻る</a></li>

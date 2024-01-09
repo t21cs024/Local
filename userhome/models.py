@@ -19,3 +19,12 @@ class Item(models.Model):
     
     def __str__(self):
         return '{}({})'.format(self.name,self.buy_date)
+    
+class Cart(models.Model):
+    user = models.OneToOneField('User', on_delete=models.CASCADE,null=True)
+    items = models.ManyToManyField('Item', through='CartItem',null=True)
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
