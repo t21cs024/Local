@@ -45,3 +45,4 @@ class ImageUploadForm(forms.ModelForm):
 
 class CountForm(forms.Form):
     count = forms.IntegerField(label='個数', min_value=1)
+
