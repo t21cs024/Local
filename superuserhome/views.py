@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls.base import reverse_lazy
-from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm,CountForm
+from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm,CountForm,ImageUploadForm
 #CSV関連
 import csv
 # test
@@ -22,9 +22,19 @@ from decimal import Decimal
 from pip._vendor.typing_extensions import Self
 import qrcode
 import os
-from .forms import ImageUploadForm
 
-# Create your views here.   
+# Create your views here.  
+
+def delete_image(request, image_title):
+    # プライマリーキーを使ってオブジェクトを取得
+    image_upload_instance = get_object_or_404(ImageUploadForm, pk=image_title)
+
+    # オブジェクトを削除
+    image_upload_instance.img.delete()  # 画像ファイルを削除
+    image_upload_instance.delete()      # データベースからオブジェクトを削除
+
+    return HttpResponse("Image deleted successfully.")
+
 class SuperUserHomeView(TemplateView):
     model = User
     template_name = 'superuser_home.html'
@@ -482,6 +492,17 @@ class ImageUploadView(CreateView):
     template_name = "Edit/Item/image-upload.html"
     form_class = ImageUploadForm
     success_url = "/superuserhome/orderedit"
+
+class ItemEditView(UpdateView):
+    model = Item
+    fields = ('name','item_url','count' ,'buy_date','price','buy','order_quantity','minimum_amount','send_email')
+    template_name = "Edit/Item/olditem_edit.html"
+    success_url = reverse_lazy('superuserhome:olditem')
+
+class ItemDeleteView(DeleteView):
+    model = Item
+    template_name = "Edit/Item/olditem_delete.html"
+    success_url = reverse_lazy('superuserhome:olditem')
 
 class QrCodeView(TemplateView):
     model = Item

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %} Delete {% endblock %}
+
+{% block main %}
+<form action="{% url 'superuserhome:itemdelete' pk=item.id %}" method="post">
+{% csrf_token %}
+{{ form }}
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th>#</th>
+      <th>名前</th>
+      <th>item_url</th>
+      <th>個数</th>
+      <th>期日</th>
+      <th>値段</th>
+      <th>済み?</th>
+      <th>order_quantity</th>
+      <th>minimum_amount</th>
+      <th>minimum_amount</th>
+    </tr>
+  </thead>
+  <tbody>
+<tr>
+      <td scope="row">{{ item.id }}</td>
+      <td>{{ item.name }}</td>
+      <td>{{ item.item_url }}</td>
+      <td>{{ item.count }}</td>
+      <td>{{ item.buy_date }}</td>
+      <td>{{ item.price }}</td>
+      <td>{% if item.buy == False %} <font color='red'>Not yet</font> {% endif %}
+          {% if item.buy == True %} Yet {% endif %}</td>
+       <td>{{ item.order_quantity }}</td>
+       <td>{{ item.minimum_amount }}</td>
+       <td>{{ item.send_email }}</td>
+      </tr>
+  </tbody>
+</table>
+<br>
+削除しますか？
+<input type="submit" value="削除する"/>
+</form>
+{% endblock %}

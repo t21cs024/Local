@@ -98,7 +98,7 @@ class PurchaseHistory(models.Model):
         return '{} : {}月'.format(self.user_id,self.buy_month)
     
 class ImageUpload(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, primary_key=True)
     img = models.ImageField(upload_to=savePath)#こちらの通り
 
     def __str__(self):
