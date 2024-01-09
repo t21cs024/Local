@@ -21,8 +21,8 @@ class ItemIdForm(forms.Form):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ['name', 'item_url', 'count', 'price','buy_date']
-
+        fields = ['name', 'item_url', 'count', 'price','state']
+        
 class SignUpForm(forms.Form):
     id = forms.CharField(label='ID', required=True)
     full_name = forms.CharField(label='氏名', required=True)
@@ -42,4 +42,7 @@ class ImageUploadForm(forms.ModelForm):
     class Meta:
         model = ImageUpload
         fields = "__all__"
+
+class CountForm(forms.Form):
+    count = forms.IntegerField(label='個数', min_value=1)
 

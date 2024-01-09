@@ -24,29 +24,42 @@
           const code = jsQR(imageData.data, imageData.width, imageData.height);
           if (code) {
             console.log('QRコードの内容:', code.data);
-            
-         // Djangoビューに商品情報をリクエスト
-            fetch(`/get_item_info/${code.data}/`)
-                .then(response => response.json())
-                .then(data => {
-                    // 商品情報を表示
-                    productInfoDiv.innerHTML = `
-                        <img src="${data.image_url}" alt="${data.name}" width="100">
-                        <p>${data.name}</p>
-                        <p>${data.price}円</p>
-                        <label for="quantity">個数:</label>
-                        <input type="number" id="quantity" name="quantity" value="1" min="1">
-                        <button onclick="purchase('${code.data}')">購入する</button>
-                        <button onclick="goBack()">戻る</button>
-                    `;
-                })
-                .catch(error => console.error('商品情報の取得エラー:', error));
+         	// ここでQRコードのデータを利用する処理を記述します
+            addToCart(code.data); // カートに追加する処理を呼び出し
+            showMessage(`読み取りました: ${code.data}`);
           }
         }, 100);
       })
       .catch((err) => {
         console.error('カメラのアクセスを許可してください:', err);
       });
+    
+    function addToCart(item_id) {
+        fetch(`/userhome/add_to_cart/${item_id}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'), // CSRFトークンを取得してヘッダーに含める
+            },
+            body: JSON.stringify({ quantity: 1 }), // 商品の数量などを必要に応じて送信
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('カートに商品が追加されました:', data);
+            })
+            .catch(error => {
+                console.error('エラーが発生しました:', error);
+            });
+    }
+
+    function getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+    function showMessage(text) {
+        messageDiv.innerText = text;
+    }
   </script>
 </body>
 <ul>

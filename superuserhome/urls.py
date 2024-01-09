@@ -4,7 +4,7 @@ Created on 2023/12/12
 @author: t21cs011
 '''
 from django.urls import path,include
-from .views import ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView
+from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView
 from . import views
 
 
@@ -21,6 +21,11 @@ urlpatterns = [
     path('deductionoutput/<int:user_id>/<int:buy_month>/',DeductionOutputView.as_view(), name='redeductionoutput'),
     path('orderedit/newitem/', NewItemView.as_view(), name='newitem'),
     path('orderedit/olditem/', OldItemView.as_view(), name='olditem'),
+    path('orderedit/olditem/<int:item_id>/',QrCodeView.as_view(),name='qrcode'),
+    path('orderedit/olditem/discardedit/<int:item_id>/', ItemDiscardView.as_view(), name='discardedit'),
+    path('orderedit/olditem/stockedit/<int:item_id>/', ItemStockEditView.as_view(), name='stockedit'),
+    path('orderedit/olditem/itemdiscard/<int:item_id>/', ItemInventoryControlView.as_view(), name='itemaddstock'),
+    path('orderedit/olditem/itemaddstock/<int:item_id>/', ItemInventoryControlView.as_view(), name='itemdiscard'),
     path('companymanage/', CompanyManagementView.as_view(), name='companymanage'),
     path('companymanage/companyadd/', CompanyAddView.as_view(), name='companyadd'),
     path('companymanage/companyedit/<int:pk>/', CompanyEditView.as_view(), name='companyedit'),

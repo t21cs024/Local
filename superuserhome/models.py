@@ -1,6 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import default
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 # Create your models here.
 
 def savePath(instance, filename):
@@ -40,34 +40,50 @@ class Item(models.Model):
     Count    ：10
     Buy date ：2023-12-20
     Price    ：100
-    Buy      ：False    
-    Order quantity ：5
-    Minimum amount ：5
-    Send email     ：False
+    State ：在庫あり
     '''
     name = models.CharField(max_length=100)
     item_url = models.URLField(blank = True,null = True)
     count = models.PositiveIntegerField(default = 0)
-    buy_date = models.DateField(blank = True,null = True)
-    #shop = models.ForeignKey(Shop,blank = True,null = True,verbose_name = 'shop',on_delete = models.PROTECT)
-    price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    buy = models.BooleanField(default = False)
-
-    # 以下は発注メール送信機能のため追加したフィールド
-    # 発注個数（重み付けで変更されることを想定）
-    order_quantity = models.PositiveIntegerField(default = 5)
-    # 最低個数：在庫がこれ以下になった商品を発注する（重み付けで変更されることを想定）
-    minimum_amount = models.PositiveIntegerField(default = 5)
-    # 発注メールを送信したかを管理するフラグ（商品が届き,在庫情報を変更する際Falseに戻されることを想定）
-    send_email = models.BooleanField(default = False)
+    price = models.PositiveIntegerField(default = 100)
+    # 商品の状態を管理する（商品が届き,在庫情報を変更する際"在庫あり"にされることを想定）
+    STATE_CHOICES = [
+        ('in stock', '在庫あり'),
+        ('sold out', '売り切れ'),
+        ('ordered', '発注済み'),
+    ]
+    state = models.CharField(max_length=10, choices=STATE_CHOICES, default='in stock')
 
     def __str__(self):
-        return '{}({})'.format(self.name,self.buy_date)
+        return '{}({})'.format(self.name, self.get_state_display())
+
+# 発注DB   
+class Order(models.Model):
+    '''
+    データ例
+    Item           ：apple(登録されているItem)
+    Order weight   ：1.00
+    Order quantity ：50
+    Minimum amount ：10
+    '''
+    # 外部キー(一意)
+    item = models.OneToOneField(Item, on_delete=models.CASCADE, null = True)
+    # 発注重み(三桁未満の小数 重みの最小値は0.01であり，0未満にならない)
+    order_weight = models.DecimalField(max_digits = 3, decimal_places = 2, validators = [MinValueValidator(0.01) ,MaxValueValidator(2.00)], default = 1)
+    # 発注個数（重み付けで変更されることを想定）
+    order_quantity = models.PositiveIntegerField(default = 50)
+    # 最低個数：在庫がこれ以下になった商品を発注する
+    minimum_amount = models.PositiveIntegerField(default = 10)
+    # 前回の売り切れ日（商品登録する際はnullを想定）
+    last_sold_out_date = models.DateField(blank = True, null = True)
+
+    def __str__(self):
+        return '{} [発注重み:{}] '.format(self.item, self.order_weight)
 
 class PurchaseHistory(models.Model):
     '''
     データ例
-    User id   ：1
+    User id ：a(登録されているUser)
     Buy month ：1
     Buy amount：1000
     '''
