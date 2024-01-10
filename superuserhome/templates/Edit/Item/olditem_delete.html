@@ -7,18 +7,14 @@
 {% csrf_token %}
 {{ form }}
 <table class="table">
-  <thead class="thead-dark">
+  <thead class="table-secondary">
     <tr>
-      <th>#</th>
-      <th>名前</th>
-      <th>item_url</th>
-      <th>個数</th>
-      <th>期日</th>
-      <th>値段</th>
-      <th>済み?</th>
-      <th>order_quantity</th>
-      <th>minimum_amount</th>
-      <th>minimum_amount</th>
+      <th>ID</th>
+      <th>商品名</th>
+      <th>画像URL</th>
+      <th>在庫数</th>
+      <th>単価</th>
+      <th>状態</th>
     </tr>
   </thead>
   <tbody>
@@ -27,18 +23,22 @@
       <td>{{ item.name }}</td>
       <td>{{ item.item_url }}</td>
       <td>{{ item.count }}</td>
-      <td>{{ item.buy_date }}</td>
       <td>{{ item.price }}</td>
-      <td>{% if item.buy == False %} <font color='red'>Not yet</font> {% endif %}
-          {% if item.buy == True %} Yet {% endif %}</td>
-       <td>{{ item.order_quantity }}</td>
-       <td>{{ item.minimum_amount }}</td>
-       <td>{{ item.send_email }}</td>
+      <td>{% if item.state == 'sold out' %} <span style="color: red;">売り切れ</span> {% endif %}
+        {% if item.state == 'ordered' %} <span style="color: orange;">発注済み</span> {% endif %}
+        {% if item.state == 'in stock' %}在庫あり{% endif %}</td>
       </tr>
   </tbody>
 </table>
-<br>
-削除しますか？
-<input type="submit" value="削除する"/>
+<br><br>
+<div class="message-box">
+<span class="mgr">上記の商品を削除しますか？</span>
+<div class="btn-side">
+<a href="{% url 'superuserhome:olditem' %}">
+<input class="edit-btn" type="button" value="キャンセル">
+</a>
+<input class="delete-btn" type="submit" value="削除する">
+</div>
+</div>
 </form>
 {% endblock %}

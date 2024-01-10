@@ -80,7 +80,7 @@ class NewItemView(CreateView):
         order.save()
         return super().form_valid(form)
     
-        #ラベルを日本語に
+    #ラベルを日本語に
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields['name'].label = '商品名' 
@@ -376,7 +376,7 @@ class CompanyAddView(CreateView):
     template_name = 'Edit/company_add.html'
     success_url = reverse_lazy('superuserhome:companymanage')
     
-            #ラベルを日本語に
+    #ラベルを日本語に
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields['company_name'].label = '企業名'
@@ -524,9 +524,20 @@ class ImageUploadView(CreateView):
 
 class ItemEditView(UpdateView):
     model = Item
-    fields = ('name','item_url','count' ,'buy_date','price','buy','order_quantity','minimum_amount','send_email')
+    fields = ('name','item_url','count' ,'price','state')
     template_name = "Edit/Item/olditem_edit.html"
     success_url = reverse_lazy('superuserhome:olditem')
+
+    #ラベルを日本語に
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['name'].label = '商品名' 
+        form.fields['item_url'].label = '画像URL'
+        form.fields['count'].label = '在庫数'
+        form.fields['price'].label = '単価'
+        form.fields['state'].label = '状態'
+        return form
+
 
 class ItemDeleteView(DeleteView):
     model = Item

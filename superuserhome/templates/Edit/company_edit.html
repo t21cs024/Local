@@ -4,6 +4,7 @@
 
 {% block main %}
 
+<br>
 <div class="contact-form">
 
 <form action="{% url 'superuserhome:companyedit' pk=company.id %}" method="post">
@@ -23,6 +24,4 @@
 		<input type="submit" class="change-btn" value="更新">
 	</div>
 </form>
-
-<li><a href="/superuserhome">戻る</a></li>
 {% endblock %}

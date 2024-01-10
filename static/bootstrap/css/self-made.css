@@ -66,6 +66,7 @@ body{
   }
   
 #id_state {
+  background-color: #ffffff;	
   width: 40%; /* 幅を指定 */
   height: 40px; /* 高さを指定 */
 }
@@ -92,6 +93,19 @@ body{
     width: 70%;
 }
 
+.contact-form #id_title {
+    height: 50px;
+    width: 60%;
+}
+
+.contact-form #id_img {
+    padding-top: 30px;
+}
+
+#username, #password{
+	height: 50px;
+}
+
 
 .form-table{
 	height: 300px;
@@ -116,7 +130,6 @@ body{
 }
 
 .submit-btn{ 
-	background-color: #4CAF50; /* 登録ボタンの背景色 */
 	background-color: #55c359; /* 登録ボタンの背景色 */
 	border: none; /* ボーダーなし */
 	border-radius: 50px; /* 50pxの角丸 */
@@ -177,7 +190,7 @@ body{
 	left:270px;/*検索ボタンの位置調整*/  
 	top:0;
 	border-radius:0 2px 2px 0;/*検索ボタンの角を丸める*/ 
-	background: #696969;/*検索ボタンの背景カラー*/ 
+	background: #333;/*検索ボタンの背景カラー*/ 
 	border:none;/*検索ボタンの枠線を消す*/ 
 	color:#fff;/*検索ボタンのテキストカラー*/ 
 	font-size:16px;/*検索ボタンのフォントサイズ*/ 
@@ -185,7 +198,7 @@ body{
 /*検索ボタンマウスオーバー時*/
 .seach-btn:hover{
  color:#dfdfdf;/*検索ボタンマウスオーバー時のフォントカラー*/ 
- background: #565656;/*検索ボタンの背景カラー*/ 
+ background: #383838;/*検索ボタンの背景カラー*/ 
 }
 
 .show-table{ 
@@ -233,7 +246,7 @@ body{
 	border-radius: 50px; /* 50pxの角丸 */
 	border: 1px solid #696969;
 	color: #333;
-	background-color: #ffffff; /* 背景色 */
+	background-color: #fcfcfc; /* 背景色 */
  	width: 100px;
  	height: 35px;
 }
@@ -272,14 +285,33 @@ body{
     background-color: #fff; /* 背景色 */
 }
 
+.add-btn{
+	border-radius: 50px; /* 50pxの角丸 */
+	border: 1px solid #55c359;
+	color: #55c359;
+	background-color: #fff; /* 背景色 */
+ 	width: 200px;
+ 	height: 40px;
+ 	margin-left: 30px;
+}
+
+.add-btn:hover {
+	color: #4CAF50;;
+}
+
 .message-box {
   width: 400px; /* ウィンドウの幅を設定 */
   margin: 0 auto; /* 水平方向に中央寄せ */
-  padding: 40px; /* 内側の余白 */
+  padding: 30px; /* 内側の余白 */
   border: 1px solid #999; /* 枠線のスタイルを設定 */
   border-radius: 5px; /* 角丸を設定 */
   background-color: #fff; /* 背景色を設定 */
   text-align: center; /* テキスト中央寄せ */
+}
+
+#id_count {
+ width: 40%;  
+ height: 50px;  
 }
 
 .mgr-r{

@@ -3,13 +3,17 @@
 
 {% block main %}
 
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+<body>
+
+<nav class="ms-3 my-2" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/superuserhome">Home</a></li>
     <li class="breadcrumb-item"><a href="/superuserhome/orderedit">食品購入管理</a></li>
     <li class="breadcrumb-item active" aria-current="page">新商品の追加</li>
   </ol>
 </nav>
+
+<br>
 
 <div class="contact-form">
 	<form action="{% url 'superuserhome:newitem' %}" method="post">
@@ -31,5 +35,7 @@
 	</div>
 
 </form>
+
+</body>
 
 {% endblock %}
