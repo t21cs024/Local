@@ -2,50 +2,68 @@
 {% block title %} 社員管理画面 {% endblock %}
 {% block main %}
 
-<center>
+<nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/superuserhome/userinformation">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+  		<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+	</svg>
+</a>
+    <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarWithDropdown" aria-controls="navbarWithDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse show" id="navbarWithDropdown">
+      <ul class="navbar-nav m-auto">
+      	<li class="nav-item">
+          <a class="nav-link active" href="/superuserhome">AutoOrder</a>
+        </li>
+      </ul>
+         <ul class="navbar-nav mt-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="/login">ログアウト
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+  			<path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+  			<path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+		　</svg></a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<nav class="ms-3 my-2" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/superuserhome">Home</a></li>
+    <li class="breadcrumb-item"><a href="/superuserhome/useredit">社員管理</a></li>
+    <li class="breadcrumb-item active" aria-current="page">社員情報</li>
+  </ol>
+</nav>
+
+
 
 {% if user %}
-    <dl>
-        <dt>社員番号</dt><dd>{{ user.user_id }}</dd>
-        <dt>氏名</dt><dd>{{ user.name }}</dd>
-        <dt>メールアドレス</dt><dd>{{ user.user_mail }}</dd>
-        <dt>権限</dt><dd>{{ user.user_authority }}</dd>
-    </dl>
-
-    <!--     <dl>
-        <dt>ID</dt><dd>{{ user.user_id }}</dd>
-        <dt>名前</dt><dd>{{ user.name }}</dd>
-        <dt>password</dt><dd>{{ user.user_pass }}</dd>
-        <dt>メールアドレス</dt><dd>{{ user.user_mail }}</dd>
-        <dt>権限</dt><dd>{{ user.user_authority }}</dd>
-    </dl> -->
+	<table class="show-table">
+		<tr><th>社員番号</th>
+			<td>{{ user.user_id }}</td></tr>
+		<tr><th>氏名</th>
+			<td>{{ user.name }}</td></tr>
+		<tr><th>メールアドレス</th>
+			<td>{{ user.user_mail }}</td></tr>
+		<tr><th>権限</th>
+			<td>{{ user.user_authority }}</td></tr>	
+	</table>
 
 {% endif %}
 
-<style>
-	/* {{form_month}}の幅・高さを調整 */
-    #id_buy_month {
-        width: 50px;  
-        height: 30px;  
-    }
-   /* 出力ボタンとの空白を確保するため */
-    .form-text {
-        margin-right: 30px; 
-    }
-</style>
-
-
+<div class="center" >
 <form method="post" action="{% url 'superuserhome:deductionoutput' user_id=user.user_id%}" >
 	{% csrf_token %}
-	{{ form_month }}月<span class="form-text"></span>
-	<button type="submit" name="start_button">控除額出力</button>
+	<span class="mgr-r">{{ form_month }}月</span>
+	<input  class="output-btn" type="submit" value="控除額出力">
 </form>
-
-</center>
-
-<a href="/superuserhome/userinformation">戻る</a>
+</div>
 
 
-</form>
 
 {% endblock %}

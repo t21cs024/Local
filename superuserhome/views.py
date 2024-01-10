@@ -61,6 +61,17 @@ class NewItemView(CreateView):
     template_name = "Edit/Item/newitem.html"
     success_url = '/superuserhome/orderedit'
     
+        #ラベルを日本語に
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['name'].label = '商品名' 
+        form.fields['item_url'].label = '画像URL'
+        form.fields['count'].label = '在庫数'
+        form.fields['price'].label = '単価'
+        form.fields['state'].label = '状態'
+        return form
+    
+    
     # 新しいItemを追加したとき，それを外部キーにもつOrderも同時に生成
     def form_valid(self, form):
         # Itemのインスタンスを作成・保存
@@ -273,9 +284,9 @@ class OrderConfirmedView(TemplateView):
     
     def send_order_mail(self, request, items_below_amount):
         # 自社（発注元企業）オブジェクトの取得 見つからない場合は404(発注元企業のIDは1を想定)
-        own_company = get_object_or_404(Company, company_id = 1)
+        own_company = get_object_or_404(Company, id = 1)
         # 発注先企業オブジェクトの取得 見つからない場合は404(発注企業のIDは2を想定)
-        supplier_company = get_object_or_404(Company, company_id = 2)
+        supplier_company = get_object_or_404(Company, id = 2)
         
         """題名"""
         subject = f"商品注文のお願い（{own_company.company_name})"
@@ -354,15 +365,39 @@ class CompanyManagementView(ListView):
 
 class CompanyAddView(CreateView):
     model = Company
-    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
+    fields = ('company_name', 'company_address', 'company_phone_number', 'company_mail' ,'manager_name','manager_phone_number','manager_mail')
+
     template_name = 'Edit/company_add.html'
     success_url = reverse_lazy('superuserhome:companymanage')
+    
+            #ラベルを日本語に
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['company_name'].label = '企業名'
+        form.fields['company_address'].label = '住所'
+        form.fields['company_mail'].label = '企業Email'
+        form.fields['company_phone_number'].label = '企業TEL'
+        form.fields['manager_name'].label = '担当者名'
+        form.fields['manager_phone_number'].label = '担当者TEL'
+        form.fields['manager_mail'].label = '担当者Email'
+        return form
 
 class CompanyEditView(UpdateView):
     model = Company
-    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
+    fields = ('company_name', 'company_address', 'company_phone_number', 'company_mail' ,'manager_name','manager_phone_number','manager_mail')
     template_name = 'Edit/company_edit.html'
     success_url = reverse_lazy('superuserhome:companymanage')
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['company_name'].label = '企業名'
+        form.fields['company_address'].label = '住所'
+        form.fields['company_mail'].label = '企業Email'
+        form.fields['company_phone_number'].label = '企業TEL'
+        form.fields['manager_name'].label = '担当者名'
+        form.fields['manager_phone_number'].label = '担当者TEL'
+        form.fields['manager_mail'].label = '担当者Email'
+        return form
 
 class CompanyDeleteView(DeleteView):
     model = Company

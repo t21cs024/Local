@@ -109,7 +109,7 @@ class Company(models.Model):
     '''
     データ例
 
-    Company id      ：1  (１は自社、２は発注企業）
+    (ID １は自社、２は発注企業）
     Company name    ：株式会社ワイ・シー・シー
     Company address ：111
     Company mail    ：t21cs○○○@gmail.com （!!必ず自分で管理できるメールアドレスにしてください。id=1送信元メールアドレス、id=2送信先メールアドレス）
@@ -120,8 +120,7 @@ class Company(models.Model):
     Manager phone number：1111        （署名に使用）
     Manager mail    ：tanaka@gmail.com    （署名に使用。こちらのメールアドレスは適当でいいです）
     '''
-    # 企業ID(unique=True 同ユーザーIDの複数回登録を防止)
-    company_id = models.PositiveIntegerField(default=1,unique = True)
+    
     # 企業名
     company_name = models.CharField(blank = True, max_length=50)
     # 企業住所

@@ -6,61 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %} 社員メニュー {% endblock %}</title>
   <link rel="stylesheet" href="{% static '/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static '/bootstrap/css/self-made.css' %}">
+  <script src="{% static '/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-<style>
-
-.btn a {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	position: relative;
-	width: 300px;
-	height: 60px;
-	color: #333;
-	font-size: 18px;
-	font-weight: 700;
-	text-decoration: none;
-	background-color: #b0c4de;
-	background-color: #ffffff;
-	border: 1px solid #333;
-	border-radius: 20px;
-	transition: 0.3s;
-}
-
-.btn a:hover {
-	/*color: #c0c0c0;*/
-	color: #f2f2f2;
-	background-color: #4682b4;
-	border: 1px solid #333;
-}
-
-.btn a::after {
-	content: '';
-	position: absolute;
-	top: 50%;
-	right: 20px;
-	transform: rotate(45deg) translateY(-50%);
-	width: 6px;
-	height: 6px;
-	border-width: 2px 2px 0 0;
-	border-style: solid;
-	border-color: #333;
-}
-
-.btn a:hover::after {
-	border-color: #f2f2f2 #f2f2f2 transparent transparent;
-}
-
-  ul, ol {
-    list-style: none; /* リストのデフォルトのマーカーをなくす */
-  }
-  /* リストアイテムの上下の余白を設定 */
-li {
-  margin: 20px; /* 上下に余白を設定（適宜調整） */
-}
-
-  
-</style>
 </head>
 
 <body>

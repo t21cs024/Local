@@ -3,40 +3,49 @@
 {% block title %} 企業削除 {% endblock %}
 
 {% block main %}
-<form action="{% url 'superuserhome:companydelete' pk=company.company_id %}" method="post">
+
+<form action="{% url 'superuserhome:companydelete' pk=company.id %}" method="post">
 {% csrf_token %}
 {{ form }}
+
 <table class="table">
-  <thead class="table-dark">
+  <thead class="table-secondary">
     <tr>
       <th>ID</th>
       <th>企業名</th>
       <th>住所</th>
-      <th>企業メールアドレス</th>
-      <th>企業電話番号</th>
+      <th>企業TEL</th>
+      <th>企業Email</th>
       <th>担当者名</th>
-      <th>担当者電話番号</th>
-      <th>担当者メールアドレス</th>
+      <th>担当者TEL</th>
+      <th>担当者Email</th>
     </tr>
   </thead>
   <tbody>
 <tr>
-      <td scope="row">{{ company.company_id }}</td>
+      <td scope="row">{{ company.id }}</td>
       <td>{{ company.company_name }}</td>
       <td>{{ company.company_address }}</td>
-      <td>{{ company.company_mail }}</td>
       <td>{{ company.company_phone_number }}</td>
+      <td>{{ company.company_mail }}</td>
       <td>{{ company.manager_name }}</td>
       <td>{{ company.manager_phone_number }}</td>
       <td>{{ company.manager_mail }}</td>
       </tr>
   </tbody>
 </table>
+
 <br>
-削除しますか？
-<input type="submit" value="削除する"/>
+<div class="message-box">
+<span class="mgr">上記の企業を削除しますか？</span>
+<div class="btn-side">
+<a href="{% url 'superuserhome:companymanage' %}">
+<input class="edit-btn" type="button" value="キャンセル">
+</a>
+<input class="delete-btn" type="submit" value="削除する">
+</div>
+</div>
 </form>
 
-<li><a href="/superuserhome">戻る</a></li>
 
 {% endblock %}
