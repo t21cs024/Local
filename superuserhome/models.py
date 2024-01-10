@@ -1,7 +1,6 @@
 from django.db import models
 from django.template.defaultfilters import default
 from django.core.validators import MinValueValidator, MaxValueValidator
-
 # Create your models here.
 
 def savePath(instance, filename):
@@ -55,7 +54,7 @@ class Item(models.Model):
 
     def __str__(self):
         return '{}({})'.format(self.name, self.get_state_display())
- 
+    
 # 発注DB   
 class Order(models.Model):
     '''
@@ -98,7 +97,7 @@ class PurchaseHistory(models.Model):
         return '{} : {}月'.format(self.user_id,self.buy_month)
     
 class ImageUpload(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, primary_key=True)
     img = models.ImageField(upload_to=savePath)#こちらの通り
 
     def __str__(self):

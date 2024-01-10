@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls.base import reverse_lazy
-from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm,CountForm
+from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm,CountForm,ImageUploadForm
 #CSV関連
 import csv
 # test
@@ -22,9 +22,19 @@ from decimal import Decimal
 from pip._vendor.typing_extensions import Self
 import qrcode
 import os
-from .forms import ImageUploadForm
 
-# Create your views here.   
+# Create your views here.  
+
+def delete_image(request, image_title):
+    # プライマリーキーを使ってオブジェクトを取得
+    image_upload_instance = get_object_or_404(ImageUploadForm, pk=image_title)
+
+    # オブジェクトを削除
+    image_upload_instance.img.delete()  # 画像ファイルを削除
+    image_upload_instance.delete()      # データベースからオブジェクトを削除
+
+    return HttpResponse("Image deleted successfully.")
+
 class SuperUserHomeView(TemplateView):
     model = User
     template_name = 'superuser_home.html'
@@ -60,6 +70,15 @@ class NewItemView(CreateView):
     fields = ('name', 'item_url', 'count', 'price', 'state')
     template_name = "Edit/Item/newitem.html"
     success_url = '/superuserhome/orderedit'
+
+    # 新しいItemを追加したとき，それを外部キーにもつOrderも同時に生成
+    def form_valid(self, form):
+        # Itemのインスタンスを作成・保存
+        item = form.save()
+        # Orderのインスタンス作成・保存 その他のフィールドはデフォルト値，またはnullに設定する
+        order = Order(item=item)
+        order.save()
+        return super().form_valid(form)
     
         #ラベルを日本語に
     def get_form(self, form_class=None):
@@ -70,16 +89,6 @@ class NewItemView(CreateView):
         form.fields['price'].label = '単価'
         form.fields['state'].label = '状態'
         return form
-    
-    
-    # 新しいItemを追加したとき，それを外部キーにもつOrderも同時に生成
-    def form_valid(self, form):
-        # Itemのインスタンスを作成・保存
-        item = form.save()
-        # Orderのインスタンス作成・保存 その他のフィールドはデフォルト値，またはnullに設定する
-        order = Order(item=item)
-        order.save()
-        return super().form_valid(form)
     
 class SignUpView(TemplateView):
     model = User
@@ -234,7 +243,6 @@ class OrderConfirmedView(TemplateView):
         購入によって在庫数をデクリメントする処理をここに記述
         （ stateの変更は下記で行うため不要です ）
         """
-        
         # 在庫が重み付けによって決められた個数未満であり、発注メールを送信していないOrderオブジェクトを外部キーを通して取得
         items_below_amount = Order.objects.filter(item__count__lt=F('minimum_amount'), item__state = 'in stock')
         # 在庫数0以下で，stateが"売り切れ"になっていない商品オブジェクトを取得
@@ -251,7 +259,6 @@ class OrderConfirmedView(TemplateView):
             for item in items_out_of_stock:
                 item.state = 'sold out'
                 item.save()
-                
         return redirect('userhome:buyitem')
     
     def increase_weight(self, request, items_out_of_stock):
@@ -281,7 +288,7 @@ class OrderConfirmedView(TemplateView):
             # 重みの更新
             order.order_quantity *= order.order_weight
             order.save()    
-    
+
     def send_order_mail(self, request, items_below_amount):
         # 自社（発注元企業）オブジェクトの取得 見つからない場合は404(発注元企業のIDは1を想定)
         own_company = get_object_or_404(Company, id = 1)
@@ -318,7 +325,6 @@ class OrderConfirmedView(TemplateView):
                 f"・商品ID　：{item.id}\n"
                 f"・数　量　：{order_item.order_quantity}\n"
                 )
-            
             # 発注メールを送信したitemはOrderにフラグを立てておく（重複メール送信を防ぐため）
             # 商品が到着し、在庫情報追加する際state = 'in stock'に
             item.state = 'ordered'
@@ -402,46 +408,18 @@ class CompanyEditView(UpdateView):
 class CompanyDeleteView(DeleteView):
     model = Company
     template_name = 'Edit/company_delete.html'
-    success_url = reverse_lazy('superuserhome:companymanage')    
+    success_url = reverse_lazy('superuserhome:companymanage')
 
-
-class ImageUploadView(CreateView):
-    template_name = "Edit/Item/image_upload.html"
-    form_class = ImageUploadForm
-    success_url = "/superuserhome/orderedit"
-
-
-class QrCodeView(TemplateView):
-    model = Item
-    template_name = "Edit/Item/qrcode/qrcode.html"
-    
-    def get(self, request, *args, **kwargs):
-        qr = qrcode.QRCode(
-            version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=10,
-            border=4,
-        )
-        qr.add_data(str('item_id'))
-        qr.make(fit=True)
-
-        # 生成したQRコードをHttpResponseに設定
-        img = qr.make_image(fill_color="black", back_color="white")
-        response = HttpResponse(content_type="image/png")
-        img.save(response, format="PNG")
-            
-        return response
-    
 class ItemDiscardView(TemplateView):
     template_name = 'Edit/Item/itemediscard.html'
-    
+
     def get(self, request, *args, **kwargs):
         item_id = self.kwargs.get('item_id')
         item = get_object_or_404(Item, pk=item_id)
         context = self.get_context_data()
         context['item'] = item
         return self.render_to_response(context)
-    
+
     def post(self, request, *args, **kwargs):
         item_id = self.request.POST.get('item_id')
         item = Item.objects.get(pk=item_id)
@@ -454,11 +432,11 @@ class ItemDiscardView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['form_count'] = CountForm()
         return context
-    
+
 class ItemStockEditView(ItemDiscardView):
     template_name = 'Edit/Item/itemstockedit.html'
     # テンプレートだけ異なり，メソッドは同様なのでItemDiscardViewを継承
-    
+
 class ItemInventoryControlView(TemplateView):
     def post(self, request, *args, **kwargs):
         # urlからitem id，item idからItemオブジェクト，postからクリックされたボタンの種類を取得
@@ -476,7 +454,7 @@ class ItemInventoryControlView(TemplateView):
             elif action == "discard":
                 self.discard(request, item, int(count))
         return redirect('superuserhome:olditem')
-    
+
     def addstock(self, item, count):
         # フォームで送信された個数分在庫をインクリメント
         item.count += count
@@ -486,7 +464,7 @@ class ItemInventoryControlView(TemplateView):
         if order.minimum_amount <= item.count:
             item.state = 'in stock' 
         item.save()  
-        
+
     def discard(self, request, item, count):
         # フォームで送信された個数分在庫をデクリメント
         if item.count <= count:
@@ -509,7 +487,7 @@ class ItemInventoryControlView(TemplateView):
         if item.count == 0:
             item.state = 'sold out'
             item.save()
-            
+
     def decrease_weight(self, request, item, count):
         # 在庫数が0の商品を破棄しても重みの更新は行わない
         if item.count != 0:
@@ -538,4 +516,44 @@ class ItemInventoryControlView(TemplateView):
             if order.order_quantity <= order.minimum_amount:
                 order.order_quantity = order.minimum_amount
             order.save()
+
+class ImageUploadView(CreateView):
+    template_name = "Edit/Item/image_upload.html"
+    form_class = ImageUploadForm
+    success_url = "/superuserhome/orderedit"
+
+class ItemEditView(UpdateView):
+    model = Item
+    fields = ('name','item_url','count' ,'buy_date','price','buy','order_quantity','minimum_amount','send_email')
+    template_name = "Edit/Item/olditem_edit.html"
+    success_url = reverse_lazy('superuserhome:olditem')
+
+class ItemDeleteView(DeleteView):
+    model = Item
+    template_name = "Edit/Item/olditem_delete.html"
+    success_url = reverse_lazy('superuserhome:olditem')
+
+
+class QrCodeView(TemplateView):
+    model = Item
+    template_name = "Edit/Item/qrcode/qrcode.html"
+    
+    def get(self, request, item_id, *args, **kwargs):
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(str(item_id))
+        qr.make(fit=True)
+
+        # 生成したQRコードをHttpResponseに設定
+        img = qr.make_image(fill_color="black", back_color="white")
+        response = HttpResponse(content_type="image/png")
+        img.save(response, format="PNG")
+            
+        return response
+
+
     

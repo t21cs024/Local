@@ -48,7 +48,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587 # gmail
 
-# user.txtから読み込んだ設定を使って変数にセット(user.txtはmanage.pyの一つ上のフォルダ(SDPLまたはgit?)に置き，コミットしないでください)
+# user.txtから読み込んだ設定を使って変数にセット(user.txtはmanage.pyの一つ上のフォルダ(SDPLまたはgit?)に置き，コミットしないでください)'''
 '''
 ---user.txt---
 your_gmail@gmail（送信元メールアドレスになります）
@@ -56,6 +56,7 @@ your_passward（16文字のアプリパスワード)
 ----------------
 アプリパスワードについて参考文献 https://codelab.website/django-send-gmail/
 '''
+
 # 送信元メールアドレス
 prent_directory = os.path.abspath(os.path.join(BASE_DIR, '..'))
 path = os.path.join(prent_directory, 'user.txt')

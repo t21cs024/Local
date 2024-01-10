@@ -1,5 +1,5 @@
 from django.views.generic import ListView
-from .models import User,Item
+from .models import User,Item,Cart,CartItem
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
@@ -28,7 +28,29 @@ class BuyItemView(TemplateView):
 class BuyHistoryView(TemplateView):
     model = Item
     template_name = 'Order/buy_history.html'
+
+class CartContentsView(TemplateView):
+    model = Item
+    template_name = 'Order/cart/cart_contents.html'
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # カートの内容を取得
+        
+        cart = self.request.user.cart
+        cart_items = cart.cartitem_set.all()
+        total_price = sum(item.product.price * item.quantity for item in cart_items)
+        
+        if not cart_items:
+            context['cart_is_empty'] = True
+        else:
+            total_price = sum(item.product.price * item.quantity for item in cart_items)
+            context['cart_items'] = cart_items
+            context['total_price'] = total_price
+
+        return context
+
 
 @login_required
 def change_password(request):
@@ -44,10 +66,21 @@ def change_password(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'Order/change_pass.html', {'form': form})
+    
+def add_to_cart(request, item_id):
+    Item= get_object_or_404(Item, item_id=item_id)
+    
+    # カートが存在しない場合は作成
+    if not request.user.cart:
+        cart = Cart.objects.create(user=request.user)
+    else:
+        cart = request.user.cart
 
-class CartContentsView(TemplateView):
-    model = Item
-    template_name = 'Order/cart_contents.html'
+    # カートに商品を追加
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, Item=Item)
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
 
-
+    return redirect('cart_view')  # カートの表示ページにリダイレクト
     
