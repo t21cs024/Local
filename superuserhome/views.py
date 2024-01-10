@@ -20,7 +20,7 @@ from datetime import timedelta, date
 from decimal import Decimal
 # test
 from pip._vendor.typing_extensions import Self
-import qrcode
+# import qrcode
 import os
 
 # Create your views here.  
@@ -550,6 +550,7 @@ class QrCodeView(TemplateView):
     template_name = "Edit/Item/qrcode/qrcode.html"
     
     def get(self, request, item_id, *args, **kwargs):
+        """
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -561,9 +562,10 @@ class QrCodeView(TemplateView):
 
         # 生成したQRコードをHttpResponseに設定
         img = qr.make_image(fill_color="black", back_color="white")
+        """
         response = HttpResponse(content_type="image/png")
-        img.save(response, format="PNG")
-            
+        #img.save(response, format="PNG")
+
         return response
 
 
