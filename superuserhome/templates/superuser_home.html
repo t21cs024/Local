@@ -4,11 +4,12 @@
 
 {% block main %}
 
+
 <body>
 
 <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="">AutoOrder</a>
+    <a class="navbar-brand" href="{% url 'superuserhome:home' %}">AutoOrder</a>
     <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarWithDropdown" aria-controls="navbarWithDropdown" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -20,7 +21,7 @@
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <li><a class="dropdown-item" href="{% url 'superuserhome:signup' %}">新規社員登録</a></li>
-            <li><a class="dropdown-item" href="{% url 'superuserhome:userinformation' %}">社員情報</a></li>
+            <li><a class="dropdown-item" href="{% url 'superuserhome:userinformation' %}">社員検索</a></li>
           </ul>
         </li>
         <li class="nav-item dropdown">
@@ -43,7 +44,7 @@
          </ul>
          <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="/login">ログアウト
+          <a class="nav-link active" href="{% url 'login:logout' %}">ログアウト
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
   			<path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
   			<path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
@@ -52,6 +53,12 @@
       </ul>
     </div>
   </div>
+</nav>
+
+<nav class="ms-3 my-2" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item active" aria-current="page">Home</li>
+  </ol>
 </nav>
 
 <br>
