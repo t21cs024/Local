@@ -11,7 +11,7 @@ from .views import ItemList, ItemAddView, ItemShowView, ItemEditView, ItemDelete
 '''
 app_name = 'userhome'
 urlpatterns = [
-    path('',UserHomeView.as_view(), name='home'),
+    path('',UserHomeView.as_view()),
     path('buyitem/',BuyItemView.as_view(), name='buyitem'),
     path('buyhistory/',BuyHistoryView.as_view(),name='buyhistory'),
     path('changepass/',change_password, name='changepass'),

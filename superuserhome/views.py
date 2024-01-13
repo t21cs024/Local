@@ -1,4 +1,4 @@
-from .models import User,Item,PurchaseHistory,Company,Order,ImageUpload
+from .models import User,Item,PurchaseHistory,Company,Order
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
@@ -27,14 +27,13 @@ import os
 
 def delete_image(request, image_title):
     # プライマリーキーを使ってオブジェクトを取得
-    image_upload_instance = get_object_or_404(ImageUpload, pk=image_title)
+    image_upload_instance = get_object_or_404(ImageUploadForm, pk=image_title)
 
     # オブジェクトを削除
     image_upload_instance.img.delete()  # 画像ファイルを削除
     image_upload_instance.delete()      # データベースからオブジェクトを削除
-    
-    return redirect('superuserhome:olditem')  # 成功したら指定のURLにリダイレクト
-    # return HttpResponse("Image deleted successfully.")
+
+    return HttpResponse("Image deleted successfully.")
 
 class SuperUserHomeView(TemplateView):
     model = User
@@ -138,7 +137,7 @@ class UserInformationView(TemplateView):
         try:
             User.objects.get(pk=user_id)
         except (User.DoesNotExist):
-            messages.error(request, '該当するユーザが見つかりませんでした。再度入力してください。', extra_tags='nouser-error')
+            messages.error(request, '該当するユーザが見つかりませんでした。再度入力してください。')
             return redirect('superuserhome:userinformation')
         
         return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
@@ -551,7 +550,6 @@ class QrCodeView(TemplateView):
     template_name = "Edit/Item/qrcode/qrcode.html"
     
     def get(self, request, item_id, *args, **kwargs):
-
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
@@ -565,5 +563,8 @@ class QrCodeView(TemplateView):
         img = qr.make_image(fill_color="black", back_color="white")
         response = HttpResponse(content_type="image/png")
         img.save(response, format="PNG")
-
+            
         return response
+
+
+    

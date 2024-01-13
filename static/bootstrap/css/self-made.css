@@ -1,0 +1,325 @@
+body{ 
+ background-color: #eef0f4;
+}
+
+/* <center>代替 */
+.center {
+  text-align: center;
+}
+
+/* 画面遷移ボタン */
+.btn a {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	width: 400px;
+	height: 80px;
+	color: #333;
+	font-size: 18px;
+	font-weight: 700;
+	text-decoration: none;
+	background-color: #ffffff;
+	border: 1px solid #d1d1d5;
+/*	border: none; */
+/*	box-shadow: 0 0 4px gray; */
+	border-radius: 15px; /* 角丸を設定 */
+	transition: 0.3s;
+	margin-bottom: px; 
+	margin-top: 5px; 
+	
+}
+
+/* 画面遷移ボタン ホバー時 */
+.btn a:hover {
+	color: #f2f2f2;
+	color: #333;
+	background-color: #ffffff;
+	border: 1px solid #333;
+	border: none;
+	box-shadow: 0 0 4px black;
+	box-shadow: 0 0 4px gray;
+}
+
+/*
+.btn a::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	right: 20px;
+	transform: rotate(45deg) translateY(-50%);
+	width: 6px;
+	height: 6px;
+	border-width: 2px 2px 0 0;
+	border-style: solid;
+	border-color: #333;
+}
+
+.btn a:hover::after {
+	border-color: #f2f2f2 #f2f2f2 transparent transparent;
+}
+*/
+
+  ul, ol {
+    list-style: none; /* リストのデフォルトのマーカーをなくす */
+    padding: 0px;
+  }
+  
+#id_state {
+  background-color: #ffffff;	
+  width: 40%; /* 幅を指定 */
+  height: 40px; /* 高さを指定 */
+}
+  
+ .contact-form table{
+	width:100%;
+	margin-bottom:15px;
+}
+
+.contact-form th{
+	text-align:left;
+	width:25%;
+	padding: 20px;
+}
+
+.contact-form td{
+	width:80%;
+	text-align:left;
+}
+
+.contact-form input:not([type="submit"]) {
+  /* typeがsubmitでない(input要素全体に対するスタイル) */
+    height: 60%;
+    width: 70%;
+}
+
+.contact-form #id_title {
+    height: 50px;
+    width: 60%;
+}
+
+.contact-form #id_img {
+    padding-top: 30px;
+}
+
+#username, #password{
+	height: 50px;
+}
+
+
+.form-table{
+	height: 300px;
+}
+
+.contact-form{
+	width:70%;
+	margin:0 auto;
+}
+  
+.buck-btn{ 
+	border-radius: 50px; /* 50pxの角丸 */
+	border: 1px solid #696969;
+	color: #333;
+	background-color: #ffffff; /* 戻るボタンの背景色 */
+ 	width: 200px;
+ 	height: 40px;
+}
+
+.buck-btn:hover {
+    background-color: #dcdcdc; /* 戻るボタンの背景色 */
+}
+
+.submit-btn{ 
+	background-color: #55c359; /* 登録ボタンの背景色 */
+	border: none; /* ボーダーなし */
+	border-radius: 50px; /* 50pxの角丸 */
+	color: white; /* 文字色 */
+	margin-right: 30px; /* ボタンと入力フィールドの右マージンを10pxに設定 */
+ 	width: 200px;
+ 	height: 40px;
+}
+
+.submit-btn:hover {
+    background-color: #4CAF50; /* 登録ボタンの背景色 */
+}
+
+.btn-side{ 
+	display: flex;
+	justify-content: center;
+	align-items: flex-end;
+	margin: 10px;
+}
+
+.btn-side button, .btn-side input {
+  margin-right: 20px; /* ボタンと入力フィールドの余白*/
+}
+
+/*フォーム全体*/
+.seach-form{
+	position:relative;/*フォームの相対位置*/	
+	margin: auto;/*フォームを真ん中にする*/
+	max-width:270px;/*フォームのサイズ*/
+	margin-bottom:100px;/*フォームの下に余白*/	 	
+}
+
+/*検索ボックス*/
+#id_user_id{
+	border: 1px solid #333;
+	position:absolute;/*フォームの絶対位置*/	
+	left:0px;
+	top:0; 	
+	outline:0;/*クリック時の線を消す*/	
+	width:270px;/*検索ボックス横幅*/	
+	height:50px;/*検索ボックスの高さ*/	
+	padding:0 10px;/*テキスト位置調整*/	 
+	border-radius:2px 0 0 2px;/*検索ボックスの角を丸める*/		
+	background:#fff;/*検索ボックスの背景カラー*/		
+}
+
+/* テキスト入力フォームのスタイル */
+#id_user_id::placeholder {
+ color: #999; /* プレースホルダーのテキスト色 */
+ font-size: 16px; /* プレースホルダーのフォントサイズ */
+}
+
+/*検索ボタン*/
+.seach-btn{
+	width:70px;/*検索ボタンの横幅*/ 
+	height:50px;/*検索ボタンの縦幅*/ 
+	position:absolute;/*検索ボタンの絶対位置*/  
+	left:270px;/*検索ボタンの位置調整*/  
+	top:0;
+	border-radius:0 2px 2px 0;/*検索ボタンの角を丸める*/ 
+	background: #333;/*検索ボタンの背景カラー*/ 
+	border:none;/*検索ボタンの枠線を消す*/ 
+	color:#fff;/*検索ボタンのテキストカラー*/ 
+	font-size:16px;/*検索ボタンのフォントサイズ*/ 
+}
+/*検索ボタンマウスオーバー時*/
+.seach-btn:hover{
+ color:#dfdfdf;/*検索ボタンマウスオーバー時のフォントカラー*/ 
+ background: #383838;/*検索ボタンの背景カラー*/ 
+}
+
+.show-table{ 
+ text-align: left; /* 子要素左寄せ */
+ margin: auto; /* table中央寄せ */
+ margin-top:40px;/*tableの上に余白*/
+ margin-bottom:40px;/*tableの下に余白*/
+ width: 50%;
+}
+
+.show-table th{
+ background-color: #fff;/*背景*/
+ padding: 20px;
+ border-bottom: 1px solid #ddd; 
+ width: 40%;
+ }
+
+.show-table td{
+ padding: 20px;
+ border-bottom: 1px solid #ddd; 
+ background-color: #fff;/*背景*/
+}
+
+#id_buy_month {
+ width: 10%;  
+ height: 50px;  
+}
+
+.output-btn{ 
+	background-color: #55c359; /* 背景色 */
+	border: none; /* ボーダーなし */
+	border-radius: 50px; /* 50pxの角丸 */
+	color: white; /* 文字色 */
+	margin-right: 30px; /* ボタンと入力フィールドの右マージンを10pxに設定 */
+ 	height: 50px;
+ 	margin-left: 20px;
+ 	width:30%;
+}
+
+.output-btn:hover{ 
+ background-color: #4CAF50; /* 背景色 */
+}
+
+.edit-btn{ 
+	border-radius: 50px; /* 50pxの角丸 */
+	border: 1px solid #696969;
+	color: #333;
+	background-color: #fcfcfc; /* 背景色 */
+ 	width: 100px;
+ 	height: 35px;
+}
+
+.edit-btn:hover {
+    background-color: #dcdcdc; /* 背景色 */
+}
+
+.delete-btn{
+	border-radius: 50px; /* 50pxの角丸 */
+ 	width: 100px;
+ 	height: 35px;
+ 	border: none;
+ 	color: #fff;
+ 	background-color: #d13415; /* 背景色 */
+}
+
+.delete-btn:hover {
+ 	color: #bb2e15;
+ 	background-color: #fff; /* 背景色 */
+ 	border: 1px solid #bb2e15;
+}
+
+.change-btn{
+	border-radius: 50px; /* 50pxの角丸 */
+	border: none;
+	color: #fff;
+	background-color: #1e90ff; /* 背景色 */
+ 	width: 200px;
+ 	height: 40px;
+}
+
+.change-btn:hover {
+	color: #1e90ff;
+	border: 1px solid #1e90ff;
+    background-color: #fff; /* 背景色 */
+}
+
+.add-btn{
+	border-radius: 50px; /* 50pxの角丸 */
+	border: 1px solid #55c359;
+	color: #55c359;
+	background-color: #fff; /* 背景色 */
+ 	width: 200px;
+ 	height: 40px;
+ 	margin-left: 30px;
+}
+
+.add-btn:hover {
+	color: #4CAF50;;
+}
+
+.message-box {
+  width: 400px; /* ウィンドウの幅を設定 */
+  margin: 0 auto; /* 水平方向に中央寄せ */
+  padding: 30px; /* 内側の余白 */
+  border: 1px solid #999; /* 枠線のスタイルを設定 */
+  border-radius: 5px; /* 角丸を設定 */
+  background-color: #fff; /* 背景色を設定 */
+  text-align: center; /* テキスト中央寄せ */
+}
+
+#id_count {
+ width: 40%;  
+ height: 50px;  
+}
+
+.mgr-r{
+    margin-right : 10px;
+}
+
+.mgr-j{
+    margin-left : 10px;
+}
+
+

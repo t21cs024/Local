@@ -1,4 +1,4 @@
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LoginView
 
 # Create your views here.
 
@@ -16,7 +16,3 @@ class CustomLoginView(LoginView):
             return '/superuserhome/'
         else:
             return '/userhome/'
-        
-class CustomLogoutView(LogoutView):
-    template_name = 'logout.html'
-    next_page=('/login')

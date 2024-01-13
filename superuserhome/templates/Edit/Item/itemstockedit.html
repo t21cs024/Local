@@ -11,9 +11,13 @@
   		<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
 	</svg>
 </a>
-     <ul class="navbar-nav m-auto">
+    <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarWithDropdown" aria-controls="navbarWithDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse show" id="navbarWithDropdown">
+      <ul class="navbar-nav m-auto">
       	<li class="nav-item">
-          <a class="navbar-brand" href="{% url 'superuserhome:home'%}">AutoOrder</a>
+          <a class="nav-link active" href="/superuserhome">AutoOrder</a>
         </li>
       </ul>
          <ul class="navbar-nav mt-auto">
@@ -26,16 +30,19 @@
         </li>
       </ul>
     </div>
+  </div>
 </nav>
 
 <nav class="ms-3 my-2" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="{% url 'superuserhome:home'%}">Home</a></li>
+    <li class="breadcrumb-item"><a href="/superuserhome">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'superuserhome:orderedit'%}">食品購入管理</a></li>
     <li class="breadcrumb-item"><a href="{% url 'superuserhome:olditem'%}">既存商品の表示</a></li>
-    <li class="breadcrumb-item active" aria-current="page">在庫追加</li>
+    <li class="breadcrumb-item active" aria-current="page">在庫数追加</li>
   </ol>
 </nav>
+
+<br>
 
 {% if item %}
 	<table class="show-table">
@@ -58,7 +65,7 @@
 <form method="post" action="{% url 'superuserhome:itemaddstock' item_id=item.id %}">
     {% csrf_token %}
     {{ form_count }}
-    <button class="btn btn-success w-200px h-50px" type="submit" name="action" value="addstock">在庫追加</button>
+    <button class="submit-btn" type="submit" name="action" value="addstock">在庫追加</button>
 </form>
 </div>
 </div>
