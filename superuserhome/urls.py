@@ -9,7 +9,7 @@ from . import views
 
 app_name = 'superuserhome'
 urlpatterns = [
-    path('',SuperUserHomeView.as_view()),
+    path('',SuperUserHomeView.as_view(), name="home"),
     path('useredit/',UserEditView.as_view(), name='useredit'),
     path('orderedit/',OrderEditView.as_view(),name='orderedit'),
     path('userinformation/', UserInformationView.as_view(), name='userinformation'),

@@ -60,8 +60,7 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # セッションの再認証
             messages.success(request, 'パスワードが変更されました。')
-            return redirect('userhome')
-        else:
+            return redirect('/userhome')
             messages.error(request, 'パスワードの変更にエラーがあります。')
     else:
         form = PasswordChangeForm(request.user)
