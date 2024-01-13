@@ -6,15 +6,19 @@
 
 <body>
 <br>
-<div class="contact-form">
+<div class="parent">
+<div class="login-box">
+
     <form method="post">
         {% csrf_token %}
-        <label for="username">Username:</label><br>
+        <ul>
+        <li><label for="username">Username</label></li></ul>
         <input type="text" id="username" name="username"><br><br>
-        <label for="password">Password:</label><br>
+        <ul>
+        <li><label for="password">Password</label></li></ul>
         <input type="password" id="password" name="password"><br><br>
-        <div class="center">
-        <input class="output-btn" type="submit" value="ログイン"></div>
+        <input class="btn btn-success w-100 h-40px" type="submit" value="ログイン"></div>
+        
     </form>
 </div>
 </body>

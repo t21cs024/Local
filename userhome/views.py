@@ -60,8 +60,7 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # セッションの再認証
             messages.success(request, 'パスワードが変更されました。')
-            return redirect('userhome')
-        else:
+            return redirect('/userhome')
             messages.error(request, 'パスワードの変更にエラーがあります。')
     else:
         form = PasswordChangeForm(request.user)
@@ -72,8 +71,10 @@ def add_to_cart(request, item_id):
     
     # カートが存在しない場合は作成
     if not request.user.cart:
+        print("create")
         cart = Cart.objects.create(user=request.user)
     else:
+        print("no - create")
         cart = request.user.cart
 
     # カートに商品を追加
