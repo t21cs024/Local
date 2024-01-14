@@ -4,7 +4,6 @@
 
 {% block main %}
 
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -27,6 +26,7 @@
             border-collapse: collapse;
             table-layout: fixed;
             margin-top: 20px; /* 必要に応じて調整 */
+            background-color: #fff; /* 背景色 */
         }
 
         th, td {
@@ -46,42 +46,73 @@
 </head>
 <body>
 
-<h2>既存商品一覧</h2>
+<nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'superuserhome:orderedit' %}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+  		<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+	</svg>
+</a>
+     <ul class="navbar-nav m-auto">
+      	<li class="nav-item">
+          <a class="navbar-brand"href="{% url 'superuserhome:home' %}">AutoOrder</a>
+        </li>
+      </ul>
+         <ul class="navbar-nav mt-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'login:logout' %}">ログアウト
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+  			<path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+  			<path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+		　</svg></a>
+        </li>
+      </ul>
+    </div>
+</nav>
+
+
+<nav class="ms-3 my-2" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'superuserhome:home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'superuserhome:orderedit'%}">食品購入管理</a></li>
+    <li class="breadcrumb-item active" aria-current="page">既存商品の表示</li>
+  </ol>
+</nav>
 
 
 
-
-
-<table>
+<table style=" text-align: right;">
 	<body>
 	{% for item in object_list %}
     <td>
-    　<dl><img src="../../../../media/img/{{ item.id }}.png" alt="Image {{ item.id }}"></dl>
-      <dl scope="row">{{ item.id }}</dl>
-      <dl>{{ item.name }}</dl>
+    <dl><img src="../../../../media/img/{{ item.id }}.png" alt="Image {{ item.id }}"></dl>
+      <dl  scope="row">{{ item.id }}</dl>
+      <dl>{{ item.name }}</a></dl>
       <dl>{{ item.count }}</dl>
       <dl>{{ item.price }}</dl>
       <dl>{% if item.state == 'sold out' %} <font color='red'>売り切れ</font> {% endif %}
         {% if item.state == 'ordered' %} <font color='orange'> 発注済み</font> {% endif %}
         {% if item.state == 'in stock' %} 在庫あり {% endif %}</dl>
-      <dl><a href="{% url 'superuserhome:qrcode' item_id=item.id %}">[QRコードを表示]</a></dl>
-      <dl><a href="{% url 'superuserhome:stockedit' item_id=item.id %}">[在庫追加]</a></dl>
-      <dl><a href="{% url 'superuserhome:discardedit' item_id=item.id %}">[廃棄]</a></dl> 
-      <dl><a href="{% url 'superuserhome:imagedelete' image_title=item.id %}">[画像削除]</a></dl>
-
-
-        <dl><a href="{% url 'superuserhome:itemedit' pk=item.id %}">[編集]</a></dl>
-        <dl><a href="{% url 'superuserhome:itemdelete' pk=item.id %}">[削除]</a></dl>     
+        
+	 <div class="btn-toolbar " role="toolbar" aria-label="Toolbar with button groups">
+  <div class="btn-group me-2" role="group" aria-label="First group">
+      <a class="btn btn-outline-secondary" href="{% url 'superuserhome:qrcode' item_id=item.id %}" role="button">QRコード表示</a>
+        </div>
+  <div class="btn-group me-2" role="group" aria-label="Second group">
+  	  <a class="btn btn-outline-secondary" href="{% url 'superuserhome:stockedit' item_id=item.id %}" role="button">在庫追加</a>
+  	  <a class="btn btn-outline-secondary" href="{% url 'superuserhome:discardedit' item_id=item.id %}" role="button">廃棄</a>
+  	  <a class="btn btn-outline-secondary" href="{% url 'superuserhome:itemedit' pk=item.id %}" role="button">編集</a>
+        </div>
+  <div class="btn-group" role="group" aria-label="Third group">
+	  <a class="btn btn-danger" href="{% url 'superuserhome:imagedelete' image_title=item.id %}" role="button">画像削除</a>
+	  <a class="btn btn-danger" href="{% url 'superuserhome:itemdelete' pk=item.id %}" role="button">商品削除</a>
+</div>
     </td>
   {% endfor %}
-	</body>
 
 </table>
 
 </body>
 </html>
-<ul>
-<li><a href="/superuserhome/orderedit">戻る</a></li>
-</ul>
 
 {% endblock %}

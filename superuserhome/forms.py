@@ -33,16 +33,16 @@ class SignUpForm(forms.Form):
     # 他のフィールドも適切に追加
 
 class UserIdForm(forms.Form):
-    user_id = forms.IntegerField(label='ID')
+    user_id = forms.IntegerField(label=False)
 
 class MonthForm(forms.Form):
     buy_month = forms.IntegerField(label=False, min_value=1, max_value=12)
     
+class CountForm(forms.Form):
+    count = forms.IntegerField(label='個数', min_value=1)
+
 class ImageUploadForm(forms.ModelForm):
     class Meta:
         model = ImageUpload
         fields = "__all__"
-
-class CountForm(forms.Form):
-    count = forms.IntegerField(label='個数', min_value=1)
 

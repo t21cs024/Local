@@ -7,10 +7,9 @@ from django.urls import path,include
 from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView,ItemEditView,ItemDeleteView
 from . import views
 
-
 app_name = 'superuserhome'
 urlpatterns = [
-    path('',SuperUserHomeView.as_view()),
+    path('',SuperUserHomeView.as_view(), name="home"),
     path('useredit/',UserEditView.as_view(), name='useredit'),
     path('orderedit/',OrderEditView.as_view(),name='orderedit'),
     path('userinformation/', UserInformationView.as_view(), name='userinformation'),

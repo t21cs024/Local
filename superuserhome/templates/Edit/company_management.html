@@ -4,17 +4,48 @@
 
 {% block main %}
 
+<nav class="navbar navbar-expand-xl navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'superuserhome:home' %}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+  		<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+	</svg>
+</a>
+          <ul class="navbar-nav m-auto">
+      	<li class="nav-item">
+          <a class="navbar-brand" href="{% url 'superuserhome:home' %}">AutoOrder</a>
+        </li>
+      </ul>
+         <ul class="navbar-nav mt-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'login:logout' %}">ログアウト
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+  			<path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+  			<path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+		　</svg></a>
+        </li>
+      </ul>
+    </div>
+</nav>
+
+<nav class="ms-3 my-2" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'superuserhome:home' %}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">企業管理</li>
+  </ol>
+</nav>
+
 <table class="table">
-  <thead class="table-dark">
+  <thead class="table-secondary">
     <tr>
       <th>ID</th>
       <th>企業名</th>
       <th>住所</th>
-      <th>企業メールアドレス</th>
-      <th>企業電話番号</th>
+      <th>企業TEL</th>
+      <th>企業Email</th>
       <th>担当者名</th>
-      <th>担当者電話番号</th>
-      <th>担当者メールアドレス</th>
+      <th>担当者TEL</th>
+      <th>担当者Email</th>
       <th>編集</th>
       <th>削除</th>
     </tr>
@@ -23,26 +54,25 @@
   <tbody>
   {% for company in object_list %}
     <tr>
-      <td scope="row">{{ company.company_id }}</td>
+      <td scope="row">{{ company.id }}</td>
       <td>{{ company.company_name }}</td>
       <td>{{ company.company_address }}</td>
-      <td>{{ company.company_mail }}</td>
       <td>{{ company.company_phone_number }}</td>
+      <td>{{ company.company_mail }}</td>
       <td>{{ company.manager_name }}</td>
       <td>{{ company.manager_phone_number }}</td>
       <td>{{ company.manager_mail }}</td>
-      <td><a href="{% url 'superuserhome:companyedit' pk=company.company_id %}">[編集]</a></td>
-      <td><a href="{% url 'superuserhome:companydelete' pk=company.company_id %}">[削除]</a></td>
-    </tr>
+      <td><a href="{% url 'superuserhome:companyedit' pk=company.id %}"><button class="btn btn-outline-secondary  w-100px h-35px"  type="button">編集</button></a></td>
+      <td><a href="{% url 'superuserhome:companydelete' pk=company.id %}"><button class="btn btn-danger w-100px h-35px" type="button">削除</button></a></td>
+
+</tr>
   {% endfor %}
   </tbody>
 </table>
 
-<ul>
-<li><a href="{% url 'superuserhome:companyadd' %}">企業追加</a></li>
-<li><a href="/superuserhome">戻る</a></li>
-</ul>
 
+<a href="{% url 'superuserhome:companyadd' %}">
+<button class="btn btn-secondary w-200px m-l-30px" type="button">企業登録</button></a>
 
 
 {% endblock %}
