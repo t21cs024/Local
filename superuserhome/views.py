@@ -515,7 +515,8 @@ class QrCodeView(TemplateView):
             box_size=10,
             border=4,
         )
-        qr.add_data(str(item_id))
+        #qr.add_data(str(f'http://t21cs011.pythonanywhere.com/userhome/buyitem/{item_id}'))
+        qr.add_data(str(f'http://127.0.0.1:8000/userhome/buyitem/{item_id}'))
         qr.make(fit=True)
 
         # 生成したQRコードをHttpResponseに設定

@@ -3,13 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <title>食品購入</title>
+    <style>
+        /* QRコードリーダーのビデオ要素を画面の70%に設定するスタイル */
+        #qr-video {
+        
+            width: 70%;
+            height: 70vh; /* 画面の高さいっぱいに表示 */
+            object-fit: contain; /* アスペクト比を保持しつつ全体を表示 */
+            position: absolute;
+    		top: 50%;
+    		left: 50%;
+    		transform: translate(-50%, -50%);
+    	}
+        .page-links {
+        	width: 30%;
+    		position: absolute;
+    		bottom: 10px;
+    		left: 20%;
+    		transform: translateX(-50%);
+    		list-style: none;
+    		padding: 0;
+    	}
+
+
+    </style>
+    
 </head>
 <body>
-  <video id="qr-video" width="300" height="200" autoplay></video>
+　　<div class="qr-container">
+	<video id="qr-video" autoplay></video>
+  </div>
+  <ul class="page-links">
+  <!-- メール送信機能のためにカート機能のurlやhtmlは仮置き -->
+  <li><a href="{% url 'userhome:cartcontents' %}">カートに移動する</a></li>
+
+  <li><a href='/userhome'>戻る</a></li>
+  </ul>
+  
   <script src="https://rawgit.com/cozmo/jsQR/master/dist/jsQR.js"></script>
   <script>
     const video = document.getElementById('qr-video');
 
+    function setVideoSize() {
+        // ウィンドウのサイズが変わるたびに呼び出され、ビデオのサイズを調整する
+        video.width = window.innerWidth * 0.7; // 画面の70%
+        video.height = window.innerHeight * 0.7; // 画面の70%
+    }
+
+    window.addEventListener('resize', setVideoSize);
+    
     navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
       .then((stream) => {
         video.srcObject = stream;
@@ -21,12 +63,12 @@
           canvasElement.height = video.videoHeight;
           canvas.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
           const imageData = canvas.getImageData(0, 0, video.videoWidth, video.videoHeight);
-          const code = jsQR(imageData.data, imageData.width, imageData.height);
-          if (code) {
-            console.log('QRコードの内容:', code.data);
-         	// ここでQRコードのデータを利用する処理を記述します
-            addToCart(code.data); // カートに追加する処理を呼び出し
-            showMessage(`読み取りました: ${code.data}`);
+          const code = document.getElementById('qr-code');
+          const result = jsQR(code.src, code.width, code.height);
+          if (result) {
+              const url = result.data;
+              // url を使用してページにリダイレクトするか、別の処理を行う
+              window.location.href = url;
           }
         }, 100);
       })
@@ -62,13 +104,5 @@
     }
   </script>
 </body>
-<ul>
-
-
-  <!-- メール送信機能のためにカート機能のurlやhtmlは仮置き -->
-  <li><a href="{% url 'userhome:cartcontents' %}">カートに移動する</a></li>
-
-  <li><a href='/userhome'>戻る</a></li>
-</ul>
 </html>
 
