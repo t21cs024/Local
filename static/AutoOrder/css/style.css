@@ -46,43 +46,6 @@ body{
   text-align: right;
 }
 
-.signup-form  {
- max-width: 400px;
- margin: 0 auto;
- margin-top: 20px;
-}
-
-.signup-form label {
- display: block;
- margin-bottom: 8px;
- margin-right: 10px;
-}
-
-.signup-form label[for="authority"] {
-  margin-top: 0px;
-}
-
-.signup-form  .custom-input {
- width: 100%;
- padding: 10px;
- margin-bottom: 12px;
- box-sizing: border-box;
-}
-
-.signup-form  .right-align {
- float: right;
-}
-    
-.signup-form .btn-side{ 
- margin-top: 20px;
-}
-    
-.signup-form input[type="radio"] {
-  width: 14px;
-  height: 14px;
-  margin-right: 2px;
-}
-
 /* <center>代替 */
 .center {
   text-align: center;
@@ -135,13 +98,7 @@ ul, ol {
 width: 70%;
 margin: auto
 }
-  
-#id_state {
-  background-color: #ffffff;	
-  width: 40%; /* 幅を指定 */
-  height: 40px; /* 高さを指定 */
-}
-  
+ 
 .contact-form table{
  width:100%;
  margin-bottom:15px;
@@ -152,12 +109,18 @@ margin: auto
 	width:25%;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	padding-left: 90px;
+	padding-left: 20px;
 }
 
 .contact-form td{
 	width:80%;
 	text-align:left;
+}
+
+.contact-form select {
+  background-color: #ffffff;	
+  width: 40%; /* 幅を指定 */
+  height: 40px; /* 高さを指定 */
 }
 
 .contact-form input:not([type="submit"]) {
@@ -200,7 +163,7 @@ margin: auto
 }
 
 /*検索ボックス*/
-#id_user_id{
+.seach-form #id_emp_num{
 	border: 1px solid #333;
 	position:absolute;/*フォームの絶対位置*/	
 	left:0px;
@@ -214,7 +177,7 @@ margin: auto
 }
 
 /* テキスト入力フォームのスタイル */
-#id_user_id::placeholder {
+#id_emp_num::placeholder {
  color: #999; /* プレースホルダーのテキスト色 */
  font-size: 16px; /* プレースホルダーのフォントサイズ */
 }
@@ -292,7 +255,7 @@ width: 60%;
 margin: auto; /* form 中央寄せ*/ 
 }
 
-.login-box #username, .login-box #password{
+.login-box #id_username, .login-box #id_password{
 	height: 50px;
 	width: 99%;
 }
@@ -398,7 +361,7 @@ float: left;
   transform: translate(-50%, -30%);
 }
 
-.login-box #username, .login-box #password{
+.login-box #id_username, .login-box #id_password{
 	height: 50px;
 	width: 99%;
 }

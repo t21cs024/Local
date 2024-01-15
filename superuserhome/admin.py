@@ -1,9 +1,8 @@
 from django.contrib import admin
-from .models import User,Item,PurchaseHistory,Company,Order,ImageUpload
+from .models import Item,PurchaseHistory,Company,Order,ImageUpload
 
 # Register your models here.
 
-admin.site.register(User)
 admin.site.register(Item)
 admin.site.register(PurchaseHistory)
 admin.site.register(Company)
