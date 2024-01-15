@@ -71,10 +71,8 @@ def add_to_cart(request, item_id):
     
     # カートが存在しない場合は作成
     if not request.user.cart:
-        print("create")
         cart = Cart.objects.create(user=request.user)
     else:
-        print("no - create")
         cart = request.user.cart
 
     # カートに商品を追加
