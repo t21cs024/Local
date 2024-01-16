@@ -49,15 +49,15 @@ class SignUpView(CreateView):
 # ログインビューを作成
 class LoginView(BaseLoginView):
     form_class = LoginFrom
-    template_name = "login.html"
+    template_name = "login/login.html"
     
     def get_success_url(self):
         user = self.request.user
 
         #t21cs1 @@@@aaaa superuserhome
         #t21cs0 0000aaaa userhome
-        # 所属で遷移先を分岐（総務部またはsuperuser権限を持つならsuepruserhome）
-        if user.affiliation == 'HR' or user.is_superuser:
+        # createsuperuserで作成したユーザはsupseruserhomeに遷移（superuser権限を持つならsuepruserhomeに遷移）
+        if user.is_superuser:
             return '/superuserhome/'
         else:
             return '/userhome/'
