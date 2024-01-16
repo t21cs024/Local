@@ -6,25 +6,11 @@ from django.urls import reverse_lazy
 from .forms import SignUpForm, LoginFrom 
 # Create your views here.
 
-class CustomLoginView(LoginView):
-    template_name = 'login.html'
-
-    def get_success_url(self):
-        user = self.request.user
-
-        # スーパーユーザーかどうかを確認
-        #t21cs1 @@@@aaaa superuserhome
-        #t21cs0 0000aaaa userhome
-        if user.groups.filter(name='superuserhome').exists():
-        #(lambda u: u.groups.filter(name='superuserhome')):
-            return '/superuserhome/'
-        else:
-            return '/userhome/'
         
 class SignUpView(CreateView):
     """ ユーザー登録用ビュー """
     form_class = SignUpForm # 作成した登録用フォームを設定
-    template_name = "login/signup.html" 
+    template_name = "Edit/signup.html" 
     success_url = reverse_lazy("superuserhome:home") # ユーザー作成後のリダイレクト先ページ
 
     def form_valid(self, form):
@@ -70,5 +56,4 @@ class LoginView(BaseLoginView):
         return form
         
 class CustomLogoutView(LogoutView):
-    template_name = 'logout.html'
     next_page=('/login')
