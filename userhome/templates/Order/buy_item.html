@@ -4,17 +4,17 @@
 
 {% block main %}
     <style>
-        /* QRコードリーダーのビデオ要素を画面の70%に設定するスタイル */
+        /* QRコードリーダーのビデオ要素を画面の60%に設定するスタイル */
         #qr-video {
-        
-            width: 70%;
-            height: 70vh; /* 画面の高さいっぱいに表示 */
-            object-fit: contain; /* アスペクト比を保持しつつ全体を表示 */
-            position: absolute;
-    		top: 50%;
-    		left: 50%;
+    		width: 70%;
+    		height: 70vh;
+    		object-fit: contain;
+    		position: absolute;
+    		top: 15%; /* 上端から中央に調整 */
+    		left: 15%; /* 左端から中央に調整 */
     		transform: translate(-50%, -50%);
-    	}
+		}
+
         .page-links {
         	width: 30%;
     		position: absolute;
@@ -64,54 +64,57 @@
 <br>
 
 <div class="center" class="qr-container">
-    <video id="qr-video" playsinline></video>
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<video id="qr-video" playsinline></video>
+    <div id="result"></div>
+
     <script>
-        const video = document.getElementById('qr-video');
+    const video = document.getElementById('qr-video');
+    const resultDiv = document.getElementById('result');
+    const scannedURLs = new Set();
 
-        // Webカメラから映像を取得
-        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-            .then((stream) => {
-                video.srcObject = stream;
-                video.play();
-                const code = document.getElementById('qr-video');
-                const canvasElement = document.createElement('canvas');
-                const canvas = canvasElement.getContext('2d');
-                setInterval(() => {
-                    canvasElement.width = video.videoWidth;
-                    canvasElement.height = video.videoHeight;
-                    canvas.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-                    const imageData = canvas.getImageData(0, 0, video.videoWidth, video.videoHeight);
-                    const result = jsQR(imageData.data, imageData.width, imageData.height);
-                    if (result) {
-                        const url = result.data;
-                        // url を使用してページにリダイレクトするか、別の処理を行う
-                        window.location.href = url;
-                    }
-                }, 100);
-            })
-            .catch((err) => {
-                console.error('カメラのアクセスを許可してください:', err);
-            });
+    // Webカメラから映像を取得
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then((stream) => {
+            video.srcObject = stream;
+            video.play();
 
-        // QRコード検出
-        const qrd = new Instascan.Scanner({ video: video });
-        qrd.addListener('scan', function (content) {
-            alert('QR Code content: ' + content);
-            window.location.href = content;
-        });
+            // QRコード検出
+            const scanner = new Instascan.Scanner({ video: video });
+            scanner.addListener('scan', function (content) {
+                const url = `${window.location.origin}${content}`;
 
-        Instascan.Camera.getCameras()
-            .then(function (cameras) {
-                if (cameras.length > 0) {
-                    qrd.start(cameras[0]);
-                } else {
-                    console.error('No cameras found.');
+                // 同じQRコードがすでにスキャンされているか確認
+                if (!scannedURLs.has(url)) {
+                    scannedURLs.add(url);
+
+                    // 新しい<p>要素を作成してresultDivに追加
+                    const newParagraph = document.createElement('p');
+                    newParagraph.innerHTML = `Scanned URL: <a href="${url}" onclick="navigateToUrl('${url}')">${url}</a>`;
+                    resultDiv.appendChild(newParagraph);
                 }
-            })
-            .catch(function (error) {
-                console.error(error);
             });
-    </script>
+
+            Instascan.Camera.getCameras()
+                .then(function (cameras) {
+                    if (cameras.length > 0) {
+                        scanner.start(cameras[0]);
+                    } else {
+                        console.error('No cameras found.');
+                    }
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        })
+        .catch((err) => {
+            console.error('カメラのアクセスを許可してください:', err);
+        });
+        
+        function navigateToUrl(url) {
+            window.location.href = url;
+        }
+</script>
 
 <div class="right">
   

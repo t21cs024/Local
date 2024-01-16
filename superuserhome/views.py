@@ -35,8 +35,8 @@ def delete_image(request, image_title):
     image_upload_instance.img.delete()  # 画像ファイルを削除
     image_upload_instance.delete()      # データベースからオブジェクトを削除
     
-    return redirect('superuserhome:olditem')  # 成功したら指定のURLにリダイレクト
-    # return HttpResponse("Image deleted successfully.")
+    #return redirect('superuserhome:olditem')  # 成功したら指定のURLにリダイレクト
+    return HttpResponse("Image deleted successfully.")
 
 class SuperUserHomeView(TemplateView):
     model = CustomUser
@@ -188,7 +188,10 @@ class PreDeductionOutputView(TemplateView):
             return redirect('superuserhome:userinformation_detail', emp_num=emp_num)
 
 class DeductionOutputView(TemplateView):
+    
     def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_month'] = MonthForm()
         return context
 
     def get(self, request, *args, **kwargs):
@@ -554,8 +557,7 @@ class QrCodeView(TemplateView):
             box_size=10,
             border=4,
         )
-        qr.add_data(str(f'http://t21cs011.pythonanywhere.com/userhome/buyitem/{item_id}'))
-        #qr.add_data(str(f'http://127.0.0.1:8000/userhome/buyitem/{item_id}'))
+        qr.add_data(str(f'buyitem/{item_id}'))
         qr.make(fit=True)
 
         # 生成したQRコードをHttpResponseに設定
