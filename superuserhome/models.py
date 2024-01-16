@@ -1,6 +1,7 @@
 from django.db import models
 from django.template.defaultfilters import default
 from django.core.validators import MinValueValidator, MaxValueValidator
+from login.models import CustomUser
 # Create your models here.
 
 def savePath(instance, filename):
@@ -29,8 +30,7 @@ class User(models.Model):
 
     def __str__(self):
         return self.name
-
-
+    
 class Item(models.Model):
     '''
     データ例
@@ -38,9 +38,8 @@ class Item(models.Model):
     Name     ：apple
     Item url ：apple.png
     Count    ：10
-    Buy date ：2023-12-20
     Price    ：100
-    State ：在庫あり
+    State    ：在庫あり    
     '''
     name = models.CharField(max_length=100)
     item_url = models.URLField(blank = True,null = True)
@@ -56,7 +55,7 @@ class Item(models.Model):
 
     def __str__(self):
         return '{}({})'.format(self.name, self.get_state_display())
-
+    
 # 発注DB   
 class Order(models.Model):
     '''
@@ -83,19 +82,20 @@ class Order(models.Model):
 class PurchaseHistory(models.Model):
     '''
     データ例
-    User id ：a(登録されているUser)
+
+    User          ：a(登録されているUser)
     Buy month ：1
     Buy amount：1000
     '''
-    # 外部キー
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, null = True)
+# 外部キー
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null = True)
     # 購入月
     buy_month = models.PositiveIntegerField(default = 1)
     # その月の購入額
     buy_amount = models.PositiveIntegerField(default = 0)
 
     def __str__(self):
-        return '{} : {}月'.format(self.user_id,self.buy_month)
+        return '{} : {}月'.format(self.user,self.buy_month)
     
 class ImageUpload(models.Model):
     title = models.CharField(max_length=100, primary_key=True)
@@ -108,7 +108,8 @@ class ImageUpload(models.Model):
 class Company(models.Model):
     '''
     データ例
-    Company id      ：1  (１は自社、２は発注企業）
+
+    (ID １は自社、２は発注企業）
     Company name    ：株式会社ワイ・シー・シー
     Company address ：111
     Company mail    ：t21cs○○○@gmail.com （!!必ず自分で管理できるメールアドレスにしてください。id=1送信元メールアドレス、id=2送信先メールアドレス）
@@ -119,8 +120,7 @@ class Company(models.Model):
     Manager phone number：1111        （署名に使用）
     Manager mail    ：tanaka@gmail.com    （署名に使用。こちらのメールアドレスは適当でいいです）
     '''
-    # 企業ID(unique=True 同ユーザーIDの複数回登録を防止)
-    company_id = models.PositiveIntegerField(default=1,unique = True)
+    
     # 企業名
     company_name = models.CharField(blank = True, max_length=50)
     # 企業住所
@@ -138,3 +138,5 @@ class Company(models.Model):
 
     def __str__(self):
         return '{}'.format(self.company_name)
+
+

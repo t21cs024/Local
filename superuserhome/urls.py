@@ -3,21 +3,22 @@ Created on 2023/12/12
 
 @author: t21cs011
 '''
-from django.urls import path,include
-from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, SignUpView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView,ItemEditView,ItemDeleteView
+from django.urls import path
+from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView,ItemEditView,ItemDeleteView
+from login.views import SignUpView
 from . import views
 
 app_name = 'superuserhome'
 urlpatterns = [
-    path('',SuperUserHomeView.as_view()),
+    path('',SuperUserHomeView.as_view(), name="home"),
     path('useredit/',UserEditView.as_view(), name='useredit'),
     path('orderedit/',OrderEditView.as_view(),name='orderedit'),
     path('userinformation/', UserInformationView.as_view(), name='userinformation'),
-    path('userinformation/<int:user_id>/', UserInformationDetailView.as_view(), name='userinformation_detail'),
+    path('userinformation/<int:emp_num>/', UserInformationDetailView.as_view(), name='userinformation_detail'),
     path('signup/',SignUpView.as_view(), name='signup'),
     path('test/',TestView.as_view(), name='test'),
-    path('deductionoutput/<int:user_id>/',PreDeductionOutputView.as_view(), name='deductionoutput'),
-    path('deductionoutput/<int:user_id>/<int:buy_month>/',DeductionOutputView.as_view(), name='redeductionoutput'),
+    path('deductionoutput/<int:emp_num>/',PreDeductionOutputView.as_view(), name='deductionoutput'),
+    path('deductionoutput/<int:emp_num>/<int:buy_month>/',DeductionOutputView.as_view(), name='redeductionoutput'),
     path('orderedit/newitem/', NewItemView.as_view(), name='newitem'),
     path('orderedit/olditem/', OldItemView.as_view(), name='olditem'),
     path('orderedit/olditem/<int:item_id>/',QrCodeView.as_view(),name='qrcode'),

@@ -5,15 +5,19 @@
 {% block main %}
 
 <body>
-    <form method="post">
-        {% csrf_token %}
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username"><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"><br><br>
-        <input type="submit" value="ログイン">
+<br>
+<div class="parent">
+<div class="login-box">
+
+<form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    <ul>
+    <li>{{ field.label }}</li></ul>
+    {{ field }}<br><br>
+    {% endfor %}
+        <input class="btn btn-success w-100 h-40px" type="submit" value="ログイン"></div>
     </form>
+</div>
 </body>
-
-
 {% endblock %}

@@ -1,4 +1,5 @@
-from .models import User,Item,PurchaseHistory,Company,Order
+from .models import Item,PurchaseHistory,Company,Order,ImageUpload
+from login.models import CustomUser
 from django.views.generic.base import TemplateView
 from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
@@ -6,8 +7,9 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
-from django.urls.base import reverse_lazy
-from .forms import SignUpForm,UserIdForm,ItemBuy,MonthForm,CountForm,ImageUploadForm
+from django.urls.base import reverse_lazy 
+from .forms import UserIdForm,ItemBuy,MonthForm,CountForm,ImageUploadForm
+
 #CSV関連
 import csv
 # test
@@ -27,23 +29,24 @@ import os
 
 def delete_image(request, image_title):
     # プライマリーキーを使ってオブジェクトを取得
-    image_upload_instance = get_object_or_404(ImageUploadForm, pk=image_title)
+    image_upload_instance = get_object_or_404(ImageUpload, pk=image_title)
 
     # オブジェクトを削除
     image_upload_instance.img.delete()  # 画像ファイルを削除
     image_upload_instance.delete()      # データベースからオブジェクトを削除
-
-    return HttpResponse("Image deleted successfully.")
+    
+    return redirect('superuserhome:olditem')  # 成功したら指定のURLにリダイレクト
+    # return HttpResponse("Image deleted successfully.")
 
 class SuperUserHomeView(TemplateView):
-    model = User
+    model = CustomUser
     template_name = 'superuser_home.html'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
-    
+
 class UserEditView(TemplateView):
-    model = User
+    model = CustomUser
     template_name = "Edit/useredit.html"
     success_url=reverse_lazy('superuserhome')
     
@@ -80,38 +83,48 @@ class NewItemView(CreateView):
         order.save()
         return super().form_valid(form)
     
+    #ラベルを日本語に
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['name'].label = '商品名' 
+        form.fields['item_url'].label = '画像URL'
+        form.fields['count'].label = '在庫数'
+        form.fields['price'].label = '単価'
+        form.fields['state'].label = '状態'
+        return form
+    
+"""
 class SignUpView(TemplateView):
     model = User
-    fields = ('user_id', 'name','user_menu', 'user_pass', 'user_mail','user_authority')
+    fields = ('emp_num', 'name','user_menu', 'user_pass', 'user_mail','user_authority')
     template_name = "Edit/signup.html"
     success_url=reverse_lazy('superuserhome')
-
     def get(self, request, *args, **kwargs):
         form = SignUpForm()  # YourFormは適切なフォームのクラスに置き換えてください
         return render(request, self.template_name, {'form': form})
-
     def post(self, request, *args, **kwargs):
         form = SignUpForm(request.POST)  # YourFormは適切なフォームのクラスに置き換えてください
         if form.is_valid():
             # フォームのデータを使って新しいUserオブジェクトを作成
             new_user = User(
-                user_id=form.cleaned_data['id'],
+                emp_num=form.cleaned_data['id'],
                 name=form.cleaned_data['full_name'],
                 user_pass=form.cleaned_data['password'],
                 user_mail=form.cleaned_data['email'],
+                def post(self, request, *args, **kwargs):
                 user_authority=form.cleaned_data['authority'],
                 # 他のフィールドも適切に追加
             )
             new_user.save()  # データベースに保存
             return redirect('superuserhome:useredit')  # 成功したら指定のURLにリダイレクト
-
+            
         # フォームが無効な場合は再度入力を促す
         return render(request, self.template_name, {'form': form})
-    
+"""        
     
 
 class UserInformationView(TemplateView):
-    model = User
+    model = CustomUser
     template_name = "Edit/userinformation.html"
     
     def get(self, request, *args, **kwargs):
@@ -122,16 +135,16 @@ class UserInformationView(TemplateView):
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        user_id = self.request.POST.get('user_id')
+        emp_num = self.request.POST.get('emp_num')
         # 該当するユーザが見つからない場合は再度入力を促す
         try:
-            User.objects.get(pk=user_id)
-        except (User.DoesNotExist):
-            messages.error(request, '該当するユーザが見つかりませんでした。再度入力してください。')
+            CustomUser.objects.get(emp_num=emp_num)
+        except (CustomUser.DoesNotExist):
+            messages.error(request, '該当するユーザが見つかりませんでした。再度入力してください。', extra_tags='nouser-error')
             return redirect('superuserhome:userinformation')
-        
-        return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
 
+        return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'emp_num': emp_num}))
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_id'] = UserIdForm()
@@ -139,7 +152,7 @@ class UserInformationView(TemplateView):
     
     
 class UserInformationDetailView(TemplateView):
-    model = User
+    model = CustomUser
     template_name = "Edit/userinformation_detail.html"
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -147,53 +160,45 @@ class UserInformationDetailView(TemplateView):
         context['form_month'] = MonthForm()
         return context
     def get(self, request, *args, **kwargs):
-        user_id = self.kwargs.get('user_id')
-        user = get_object_or_404(User, pk=user_id)
+        emp_num = self.kwargs.get('emp_num')
+        user = get_object_or_404(CustomUser, emp_num=emp_num)
         context = self.get_context_data()
         context['user'] = user
         return self.render_to_response(context)
 
     def post(self, request, *args, **kwargs):
-        user_id = self.request.POST.get('user_id')
-        get_object_or_404(User, user_id=user_id)
-        return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'user_id': user_id}))
-
-
-from django.contrib import messages
-
-class PreDeductionOutputView(TemplateView):
+        emp_num = self.request.POST.get('emp_num')
+        get_object_or_404(CustomUser, emp_num=emp_num)
+        return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'emp_num': emp_num}))
     
+class PreDeductionOutputView(TemplateView):
+
     def post(self, request, *args, **kwargs):
-        # URLからuser_idを取得
-        user_id = kwargs.get('user_id')
+        # URLからemp_numを取得
+        emp_num = kwargs.get('emp_num')
         # buy_monthを取得
         buy_month = self.request.POST.get('buy_month')  
 
         # フォームにbuy_monthが含まれている場合,控除情報出力ページにリダイレクト
         if buy_month:
-            return HttpResponseRedirect(reverse('superuserhome:redeductionoutput', kwargs={'user_id': user_id, 'buy_month': buy_month}))
+            return HttpResponseRedirect(reverse('superuserhome:redeductionoutput', kwargs={'emp_num': emp_num, 'buy_month': buy_month}))
         else:
             # フォームが無効な場合は再度入力を促す
             messages.error(request, 'フォームが無効です。再度入力してください。')
-            return redirect('superuserhome:userinformation_detail', user_id=user_id)
-
+            return redirect('superuserhome:userinformation_detail', emp_num=emp_num)
 
 class DeductionOutputView(TemplateView):
-    template_name = 'deduction_output.html'
-    
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form_month'] = MonthForm()
         return context
-    
+
     def get(self, request, *args, **kwargs):
-        # URLからuser_id,buy_monthを取得
-        user_id = kwargs.get('user_id')
+        # URLからemp_num,buy_monthを取得
+        emp_num = kwargs.get('emp_num')
         buy_month = kwargs.get('buy_month')
 
         # オブジェクトの取得 見つからない場合は404
-        user = get_object_or_404(User, pk=user_id)
-        history = get_object_or_404(PurchaseHistory, user_id=user, buy_month=buy_month)
+        user = get_object_or_404(CustomUser, emp_num=emp_num)
+        history = get_object_or_404(PurchaseHistory, user=user, buy_month=buy_month)
 
         # CSVデータ生成
         response = HttpResponse(content_type='text/csv')
@@ -204,20 +209,19 @@ class DeductionOutputView(TemplateView):
         # データ書き込み（必要に応じて追加）
         header = ['社員番号','氏名','購入月','控除額']
         writer.writerow(header)
-        body = [user.user_id, user.name, history.buy_month, history.buy_amount]
+        body = [user.emp_num, user.name, history.buy_month, history.buy_amount]
         writer.writerow(body)
         return response
 
 class TestView(TemplateView):
-    model = User
-    fields = ('user_id', 'name')
+    model = CustomUser
+    fields = ('emp_num', 'name')
     template_name = "Edit/test.html"
     success_url = reverse_lazy('superuserhome')
 
     def get(self, request, *args, **kwargs):
-        data_from_database = User.objects.all()
-        return render(request, self.template_name, {'data_from_database': data_from_database})
-    
+        data_from_database = CustomUser.objects.all()
+        return render(request, self.template_name, {'data_from_database': data_from_database})    
 
 class OldItemView(TemplateView):
     model = Item
@@ -236,7 +240,6 @@ class OrderConfirmedView(TemplateView):
         購入によって在庫数をデクリメントする処理をここに記述
         （ stateの変更は下記で行うため不要です ）
         """
-
         # 在庫が重み付けによって決められた個数未満であり、発注メールを送信していないOrderオブジェクトを外部キーを通して取得
         items_below_amount = Order.objects.filter(item__count__lt=F('minimum_amount'), item__state = 'in stock')
         # 在庫数0以下で，stateが"売り切れ"になっていない商品オブジェクトを取得
@@ -253,9 +256,8 @@ class OrderConfirmedView(TemplateView):
             for item in items_out_of_stock:
                 item.state = 'sold out'
                 item.save()
-
         return redirect('userhome:buyitem')
-
+    
     def increase_weight(self, request, items_out_of_stock):
         for item in items_out_of_stock:
             # idを外部キーとしてOrderオブジェクトの取得 見つからない場合は404
@@ -282,14 +284,14 @@ class OrderConfirmedView(TemplateView):
             order.last_sold_out_date = date.today()
             # 重みの更新
             order.order_quantity *= order.order_weight
-            order.save() 
+            order.save()    
 
     def send_order_mail(self, request, items_below_amount):
         # 自社（発注元企業）オブジェクトの取得 見つからない場合は404(発注元企業のIDは1を想定)
-        own_company = get_object_or_404(Company, company_id = 1)
+        own_company = get_object_or_404(Company, id = 1)
         # 発注先企業オブジェクトの取得 見つからない場合は404(発注企業のIDは2を想定)
-        supplier_company = get_object_or_404(Company, company_id = 2)
-
+        supplier_company = get_object_or_404(Company, id = 2)
+        
         """題名"""
         subject = f"商品注文のお願い（{own_company.company_name})"
         """本文"""
@@ -352,7 +354,7 @@ class OrderConfirmedView(TemplateView):
 
         """送信元メールアドレス（企業DBから取得）"""
         from_email = own_company.company_mail
-
+        
         """宛先メールアドレス（企業DBから取得）"""
         recipient_list = [
             supplier_company.company_mail
@@ -366,15 +368,39 @@ class CompanyManagementView(ListView):
 
 class CompanyAddView(CreateView):
     model = Company
-    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
+    fields = ('company_name', 'company_address', 'company_phone_number', 'company_mail' ,'manager_name','manager_phone_number','manager_mail')
+
     template_name = 'Edit/company_add.html'
     success_url = reverse_lazy('superuserhome:companymanage')
+    
+    #ラベルを日本語に
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['company_name'].label = '企業名'
+        form.fields['company_address'].label = '住所'
+        form.fields['company_mail'].label = '企業Email'
+        form.fields['company_phone_number'].label = '企業TEL'
+        form.fields['manager_name'].label = '担当者名'
+        form.fields['manager_phone_number'].label = '担当者TEL'
+        form.fields['manager_mail'].label = '担当者Email'
+        return form
 
 class CompanyEditView(UpdateView):
     model = Company
-    fields = ('company_id', 'company_name', 'company_address', 'company_mail', 'company_phone_number', 'manager_name','manager_phone_number','manager_mail')
+    fields = ('company_name', 'company_address', 'company_phone_number', 'company_mail' ,'manager_name','manager_phone_number','manager_mail')
     template_name = 'Edit/company_edit.html'
     success_url = reverse_lazy('superuserhome:companymanage')
+    
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['company_name'].label = '企業名'
+        form.fields['company_address'].label = '住所'
+        form.fields['company_mail'].label = '企業Email'
+        form.fields['company_phone_number'].label = '企業TEL'
+        form.fields['manager_name'].label = '担当者名'
+        form.fields['manager_phone_number'].label = '担当者TEL'
+        form.fields['manager_mail'].label = '担当者Email'
+        return form
 
 class CompanyDeleteView(DeleteView):
     model = Company
@@ -489,44 +515,54 @@ class ItemInventoryControlView(TemplateView):
             order.save()
 
 class ImageUploadView(CreateView):
-    template_name = "Edit/Item/image-upload.html"
+    template_name = "Edit/Item/image_upload.html"
     form_class = ImageUploadForm
     success_url = "/superuserhome/orderedit"
 
 class ItemEditView(UpdateView):
     model = Item
-    fields = ('name','item_url','count' ,'buy_date','price','buy','order_quantity','minimum_amount','send_email')
+    fields = ('name','item_url','count' ,'price','state')
     template_name = "Edit/Item/olditem_edit.html"
     success_url = reverse_lazy('superuserhome:olditem')
+
+    #ラベルを日本語に
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['name'].label = '商品名' 
+        form.fields['item_url'].label = '画像URL'
+        form.fields['count'].label = '在庫数'
+        form.fields['price'].label = '単価'
+        form.fields['state'].label = '状態'
+        return form
+
 
 class ItemDeleteView(DeleteView):
     model = Item
     template_name = "Edit/Item/olditem_delete.html"
     success_url = reverse_lazy('superuserhome:olditem')
 
+
 class QrCodeView(TemplateView):
     model = Item
     template_name = "Edit/Item/qrcode/qrcode.html"
     
     def get(self, request, item_id, *args, **kwargs):
+
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
             box_size=10,
             border=4,
         )
-        #qr.add_data(str(f'http://t21cs011.pythonanywhere.com/userhome/buyitem/{item_id}'))
-        qr.add_data(str(f'http://127.0.0.1:8000/userhome/buyitem/{item_id}'))
+        qr.add_data(str(f'http://t21cs011.pythonanywhere.com/userhome/buyitem/{item_id}'))
+        #qr.add_data(str(f'http://127.0.0.1:8000/userhome/buyitem/{item_id}'))
         qr.make(fit=True)
 
         # 生成したQRコードをHttpResponseに設定
         img = qr.make_image(fill_color="black", back_color="white")
         response = HttpResponse(content_type="image/png")
         img.save(response, format="PNG")
-            
+
         return response
-    
-        
-    
-    
-    
+
+
