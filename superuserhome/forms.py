@@ -4,7 +4,7 @@ Created on 2023/12/15
 @author: t21cs011
 '''
 from django import forms
-from .models import User,Item,ImageUpload
+from .models import Item,ImageUpload
 
 class ItemBuy(forms.Form):
     status = (
@@ -33,7 +33,7 @@ class SignUpForm(forms.Form):
     # 他のフィールドも適切に追加
 
 class UserIdForm(forms.Form):
-    user_id = forms.IntegerField(label=False)
+    emp_num = forms.IntegerField(label=False)
 
 class MonthForm(forms.Form):
     buy_month = forms.IntegerField(label=False, min_value=1, max_value=12)

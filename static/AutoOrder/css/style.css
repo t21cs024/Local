@@ -46,48 +46,10 @@ body{
   text-align: right;
 }
 
-.signup-form  {
- max-width: 400px;
- margin: 0 auto;
- margin-top: 20px;
-}
-
-.signup-form label {
- display: block;
- margin-bottom: 8px;
- margin-right: 10px;
-}
-
-.signup-form label[for="authority"] {
-  margin-top: 0px;
-}
-
-.signup-form  .custom-input {
- width: 100%;
- padding: 10px;
- margin-bottom: 12px;
- box-sizing: border-box;
-}
-
-.signup-form  .right-align {
- float: right;
-}
-    
-.signup-form .btn-side{ 
- margin-top: 20px;
-}
-    
-.signup-form input[type="radio"] {
-  width: 14px;
-  height: 14px;
-  margin-right: 2px;
-}
-
 /* <center>代替 */
 .center {
   text-align: center;
 }
-
 /* 画面遷移ボタン */
 .btn a {
 	display: flex;
@@ -108,7 +70,6 @@ body{
 	margin-top: 10px; 
 	
 }
-
 /* 画面遷移ボタン ホバー時 */
 .btn a:hover {
 	color: #f2f2f2;
@@ -116,7 +77,6 @@ body{
 	background-color: #ffffff;
 	border: 1px solid #a3a3a3;
 }
-
 /* 画面遷移ボタン ホバー時 */
 .btn a:hover {
 	color: #f2f2f2;
@@ -124,35 +84,26 @@ body{
 	background-color: #ffffff;
 	border: 1px solid #a3a3a3;
 }
-
 ul, ol {
   list-style: none; /* リストのデフォルトのマーカーをなくす */
   padding: 0px;
 }
   
-
 .login-box form{ 
 width: 70%;
 margin: auto
 }
-  
-#id_state {
-  background-color: #ffffff;	
-  width: 40%; /* 幅を指定 */
-  height: 40px; /* 高さを指定 */
-}
-  
+
 .contact-form table{
  width:100%;
  margin-bottom:15px;
 }
-
 .contact-form th{
 	text-align:left;
 	width:25%;
 	padding-top: 20px;
 	padding-bottom: 20px;
-	padding-left: 90px;
+	padding-left: 20px;
 }
 
 .contact-form td{
@@ -160,38 +111,37 @@ margin: auto
 	text-align:left;
 }
 
+.contact-form select {
+  background-color: #ffffff;	
+  width: 40%; /* 幅を指定 */
+  height: 40px; /* 高さを指定 */
+}
+
 .contact-form input:not([type="submit"]) {
   /* typeがsubmitでない(input要素全体に対するスタイル) */
     height: 60%;
     width: 70%;
 }
-
 .contact-form #id_title {
     height: 50px;
     width: 60%;
 }
-
-
 .form-table{
 	height: 300px;
 }
-
 .contact-form{
 	width:70%;
 	margin:0 auto;
 }
-
 .btn-side{ 
 	display: flex;
 	justify-content: center;
 	align-items: flex-end;
 	margin: 10px;
 }
-
 .btn-side button, .btn-side input {
   margin-right: 20px; /* ボタンと入力フィールドの余白*/
 }
-
 .seach-form{
 	position:relative;/*フォームの相対位置*/	
 	margin: auto;/*フォームを真ん中にする*/
@@ -200,7 +150,7 @@ margin: auto
 }
 
 /*検索ボックス*/
-#id_user_id{
+.seach-form #id_emp_num{
 	border: 1px solid #333;
 	position:absolute;/*フォームの絶対位置*/	
 	left:0px;
@@ -214,11 +164,10 @@ margin: auto
 }
 
 /* テキスト入力フォームのスタイル */
-#id_user_id::placeholder {
+#id_emp_num::placeholder {
  color: #999; /* プレースホルダーのテキスト色 */
  font-size: 16px; /* プレースホルダーのフォントサイズ */
 }
-
 /*検索ボタン*/
 .seach-btn{
 	width:70px;/*検索ボタンの横幅*/ 
@@ -237,7 +186,6 @@ margin: auto
  color:#dfdfdf;/*検索ボタンマウスオーバー時のフォントカラー*/ 
  background: #383838;/*検索ボタンの背景カラー*/ 
 }
-
 .show-table{ 
  text-align: left; /* 子要素左寄せ */
  margin: auto; /* table中央寄せ */
@@ -245,25 +193,21 @@ margin: auto
  margin-bottom:40px;/*tableの下に余白*/
  width: 50%;
 }
-
 .show-table th{
  background-color: #fff;/*背景*/
  padding: 20px;
  border-bottom: 1px solid #ddd; 
  width: 40%;
  }
-
 .show-table td{
  padding: 20px;
  border-bottom: 1px solid #ddd; 
  background-color: #fff;/*背景*/
 }
-
 #id_buy_month {
  width: 10%;  
  height: 50px;  
 }
-
 .message-box {
   width: 400px; /* ウィンドウの幅を設定 */
   margin: 0 auto; /* 水平方向に中央寄せ */
@@ -273,7 +217,6 @@ margin: auto
   background-color: #fff; /* 背景色を設定 */
   text-align: center; /* テキスト中央寄せ */
 }
-
 .login-box {
   width: 45%; /* ウィンドウの幅を設定 */
   padding: 50px; /* 内側の余白 */
@@ -286,83 +229,67 @@ margin: auto
   left: 50%;
   transform: translate(-50%, -30%);
 }
-
 .login-box form{ 
 width: 60%;
 margin: auto; /* form 中央寄せ*/ 
 }
 
-.login-box #username, .login-box #password{
+.login-box #id_username, .login-box #id_password{
 	height: 50px;
 	width: 99%;
 }
-
 .login-box ul, ol {
     list-style: none; /* リストのデフォルトのマーカーをなくす */
     padding: 0px;
     text-align: left;
     margin-bottom: 5px;
 }
-
 .parent {
  width: 100%;
  height: 400px;
 }
-
 .btn-side #id_count {
   height: 50px;  
 }
-
 .change-pass{ 
  margin: auto;
  margin-top: 50px;
  text-align: center; /* テキスト中央寄せ */
  width: 40%;
 }
-
 .change-pass li input{ 
  width: 60%;
 }
-
 .change-pass ul li{
     list-style: none; /* リストのデフォルトのマーカーをなくす */
     padding: 0px;
     text-align: left;
     color: red;
 }
-
 .change-pass ul{
     padding: 0px;
 }
-
 .change-pass li{
  margin-top: 10px;
  list-style: none; /* リストのデフォルトのマーカーをなくす */
  text-align: right;
 }
-
 .mgr-r{
     margin-right : 10px;
 }
-
 .mgr-l{
     margin-left : 10px;
 }
-
 label { 
 float: left;
 }
-
 .btn-side label{ 
 float: none;
 }
-
 p{ 
 float: left;
 }
-
 /* スマホ用画面 */
-
 @media screen and (max-width: 480px){ 
 /* 画面遷移ボタン */
 .btn a {
@@ -384,7 +311,6 @@ float: left;
 	}
 	
 /* ログイン画面 */
-
 .login-box {
   width: 90%; /* ウィンドウの幅を設定 */
   padding: 40px; /* 内側の余白 */
@@ -398,29 +324,23 @@ float: left;
   transform: translate(-50%, -30%);
 }
 
-.login-box #username, .login-box #password{
+.login-box #id_username, .login-box #id_password{
 	height: 50px;
 	width: 99%;
 }
-
 .login-box form{ 
  width: 80%;
 }
-
-
 .contact-form th{
 	padding-left: 0px;
 }
-
 .contact-form td{
 	width: 100%;
 }
-
 .contact-form input:not([type="submit"]) {
     height: 60%;
     width: 100%;
 }
-
 .contact-form #id_state {
     width: 70%;
 }

@@ -41,19 +41,25 @@
 {% if user %}
 	<table class="show-table">
 		<tr><th>社員番号</th>
-			<td>{{ user.user_id }}</td></tr>
+			<td>{{ user.emp_num }}</td></tr>
 		<tr><th>氏名</th>
 			<td>{{ user.name }}</td></tr>
+		<tr><th>所属</th>
+			<td>{% if user.affiliation == 'HR' %} 総務人事部 {% endif %}
+        {% if user.affiliation == 'Sales' %} 営業部 {% endif %}
+        {% if user.affiliation == '1st system' %} 第一システム部 {% endif %}
+        {% if user.affiliation == '2nd system' %} 第二システム部 {% endif %}
+        {% if user.affiliation == '3rd system' %} 第三システム部 {% endif %}
+        {% if user.affiliation == 'others' %} その他 {% endif %}
+        </td></tr>
 		<tr><th>メールアドレス</th>
-			<td>{{ user.user_mail }}</td></tr>
-		<tr><th>権限</th>
-			<td>{{ user.user_authority }}</td></tr>	
+			<td>{{ user.email }}</td></tr>	
 	</table>
 
 {% endif %}
 
 <div class="center" >
-<form method="post" action="{% url 'superuserhome:deductionoutput' user_id=user.user_id%}" >
+<form method="post" action="{% url 'superuserhome:deductionoutput' emp_num=user.emp_num %}" >
 	{% csrf_token %}
 	<span class="mgr-r">{{ form_month }}月</span>
 	<input  class="btn btn-success w-30 h-50px" type="submit" value="控除額出力">
