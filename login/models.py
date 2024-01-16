@@ -32,7 +32,21 @@ class UserManager(BaseUserManager):
             password=password,
             **extra_fields,
         )
+        
+'''
+データ例
+    
+所属が総務人事部またはsuperuser（createsuperuesrで作成したユーザ）ならsuperuserhomeに遷移．
+それ以外の所属はuserhome
 
+ユーザ名  ：t21cs1
+社員番号  ：100
+名前      ：長坂　太郎
+メールアドレス  ：100YCC@x.com    
+所属　　　      ：総務人事部
+パスワード　　　　：@@@@aaaa
+パスワード(確認用)：@@@@aaaa
+'''
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     # 社員番号
@@ -71,7 +85,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=10, 
         verbose_name=_("affiliation"),
         choices=AFFILIATION_CHOICES,
-         default='1st system')
+         default='Sales')
     
     is_superuser = models.BooleanField(
         verbose_name=_("is_superuer"),

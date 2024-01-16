@@ -24,8 +24,8 @@ class CustomLoginView(LoginView):
 class SignUpView(CreateView):
     """ ユーザー登録用ビュー """
     form_class = SignUpForm # 作成した登録用フォームを設定
-    template_name = "login/signup.html" 
-    success_url = reverse_lazy("superuserhome:home") # ユーザー作成後のリダイレクト先ページ
+    template_name = "Edit/signup.html" 
+    success_url = reverse_lazy("superuserhome:useredit") # ユーザー作成後のリダイレクト先ページ
 
     def form_valid(self, form):
         # ユーザー作成後にそのままログイン状態にする設定

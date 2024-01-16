@@ -73,7 +73,7 @@ class PurchaseHistory(models.Model):
     buy_amount = models.PositiveIntegerField(default = 0)
 
     def __str__(self):
-        return '{} : {}月'.format(self.emp_num,self.buy_month)
+        return '{} : {}月'.format(self.user,self.buy_month)
     
 class ImageUpload(models.Model):
     title = models.CharField(max_length=100, primary_key=True)
