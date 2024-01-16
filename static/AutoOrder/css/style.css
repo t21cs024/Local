@@ -324,6 +324,66 @@ p{
 float: left;
 }
 
+/* 画像の大きさ */
+.thumbnail {
+    height: 80px; 
+    max-width: 300px; /* 幅が300px以上の場合は最大300pxに制御 */
+    object-fit: cover; /* アスペクト比を保ちつつ余白ができないように調整 */
+}
+
+/* テーブルセルの中のコンテンツを垂直方向に配置 */
+.v-a-mid{
+vertical-align: middle !important;
+}
+
+.history-show .table td:first-child {
+    width: 400px; /* 画像を配置するtdの幅 */
+    padding-left: 20px;
+  }
+  
+    /* 画像の大きさ */
+ .olditem-show .thumbnail {
+    height: 150px; 
+    max-width: 300px; /* 幅が300px以上の場合は最大300pxに制御 */
+    object-fit: cover; /* アスペクト比を保ちつつ余白ができないように調整 */
+}
+    
+/* テーブルのスタイル */
+.olditem-show table {
+ width: 100%;
+ border-collapse: collapse;
+ table-layout: fixed;
+ margin-top: 20px; /* 必要に応じて調整 */
+ background-color: #fff; /* 背景色 */
+}
+        
+.olditem-show tr {
+ border-bottom: 1px solid #ddd;
+}
+
+.olditem-show th, .olditem-show  td {
+ padding: 8px;
+ text-align: left;
+ width: 50%; /* セルの幅を50%に設定 */
+}
+        
+.olditem-show dl{ 
+ margin-bottom: 10px;
+ margin-left: 10px;
+}
+
+.olditem-show .cell1 {
+ padding-left: 30px;
+ width: 30%; /* 1つ目のセルの幅を30%に設定 */
+}
+
+.olditem-show .cell2 {
+ padding-left: 40px;
+ width: 70%; /* 2つ目のセルの幅を40%に設定 */
+}
+
+  
+
 /* スマホ用画面 */
 
 @media screen and (max-width: 480px){ 
@@ -451,6 +511,38 @@ float: left;
 
 #id_buy_month {
     width: 15%;
+}
+
+.olditem-show .cell1 {
+ padding-left: 5px;
+}
+
+    /* 画像の大きさ */
+.olditem-show .thumbnail {
+    height: 100px; 
+    max-width: 150px; /* 幅が300px以上の場合は最大300pxに制御 */
+    object-fit: cover; /* アスペクト比を保ちつつ余白ができないように調整 */
+}
+
+
+element.style {
+}
+
+    /* 画像の大きさ */
+.history-show .thumbnail {
+    height: 40px; 
+    max-width: 100px; /* 幅が300px以上の場合は最大300pxに制御 */
+    object-fit: cover; /* アスペクト比を保ちつつ余白ができないように調整 */
+}
+
+.history-show .table td:first-child {
+    width: auto;
+    padding-left: 5px;
+    margin: 0px;
+}
+
+.olditem-show .cell2 {
+ padding-left: 0px;
 }
 
 }

@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
-
+from superuserhome.models import BuyHistory
 
 # Create your views here.
 
@@ -23,11 +23,6 @@ class UserHomeView(TemplateView):
 class BuyItemView(TemplateView):
     model = Item
     template_name = 'Order/buy_item.html'
-
-    
-class BuyHistoryView(TemplateView):
-    model = Item
-    template_name = 'Order/buy_history.html'
 
 class CartContentsView(TemplateView):
     model = Item
@@ -82,4 +77,12 @@ def add_to_cart(request, item_id):
         cart_item.save()
 
     return redirect('cart_view')  # カートの表示ページにリダイレクト
-    
+
+class BuyHistoryView(TemplateView):
+    template_name = 'Order/buy_history.html'
+
+    def get(self, request, *args, **kwargs):
+        # ログインしているユーザを参照
+        user = request.user
+        object_list = BuyHistory.objects.filter(user = user)
+        return render(request, self.template_name, {'object_list':object_list})

@@ -85,7 +85,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=10, 
         verbose_name=_("affiliation"),
         choices=AFFILIATION_CHOICES,
-         default='1st system')
+         default='HR',
+         )
     
     is_superuser = models.BooleanField(
         verbose_name=_("is_superuer"),

@@ -69,7 +69,7 @@ class OrderEditView(TemplateView):
     
 class NewItemView(CreateView):
     model = Item
-    fields = ('name', 'item_url', 'count', 'price', 'state')
+    fields = ('name', 'count', 'price', 'state')
     template_name = "Edit/Item/newitem.html"
     success_url = '/superuserhome/orderedit'
 
@@ -86,42 +86,10 @@ class NewItemView(CreateView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields['name'].label = '商品名' 
-        form.fields['item_url'].label = '画像URL'
         form.fields['count'].label = '在庫数'
         form.fields['price'].label = '単価'
         form.fields['state'].label = '状態'
         return form
-    
-"""
-class SignUpView(TemplateView):
-    model = User
-    fields = ('emp_num', 'name','user_menu', 'user_pass', 'user_mail','user_authority')
-    template_name = "Edit/signup.html"
-    success_url=reverse_lazy('superuserhome')
-
-    def get(self, request, *args, **kwargs):
-        form = SignUpForm()  # YourFormは適切なフォームのクラスに置き換えてください
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request, *args, **kwargs):
-        form = SignUpForm(request.POST)  # YourFormは適切なフォームのクラスに置き換えてください
-        if form.is_valid():
-            # フォームのデータを使って新しいUserオブジェクトを作成
-            new_user = User(
-                emp_num=form.cleaned_data['id'],
-                name=form.cleaned_data['full_name'],
-                user_pass=form.cleaned_data['password'],
-                user_mail=form.cleaned_data['email'],
-                user_authority=form.cleaned_data['authority'],
-                # 他のフィールドも適切に追加
-            )
-            new_user.save()  # データベースに保存
-            return redirect('superuserhome:useredit')  # 成功したら指定のURLにリダイレクト
-
-        # フォームが無効な場合は再度入力を促す
-        return render(request, self.template_name, {'form': form})
-"""    
-    
 
 class UserInformationView(TemplateView):
     model = CustomUser
@@ -189,7 +157,6 @@ class PreDeductionOutputView(TemplateView):
 
 
 class DeductionOutputView(TemplateView):
-    template_name = 'deduction_output.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -527,7 +494,7 @@ class ImageUploadView(CreateView):
 
 class ItemEditView(UpdateView):
     model = Item
-    fields = ('name','item_url','count' ,'price','state')
+    fields = ('name','count' ,'price','state')
     template_name = "Edit/Item/olditem_edit.html"
     success_url = reverse_lazy('superuserhome:olditem')
 
@@ -535,7 +502,6 @@ class ItemEditView(UpdateView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields['name'].label = '商品名' 
-        form.fields['item_url'].label = '画像URL'
         form.fields['count'].label = '在庫数'
         form.fields['price'].label = '単価'
         form.fields['state'].label = '状態'

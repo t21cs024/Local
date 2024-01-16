@@ -14,13 +14,11 @@ class Item(models.Model):
     データ例
     
     Name     ：apple
-    Item url ：apple.png
     Count    ：10
     Price    ：100
     State    ：在庫あり    
     '''
     name = models.CharField(max_length=100)
-    item_url = models.URLField(blank = True,null = True)
     count = models.PositiveIntegerField(default = 0)
     price = models.PositiveIntegerField(default = 100)
     # 商品の状態を管理する（商品が届き,在庫情報を変更する際"在庫あり"にされることを想定）
@@ -65,7 +63,7 @@ class PurchaseHistory(models.Model):
     Buy month ：1
     Buy amount：1000
     '''
-# 外部キー
+    # 外部キー
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null = True)
     # 購入月
     buy_month = models.PositiveIntegerField(default = 1)
@@ -73,7 +71,7 @@ class PurchaseHistory(models.Model):
     buy_amount = models.PositiveIntegerField(default = 0)
 
     def __str__(self):
-        return '{} : {}月'.format(self.emp_num,self.buy_month)
+        return '{} : {}月'.format(self.user,self.buy_month)
     
 class ImageUpload(models.Model):
     title = models.CharField(max_length=100, primary_key=True)
@@ -116,5 +114,28 @@ class Company(models.Model):
 
     def __str__(self):
         return '{}'.format(self.company_name)
+    
+# 食品購入履歴
+class BuyHistory(models.Model):
+    '''
+    データ例
+
+    User          ：a(登録されているUser)
+    Buy month ：1
+    Buy amount：1000
+    '''
+    # 外部キー（Item）
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    # 外部キー（User）
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null = True)
+    # 個数
+    quantity = models.PositiveIntegerField(default = 0)
+    # 価格
+    price = models.PositiveIntegerField(default = 0)
+    # 購入日
+    buy_date = models.DateField(blank = True, null = True)
+
+    def __str__(self):
+        return '{} (購入者:{})'.format(self.item,self.user)
 
 

@@ -47,7 +47,6 @@
     <tr>
       <th>ID</th>
       <th>商品名</th>
-      <th>画像URL</th>
       <th>在庫数</th>
       <th>単価</th>
       <th>状態</th>
@@ -57,7 +56,6 @@
 <tr>
       <td scope="row">{{ item.id }}</td>
       <td>{{ item.name }}</td>
-      <td>{{ item.item_url }}</td>
       <td>{{ item.count }}</td>
       <td>{{ item.price }}</td>
       <td>{% if item.state == 'sold out' %} <span style="color: red;">売り切れ</span> {% endif %}

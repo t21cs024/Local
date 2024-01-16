@@ -21,7 +21,7 @@ class ItemIdForm(forms.Form):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ['name', 'item_url', 'count', 'price','state']
+        fields = ['name', 'count', 'price','state']
         
 class SignUpForm(forms.Form):
     id = forms.CharField(label='ID', required=True)
