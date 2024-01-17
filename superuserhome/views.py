@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView,UpdateView,DeleteView
 from django.urls.base import reverse_lazy
-from .forms import UserIdForm,ItemBuy,MonthForm,CountForm,ImageUploadForm
+from .forms import UserIdForm,ItemBuy,MonthForm,CountForm,ImageUploadForm,RetireDateForm
+from datetime import datetime
 #CSV関連
 import csv
 # test
@@ -91,32 +92,39 @@ class NewItemView(CreateView):
         form.fields['state'].label = '状態'
         return form
 
-class UserInformationView(TemplateView):
+class UserInformationView(ListView):
     model = CustomUser
     template_name = "Edit/userinformation.html"
-    
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        # エラーメッセージを取得
-        error_message = messages.get_messages(request)
-        context['error_message'] = error_message
-        return self.render_to_response(context)
-
-    def post(self, request, *args, **kwargs):
-        emp_num = self.request.POST.get('emp_num')
-        # 該当するユーザが見つからない場合は再度入力を促す
-        try:
-            CustomUser.objects.get(emp_num=emp_num)
-        except (CustomUser.DoesNotExist):
-            messages.error(request, '該当するユーザが見つかりませんでした。再度入力してください。', extra_tags='nouser-error')
-            return redirect('superuserhome:userinformation')
-        
-        return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'emp_num': emp_num}))
+    context_object_name = 'object_list'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_id'] = UserIdForm()
         return context
+    
+    def get_queryset(self):
+        # 社員番号で昇順にソート
+        return CustomUser.objects.order_by('emp_num')
+
+    def post(self, request, *args, **kwargs):
+        form = UserIdForm(request.POST)
+        if form.is_valid():
+            emp_num = form.cleaned_data['emp_num']
+
+            # ユーザーが存在するか確認
+            try:
+                CustomUser.objects.get(emp_num=emp_num)
+            except CustomUser.DoesNotExist:
+                messages.error(request, '該当するユーザが見つかりませんでした。再度入力してください。', extra_tags='nouser-error')
+                return redirect('superuserhome:userinformation')
+
+            # フォームが正常に処理された場合
+            return redirect('superuserhome:userinformation_detail', emp_num=emp_num)
+
+        # フォームが不正な場合は再度表示
+        context = self.get_context_data()
+        context['form_id'] = form
+        return self.render_to_response(context)
     
     
 class UserInformationDetailView(TemplateView):
@@ -512,6 +520,45 @@ class ItemDeleteView(DeleteView):
     model = Item
     template_name = "Edit/Item/olditem_delete.html"
     success_url = reverse_lazy('superuserhome:olditem')
+    
+class UserDeleteView(TemplateView):
+    template_name = "Edit/user_delete.html"
+    model = CustomUser
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_id'] = UserIdForm()
+        context['form_date'] = RetireDateForm()
+        return context
+    
+    def get(self, request, *args, **kwargs):
+        emp_num = self.kwargs.get('emp_num')
+        user = get_object_or_404(CustomUser, emp_num=emp_num)
+        context = self.get_context_data()
+        context['user'] = user
+        return self.render_to_response(context)
+
+    def post(self, request, *args, **kwargs):
+        emp_num = self.kwargs.get('emp_num')
+        retire_date = self.request.POST.get('retire_date')
+        try:
+            datetime.strptime(str(retire_date), '%Y-%m-%d')
+        except ValueError:
+            messages.error(request, 'YYYY-MM-DDの形式で入力してください．', extra_tags='format-error')
+            return redirect('superuserhome:userdelete', emp_num=emp_num)
+        
+        # 未来の日付が入力された場合のリダイレクト
+        if datetime.strptime(str(retire_date), '%Y-%m-%d').date() > date.today():
+            messages.error(request, '有効な日付を入力してください', extra_tags='format-error')
+            return redirect('superuserhome:userdelete', emp_num=emp_num)
+            
+        user = get_object_or_404(CustomUser, emp_num=emp_num)
+        # 退職日を記入
+        user.retire_date = retire_date
+        # ログイン不可にする
+        user.is_active = False
+        user.save()
+        return HttpResponseRedirect(reverse('superuserhome:userinformation'))
 
 
 class QrCodeView(TemplateView):

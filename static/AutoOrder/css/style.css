@@ -38,6 +38,14 @@
   margin-top: 20px !important;
 }
 
+.m-bottom-20px {
+  margin-bottom: 20px !important;
+}
+
+.m-bottom-5px {
+  margin-bottom: 5px !important;
+}
+
 body{ 
  background-color: #f3f3f3;
 }
@@ -49,6 +57,12 @@ body{
 /* <center>代替 */
 .center {
   text-align: center;
+}
+
+.right-align {
+    display: flex;
+    justify-content: flex-end;
+     margin-right: 5%;
 }
 
 /* 画面遷移ボタン */
@@ -158,8 +172,8 @@ margin: auto
 .seach-form{
 	position:relative;/*フォームの相対位置*/	
 	margin: auto;/*フォームを真ん中にする*/
-	max-width:270px;/*フォームのサイズ*/
-	margin-bottom:100px;/*フォームの下に余白*/	 	
+	max-width: 270px;/*フォームのサイズ*/
+	margin-bottom :0px	
 }
 
 /*検索ボックス*/
@@ -225,6 +239,11 @@ margin: auto
 #id_buy_month {
  width: 10%;  
  height: 50px;  
+}
+
+#id_retire_date {
+ width: 40%;  
+ height: 35px;  
 }
 
 .message-box {
@@ -381,6 +400,12 @@ vertical-align: middle !important;
  padding-left: 40px;
  width: 70%; /* 2つ目のセルの幅を40%に設定 */
 }
+
+.user-list-container {
+  margin-top: 80px; /* 適切なマージンを設定 */
+  padding: 0 50px;
+}
+
 
   
 

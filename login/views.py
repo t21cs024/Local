@@ -4,6 +4,7 @@ from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.urls import reverse_lazy
 from .forms import SignUpForm, LoginFrom 
+from superuserhome.models import PurchaseHistory
 # Create your views here.
 
         
@@ -20,7 +21,20 @@ class SignUpView(CreateView):
         password = form.cleaned_data.get("password1")
         user = authenticate(account_id=account_id, password=password)
         login(self.request, user)
+        self.create_history(user, form)
         return response
+    
+        # 新しいUserを追加したとき，それを外部キーにもつPurchaseHistoryrを1~12月分作成
+    def create_history(self, user, form):
+        # Itemのインスタンスを作成・保存
+        #item = form.save()
+        # Orderのインスタンス作成・保存 その他のフィールドはデフォルト値，またはnullに設定する
+        for i in range(12):
+            history = PurchaseHistory(user=user)
+            history.user = user
+            history.buy_month = i + 1
+            history .save()
+        return super().form_valid(form)
     
         #ラベルを日本語に
     def get_form(self, form_class=None):

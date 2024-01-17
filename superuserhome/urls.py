@@ -4,7 +4,7 @@ Created on 2023/12/12
 @author: t21cs011
 '''
 from django.urls import path
-from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView,ItemEditView,ItemDeleteView
+from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView,ItemEditView,ItemDeleteView,UserDeleteView
 from login.views import SignUpView
 from . import views
 
@@ -34,4 +34,5 @@ urlpatterns = [
     path('companymanage/companyedit/<int:pk>/', CompanyEditView.as_view(), name='companyedit'),
     path('companymanage/companydelete/<int:pk>/', CompanyDeleteView.as_view(), name='companydelete'),
     path("orderedit/image_upload/", ImageUploadView.as_view(), name="image-upload"),
+    path("userinformation/userdelete/<int:emp_num>/", UserDeleteView.as_view(), name="userdelete"),
     ]

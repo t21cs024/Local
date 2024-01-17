@@ -36,26 +36,64 @@
 </nav>
 
 
+
 <!-- 該当するユーザが存在しない場合のエラーメッセージを表示 -->
-<div class="center">
 {% if messages %}
+<div class="center">
     {% for message in messages %}
       <span style="color: red;">{% if 'nouser-error' in message.extra_tags %}{{ message }}{% endif %}</span>
     {% endfor %}
 {% endif %}
 </div>
 
+
 {% if not messages %}
-	<br>
+<br>
 {% endif %}
 
-
+<div class="search-form-container">
 <div class="center">
 <form class="seach-form" action="{% url 'superuserhome:userinformation'%}" method="post">
     {% csrf_token %}
     {{ form_id }}
     <input class="seach-btn" type="submit" value="検索">
 </form>
+</div>
+</div>
+
+<div class="user-list-container">
+<table class="table">
+  <thead class="table-secondary">
+    <tr>
+      <th>社員番号</th>
+      <th>氏名</th>
+      <th>所属</th>
+      <th>メールアドレス</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for user in object_list %}
+  <!-- superuesr権限を持たない社員の情報のみを表示 -->
+    {% if user.is_superuser == False%}
+    <tr>
+      <td scope="row"><a href="{% url 'superuserhome:userinformation_detail' emp_num=user.emp_num %}">
+              {{ user.emp_num }}
+            </a></td>
+      <td>{{ user.name }}</td>
+      <td>{% if user.affiliation == 'HR' %} 総務人事部 {% endif %}
+        {% if user.affiliation == 'Sales' %} 営業部 {% endif %}
+        {% if user.affiliation == '1st system' %} 第一システム部 {% endif %}
+        {% if user.affiliation == '2nd system' %} 第二システム部 {% endif %}
+        {% if user.affiliation == '3rd system' %} 第三システム部 {% endif %}
+        {% if user.affiliation == 'others' %} その他 {% endif %}</td>
+       <td>{{ user.email }}</td>
+       <td>{% if user.is_active == False %} <font color='red'>退職済み</font> {% endif %}</td>
+   </tr>
+   {% endif %}
+  {% endfor %}
+  </tbody>
+</table>
 </div>
 
 {% endblock %}

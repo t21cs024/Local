@@ -88,6 +88,12 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
          default='HR',
          )
     
+    retire_date = models.DateField(
+        blank = True, 
+        null = True,
+        verbose_name=_("retire_date"),
+        )
+    
     is_superuser = models.BooleanField(
         verbose_name=_("is_superuer"),
         default=False
