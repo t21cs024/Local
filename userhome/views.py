@@ -88,11 +88,13 @@ class AddToCartView(TemplateView):
         context['form_id'] = ItemIdForm()
         return context
 
-class BuyHistoryView(TemplateView):
+class BuyHistoryView(ListView):
     template_name = 'Order/buy_history.html'
-
-    def get(self, request, *args, **kwargs):
+    model = BuyHistory
+    context_object_name = 'object_list'
+    
+    def get_queryset(self):
         # ログインしているユーザを参照
-        user = request.user
-        object_list = BuyHistory.objects.filter(user = user)
-        return render(request, self.template_name, {'object_list':object_list})
+        user = self.request.user
+        # 日付で降順に並べてリストを表示
+        return BuyHistory.objects.filter(user=user).order_by('-buy_date')

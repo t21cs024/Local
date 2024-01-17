@@ -92,27 +92,18 @@ class NewItemView(CreateView):
         form.fields['state'].label = '状態'
         return form
 
-class UserInformationView(ListView):
-
-    model = CustomUser
+class UserInformationView(TemplateView):
     template_name = "Edit/userinformation.html"
-    context_object_name = 'object_list'
-    
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data()
-        # エラーメッセージを取得
-        error_message = messages.get_messages(request)
-        context['error_message'] = error_message
-        return self.render_to_response(context)
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_id'] = UserIdForm()
+        # エラーメッセージを取得
+        error_message = messages.get_messages(self.request)
+        context['error_message'] = error_message
+        # 社員番号で昇順にソートしたデータをセット
+        context['object_list'] = CustomUser.objects.order_by('emp_num')
         return context
-    
-    def get_queryset(self):
-        # 社員番号で昇順にソート
-        return CustomUser.objects.order_by('emp_num')
 
     def post(self, request, *args, **kwargs):
         form = UserIdForm(request.POST)
@@ -124,7 +115,7 @@ class UserInformationView(ListView):
                 CustomUser.objects.get(emp_num=emp_num)
             except CustomUser.DoesNotExist:
                 messages.error(request, '該当するユーザが見つかりませんでした。再度入力してください。', extra_tags='nouser-error')
-                return redirect('superuserhome:userinformation')
+                return render(request, self.template_name, {'form_id': form, 'error_message': messages.get_messages(request), 'object_list': CustomUser.objects.order_by('emp_num')})
 
             # フォームが正常に処理された場合
             return redirect('superuserhome:userinformation_detail', emp_num=emp_num)
@@ -132,7 +123,7 @@ class UserInformationView(ListView):
         # フォームが不正な場合は再度表示
         context = self.get_context_data()
         context['form_id'] = form
-        return self.render_to_response(context)
+        return render(request, self.template_name, context)
     
     
 class UserInformationDetailView(TemplateView):
