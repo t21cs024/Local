@@ -38,6 +38,7 @@ class UserManager(BaseUserManager):
     
 所属が総務人事部またはsuperuser（createsuperuesrで作成したユーザ）ならsuperuserhomeに遷移．
 それ以外の所属はuserhome
+
 ユーザ名  ：t21cs1
 社員番号  ：100
 名前      ：長坂　太郎
@@ -46,7 +47,6 @@ class UserManager(BaseUserManager):
 パスワード　　　　：@@@@aaaa
 パスワード(確認用)：@@@@aaaa
 '''
-
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     # 社員番号

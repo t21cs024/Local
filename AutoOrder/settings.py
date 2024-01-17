@@ -147,9 +147,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+"""
 STATICFILES_DIRS = (
     BASE_DIR / 'static',
     )
+    
+    """
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -160,5 +165,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 MEDIA_URL = 'media/'
 
-#AUTH_USER_MODEL = "login.User" # カスタムユーザーを認証用ユーザーとして登録
 AUTH_USER_MODEL = "login.CustomUser" # カスタムユーザーを認証用ユーザーとして登録
