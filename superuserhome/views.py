@@ -35,8 +35,8 @@ def delete_image(request, image_title):
     image_upload_instance.img.delete()  # 画像ファイルを削除
     image_upload_instance.delete()      # データベースからオブジェクトを削除
     
-    return redirect('superuserhome:olditem')  # 成功したら指定のURLにリダイレクト
-    # return HttpResponse("Image deleted successfully.")
+    #return redirect('superuserhome:olditem')  # 成功したら指定のURLにリダイレクト
+    return HttpResponse("Image deleted successfully.")
 
 class SuperUserHomeView(TemplateView):
     model = CustomUser
@@ -44,7 +44,7 @@ class SuperUserHomeView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, {})
-    
+
 class UserEditView(TemplateView):
     model = CustomUser
     template_name = "Edit/useredit.html"
@@ -93,10 +93,18 @@ class NewItemView(CreateView):
         return form
 
 class UserInformationView(ListView):
+
     model = CustomUser
     template_name = "Edit/userinformation.html"
     context_object_name = 'object_list'
-
+    
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        # エラーメッセージを取得
+        error_message = messages.get_messages(request)
+        context['error_message'] = error_message
+        return self.render_to_response(context)
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_id'] = UserIdForm()
@@ -130,11 +138,13 @@ class UserInformationView(ListView):
 class UserInformationDetailView(TemplateView):
     model = CustomUser
     template_name = "Edit/userinformation_detail.html"
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_id'] = UserIdForm()
         context['form_month'] = MonthForm()
         return context
+    
     def get(self, request, *args, **kwargs):
         emp_num = self.kwargs.get('emp_num')
         user = get_object_or_404(CustomUser, emp_num=emp_num)
@@ -148,7 +158,7 @@ class UserInformationDetailView(TemplateView):
         return HttpResponseRedirect(reverse('superuserhome:userinformation_detail', kwargs={'emp_num': emp_num}))
 
 class PreDeductionOutputView(TemplateView):
-    
+
     def post(self, request, *args, **kwargs):
         # URLからemp_numを取得
         emp_num = kwargs.get('emp_num')
@@ -163,14 +173,13 @@ class PreDeductionOutputView(TemplateView):
             messages.error(request, 'フォームが無効です。再度入力してください。')
             return redirect('superuserhome:userinformation_detail', emp_num=emp_num)
 
-
 class DeductionOutputView(TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_month'] = MonthForm()
         return context
-    
+
     def get(self, request, *args, **kwargs):
         # URLからemp_num,buy_monthを取得
         emp_num = kwargs.get('emp_num')
@@ -201,8 +210,7 @@ class TestView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         data_from_database = CustomUser.objects.all()
-        return render(request, self.template_name, {'data_from_database': data_from_database})
-    
+        return render(request, self.template_name, {'data_from_database': data_from_database})    
 
 class OldItemView(TemplateView):
     model = Item
@@ -573,7 +581,7 @@ class QrCodeView(TemplateView):
             box_size=10,
             border=4,
         )
-        qr.add_data(str(item_id))
+        qr.add_data(str(f'buyitem/{item_id}'))
         qr.make(fit=True)
 
         # 生成したQRコードをHttpResponseに設定

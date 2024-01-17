@@ -3,7 +3,31 @@
 {% block title %} 食品購入 {% endblock %}
 
 {% block main %}
+    <style>
+        /* QRコードリーダーのビデオ要素を画面の60%に設定するスタイル */
+        #qr-video {
+    		width: 70%;
+    		height: 70vh;
+    		object-fit: contain;
+    		position: absolute;
+    		top: 15%; /* 上端から中央に調整 */
+    		left: 15%; /* 左端から中央に調整 */
+    		transform: translate(-50%, -50%);
+		}
 
+        .page-links {
+        	width: 30%;
+    		position: absolute;
+    		bottom: 10px;
+    		left: 20%;
+    		transform: translateX(-50%);
+    		list-style: none;
+    		padding: 0;
+    	}
+
+
+    </style>
+    
 <body>
 
 <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
@@ -39,68 +63,72 @@
 
 <br>
 
-<div class="center">
-  <video id="qr-video" width="300" height="200" autoplay></video>
-  <script src="https://rawgit.com/cozmo/jsQR/master/dist/jsQR.js"></script>
-  <script>
+<div class="center" class="qr-container">
+<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+<video id="qr-video" playsinline></video>
+    <div id="result"></div>
+
+    <script>
     const video = document.getElementById('qr-video');
+    const resultDiv = document.getElementById('result');
+    const scannedURLs = new Set();
 
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
-      .then((stream) => {
-        video.srcObject = stream;
-        video.play();
-        const canvasElement = document.createElement('canvas');
-        const canvas = canvasElement.getContext('2d');
-        setInterval(() => {
-          canvasElement.width = video.videoWidth;
-          canvasElement.height = video.videoHeight;
-          canvas.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-          const imageData = canvas.getImageData(0, 0, video.videoWidth, video.videoHeight);
-          const code = jsQR(imageData.data, imageData.width, imageData.height);
-          if (code) {
-            console.log('QRコードの内容:', code.data);
-         	// ここでQRコードのデータを利用する処理を記述します
-            addToCart(code.data); // カートに追加する処理を呼び出し
-            showMessage(`読み取りました: ${code.data}`);
-          }
-        }, 100);
-      })
-      .catch((err) => {
-        console.error('カメラのアクセスを許可してください:', err);
-      });
-    
-    function addToCart(item_id) {
-        fetch(`/userhome/add_to_cart/${item_id}/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken'), // CSRFトークンを取得してヘッダーに含める
-            },
-            body: JSON.stringify({ quantity: 1 }), // 商品の数量などを必要に応じて送信
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('カートに商品が追加されました:', data);
-            })
-            .catch(error => {
-                console.error('エラーが発生しました:', error);
+    // Webカメラから映像を取得
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then((stream) => {
+            video.srcObject = stream;
+            video.play();
+
+            // QRコード検出
+            const scanner = new Instascan.Scanner({ video: video });
+            scanner.addListener('scan', function (content) {
+                const url = `${window.location.origin}${content}`;
+
+                // 同じQRコードがすでにスキャンされているか確認
+                if (!scannedURLs.has(url)) {
+                    scannedURLs.add(url);
+
+                    // 新しい<p>要素を作成してresultDivに追加
+                    const newParagraph = document.createElement('p');
+                    newParagraph.innerHTML = `Scanned URL: <a href="${url}" onclick="navigateToUrl('${url}')">${url}</a>`;
+                    resultDiv.appendChild(newParagraph);
+                }
             });
-    }
 
-    function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
-    }
-    function showMessage(text) {
-        messageDiv.innerText = text;
-    }
-  </script>
+            Instascan.Camera.getCameras()
+                .then(function (cameras) {
+                    if (cameras.length > 0) {
+                        scanner.start(cameras[0]);
+                    } else {
+                        console.error('No cameras found.');
+                    }
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        })
+        .catch((err) => {
+            console.error('カメラのアクセスを許可してください:', err);
+        });
+        
+        function navigateToUrl(url) {
+            window.location.href = url;
+        }
+</script>
+
 <div class="right">
+  
+<ul class="page-links">
+<a href='/userhome'><button type="button" class="btn btn-warning m-top-20px m-r-30px">戻る</button></a>
 <a href="{% url 'userhome:cartcontents' %}"><button type="button" class="btn btn-warning m-top-20px m-r-30px">カートに移動する</button></a>
+</ul>
+
+
 </div>
 </div>
 </body>
+</html>
 
 {% endblock %}
+
 

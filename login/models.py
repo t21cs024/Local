@@ -88,6 +88,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
          default='HR',
          )
     
+    # 退職日
     retire_date = models.DateField(
         blank = True, 
         null = True,
@@ -113,4 +114,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return '{}(社員番号：{})'.format(self.account_id, self.emp_num)
-

@@ -4,7 +4,11 @@ Created on 2023/12/12
 @author: t21cs011
 '''
 from django.urls import path
+<<<<<<< HEAD
 from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView,ItemEditView,ItemDeleteView,UserDeleteView
+=======
+from .views import QrCodeView,ImageUploadView,SuperUserHomeView ,UserEditView, OrderEditView, OldItemView, NewItemView, UserInformationView, UserInformationDetailView, TestView, PreDeductionOutputView, DeductionOutputView, CompanyManagementView, CompanyAddView, CompanyEditView, CompanyDeleteView, ItemDiscardView, ItemStockEditView, ItemInventoryControlView,ItemEditView,ItemDeleteView
+>>>>>>> refs/heads/1/17最新master
 from login.views import SignUpView
 from . import views
 

@@ -6,7 +6,6 @@ from django.urls import reverse_lazy
 from .forms import SignUpForm, LoginFrom 
 from superuserhome.models import PurchaseHistory
 # Create your views here.
-
         
 class SignUpView(CreateView):
     """ ユーザー登録用ビュー """
@@ -65,6 +64,6 @@ class LoginView(BaseLoginView):
         form.fields['username'].label = 'Username' 
         form.fields['password'].label = 'Password' 
         return form
-        
+
 class CustomLogoutView(LogoutView):
     next_page=('/login')
