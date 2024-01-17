@@ -24,11 +24,8 @@ class SignUpView(CreateView):
         self.create_history(user, form)
         return response
     
-        # 新しいUserを追加したとき，それを外部キーにもつPurchaseHistoryrを1~12月分作成
+    # 新しいUserを追加したとき，それを外部キーにもつPurchaseHistoryrを1~12月分作成
     def create_history(self, user, form):
-        # Itemのインスタンスを作成・保存
-        #item = form.save()
-        # Orderのインスタンス作成・保存 その他のフィールドはデフォルト値，またはnullに設定する
         for i in range(12):
             history = PurchaseHistory(user=user)
             history.user = user
