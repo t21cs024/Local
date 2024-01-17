@@ -88,8 +88,6 @@ class AddToCartView(TemplateView):
         context['form_id'] = ItemIdForm()
         return context
 
-    return redirect('cart_view')  # カートの表示ページにリダイレクト
-
 class BuyHistoryView(TemplateView):
     template_name = 'Order/buy_history.html'
 
