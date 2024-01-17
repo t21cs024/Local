@@ -1,7 +1,7 @@
 from django.views.generic import ListView
 from .models import User,Item,Cart,CartItem
+from superuserhome.models import Item as SuperuserItem
 from django.views.generic.base import TemplateView
-from django.http import HttpResponseRedirect
 from django.shortcuts import render,redirect
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
@@ -12,7 +12,17 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import PasswordChangeView
-
+from superuserhome.models import BuyHistory
+from .forms import ItemIdForm,ItemForm
+from django.http import StreamingHttpResponse
+from django.views.decorators import gzip
+from channels.generic.websocket import AsyncWebsocketConsumer
+import json
+import cv2
+import numpy as np
+import threading
+import time
+import websocket
 
 # Create your views here.
 
@@ -20,16 +30,12 @@ class UserHomeView(TemplateView):
     model = User
     template_name = 'user_home.html'
     
-class BuyItemView(TemplateView):
+# カメラキャプチャ用のクラス
+class CameraView(TemplateView):
     model = Item
     template_name = 'Order/buy_item.html'
-
     
-class BuyHistoryView(TemplateView):
-    model = Item
-    template_name = 'Order/buy_history.html'
-
-class CartContentsView(TemplateView):
+class CartContentsView(ListView):
     model = Item
     template_name = 'Order/cart/cart_contents.html'
     
@@ -66,20 +72,29 @@ def change_password(request):
         form = PasswordChangeForm(request.user)
     return render(request, 'Order/change_pass.html', {'form': form})
     
-def add_to_cart(request, item_id):
-    Item= get_object_or_404(Item, item_id=item_id)
+class AddToCartView(TemplateView):
+    template_name = 'Order/cart/add_to_cart.html'
     
-    # カートが存在しない場合は作成
-    if not request.user.cart:
-        cart = Cart.objects.create(user=request.user)
-    else:
-        cart = request.user.cart
+    def post(self, request, *args, **kwargs):
+        item_id = self.request.POST.get('item_id')
+        item = Item.objects.get(pk=item_id)
+        context = super().get_context_data(**kwargs)
+        context['form_id'] = ItemIdForm()
+        context['item'] = item
+        return self.render_to_response(context)
 
-    # カートに商品を追加
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, Item=Item)
-    if not created:
-        cart_item.quantity += 1
-        cart_item.save()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form_id'] = ItemIdForm()
+        return context
 
-    return redirect('cart_view')  # カートの表示ページにリダイレクト
+class BuyHistoryView(ListView):
+    template_name = 'Order/buy_history.html'
+    model = BuyHistory
+    context_object_name = 'object_list'
     
+    def get_queryset(self):
+        # ログインしているユーザを参照
+        user = self.request.user
+        # 日付で降順に並べてリストを表示
+        return BuyHistory.objects.filter(user=user).order_by('-buy_date')

@@ -38,6 +38,14 @@
   margin-top: 20px !important;
 }
 
+.m-bottom-20px {
+  margin-bottom: 20px !important;
+}
+
+.m-bottom-5px {
+  margin-bottom: 5px !important;
+}
+
 body{ 
  background-color: #f3f3f3;
 }
@@ -49,6 +57,12 @@ body{
 /* <center>代替 */
 .center {
   text-align: center;
+}
+
+.right-align {
+    display: flex;
+    justify-content: flex-end;
+     margin-right: 5%;
 }
 
 /* 画面遷移ボタン */
@@ -71,7 +85,6 @@ body{
 	margin-top: 10px; 
 	
 }
-
 /* 画面遷移ボタン ホバー時 */
 .btn a:hover {
 	color: #f2f2f2;
@@ -79,7 +92,6 @@ body{
 	background-color: #ffffff;
 	border: 1px solid #a3a3a3;
 }
-
 /* 画面遷移ボタン ホバー時 */
 .btn a:hover {
 	color: #f2f2f2;
@@ -87,23 +99,20 @@ body{
 	background-color: #ffffff;
 	border: 1px solid #a3a3a3;
 }
-
 ul, ol {
   list-style: none; /* リストのデフォルトのマーカーをなくす */
   padding: 0px;
 }
   
-
 .login-box form{ 
 width: 70%;
 margin: auto
 }
- 
+
 .contact-form table{
  width:100%;
  margin-bottom:15px;
 }
-
 .contact-form th{
 	text-align:left;
 	width:25%;
@@ -128,38 +137,31 @@ margin: auto
     height: 60%;
     width: 70%;
 }
-
 .contact-form #id_title {
     height: 50px;
     width: 60%;
 }
-
-
 .form-table{
 	height: 300px;
 }
-
 .contact-form{
 	width:70%;
 	margin:0 auto;
 }
-
 .btn-side{ 
 	display: flex;
 	justify-content: center;
 	align-items: flex-end;
 	margin: 10px;
 }
-
 .btn-side button, .btn-side input {
   margin-right: 20px; /* ボタンと入力フィールドの余白*/
 }
-
 .seach-form{
 	position:relative;/*フォームの相対位置*/	
 	margin: auto;/*フォームを真ん中にする*/
-	max-width:270px;/*フォームのサイズ*/
-	margin-bottom:100px;/*フォームの下に余白*/	 	
+	max-width: 270px;/*フォームのサイズ*/
+	margin-bottom :0px	
 }
 
 /*検索ボックス*/
@@ -181,7 +183,6 @@ margin: auto
  color: #999; /* プレースホルダーのテキスト色 */
  font-size: 16px; /* プレースホルダーのフォントサイズ */
 }
-
 /*検索ボタン*/
 .seach-btn{
 	width:70px;/*検索ボタンの横幅*/ 
@@ -200,7 +201,6 @@ margin: auto
  color:#dfdfdf;/*検索ボタンマウスオーバー時のフォントカラー*/ 
  background: #383838;/*検索ボタンの背景カラー*/ 
 }
-
 .show-table{ 
  text-align: left; /* 子要素左寄せ */
  margin: auto; /* table中央寄せ */
@@ -208,23 +208,25 @@ margin: auto
  margin-bottom:40px;/*tableの下に余白*/
  width: 50%;
 }
-
 .show-table th{
  background-color: #fff;/*背景*/
  padding: 20px;
  border-bottom: 1px solid #ddd; 
  width: 40%;
  }
-
 .show-table td{
  padding: 20px;
  border-bottom: 1px solid #ddd; 
  background-color: #fff;/*背景*/
 }
-
 #id_buy_month {
  width: 10%;  
  height: 50px;  
+}
+
+#id_retire_date {
+ width: 40%;  
+ height: 35px;  
 }
 
 .message-box {
@@ -236,7 +238,6 @@ margin: auto
   background-color: #fff; /* 背景色を設定 */
   text-align: center; /* テキスト中央寄せ */
 }
-
 .login-box {
   width: 45%; /* ウィンドウの幅を設定 */
   padding: 50px; /* 内側の余白 */
@@ -249,7 +250,6 @@ margin: auto
   left: 50%;
   transform: translate(-50%, -30%);
 }
-
 .login-box form{ 
 width: 60%;
 margin: auto; /* form 中央寄せ*/ 
@@ -259,73 +259,122 @@ margin: auto; /* form 中央寄せ*/
 	height: 50px;
 	width: 99%;
 }
-
 .login-box ul, ol {
     list-style: none; /* リストのデフォルトのマーカーをなくす */
     padding: 0px;
     text-align: left;
     margin-bottom: 5px;
 }
-
 .parent {
  width: 100%;
  height: 400px;
 }
-
 .btn-side #id_count {
   height: 50px;  
 }
-
 .change-pass{ 
  margin: auto;
  margin-top: 50px;
  text-align: center; /* テキスト中央寄せ */
  width: 40%;
 }
-
 .change-pass li input{ 
  width: 60%;
 }
-
 .change-pass ul li{
     list-style: none; /* リストのデフォルトのマーカーをなくす */
     padding: 0px;
     text-align: left;
     color: red;
 }
-
 .change-pass ul{
     padding: 0px;
 }
-
 .change-pass li{
  margin-top: 10px;
  list-style: none; /* リストのデフォルトのマーカーをなくす */
  text-align: right;
 }
-
 .mgr-r{
     margin-right : 10px;
 }
-
 .mgr-l{
     margin-left : 10px;
 }
-
 label { 
 float: left;
 }
-
 .btn-side label{ 
 float: none;
 }
-
 p{ 
 float: left;
 }
 
-/* スマホ用画面 */
+/* 画像の大きさ */
+.thumbnail {
+    height: 80px; 
+    max-width: 300px; /* 幅が300px以上の場合は最大300pxに制御 */
+    object-fit: cover; /* アスペクト比を保ちつつ余白ができないように調整 */
+}
 
+/* テーブルセルの中のコンテンツを垂直方向に配置 */
+.v-a-mid{
+vertical-align: middle !important;
+}
+
+.history-show .table td:first-child {
+    width: 400px; /* 画像を配置するtdの幅 */
+    padding-left: 20px;
+  }
+  
+    /* 画像の大きさ */
+ .olditem-show .thumbnail {
+    height: 150px; 
+    max-width: 300px; /* 幅が300px以上の場合は最大300pxに制御 */
+    object-fit: cover; /* アスペクト比を保ちつつ余白ができないように調整 */
+}
+    
+/* テーブルのスタイル */
+.olditem-show table {
+ width: 100%;
+ border-collapse: collapse;
+ table-layout: fixed;
+ margin-top: 20px; /* 必要に応じて調整 */
+ background-color: #fff; /* 背景色 */
+}
+        
+.olditem-show tr {
+ border-bottom: 1px solid #ddd;
+}
+
+.olditem-show th, .olditem-show  td {
+ padding: 8px;
+ text-align: left;
+ width: 50%; /* セルの幅を50%に設定 */
+}
+        
+.olditem-show dl{ 
+ margin-bottom: 10px;
+ margin-left: 10px;
+}
+
+.olditem-show .cell1 {
+ padding-left: 30px;
+ width: 30%; /* 1つ目のセルの幅を30%に設定 */
+}
+
+.olditem-show .cell2 {
+ padding-left: 40px;
+ width: 70%; /* 2つ目のセルの幅を40%に設定 */
+}
+
+.user-list-container {
+  margin-top: 80px; /* 適切なマージンを設定 */
+  padding: 0 50px;
+}
+
+/* スマホ用画面 */
 @media screen and (max-width: 480px){ 
 /* 画面遷移ボタン */
 .btn a {
@@ -347,7 +396,6 @@ float: left;
 	}
 	
 /* ログイン画面 */
-
 .login-box {
   width: 90%; /* ウィンドウの幅を設定 */
   padding: 40px; /* 内側の余白 */
@@ -365,25 +413,19 @@ float: left;
 	height: 50px;
 	width: 99%;
 }
-
 .login-box form{ 
  width: 80%;
 }
-
-
 .contact-form th{
 	padding-left: 0px;
 }
-
 .contact-form td{
 	width: 100%;
 }
-
 .contact-form input:not([type="submit"]) {
     height: 60%;
     width: 100%;
 }
-
 .contact-form #id_state {
     width: 70%;
 }
@@ -451,6 +493,42 @@ float: left;
 
 #id_buy_month {
     width: 15%;
+}
+
+.olditem-show .cell1 {
+ padding-left: 5px;
+}
+
+    /* 画像の大きさ */
+.olditem-show .thumbnail {
+    height: 100px; 
+    max-width: 150px; /* 幅が300px以上の場合は最大300pxに制御 */
+    object-fit: cover; /* アスペクト比を保ちつつ余白ができないように調整 */
+}
+
+
+element.style {
+}
+
+    /* 画像の大きさ */
+.history-show .thumbnail {
+    height: 40px; 
+    max-width: 100px; /* 幅が300px以上の場合は最大300pxに制御 */
+    object-fit: cover; /* アスペクト比を保ちつつ余白ができないように調整 */
+}
+
+.history-show .table td:first-child {
+    width: auto;
+    padding-left: 5px;
+    margin: 0px;
+}
+
+.olditem-show .cell2 {
+ padding-left: 0px;
+}
+
+.user-list-container {
+  padding: 0px;
 }
 
 }

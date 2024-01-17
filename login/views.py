@@ -1,31 +1,17 @@
-from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.views import LogoutView
 from django.contrib.auth import login, authenticate
 from django.views.generic import CreateView
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.urls import reverse_lazy
 from .forms import SignUpForm, LoginFrom 
+from superuserhome.models import PurchaseHistory
 # Create your views here.
-
-class CustomLoginView(LoginView):
-    template_name = 'login.html'
-
-    def get_success_url(self):
-        user = self.request.user
-
-        # スーパーユーザーかどうかを確認
-        #t21cs1 @@@@aaaa superuserhome
-        #t21cs0 0000aaaa userhome
-        if user.groups.filter(name='superuserhome').exists():
-        #(lambda u: u.groups.filter(name='superuserhome')):
-            return '/superuserhome/'
-        else:
-            return '/userhome/'
         
 class SignUpView(CreateView):
     """ ユーザー登録用ビュー """
     form_class = SignUpForm # 作成した登録用フォームを設定
     template_name = "Edit/signup.html" 
-    success_url = reverse_lazy("superuserhome:useredit") # ユーザー作成後のリダイレクト先ページ
+    success_url = reverse_lazy("superuserhome:home") # ユーザー作成後のリダイレクト先ページ
 
     def form_valid(self, form):
         # ユーザー作成後にそのままログイン状態にする設定
@@ -34,7 +20,17 @@ class SignUpView(CreateView):
         password = form.cleaned_data.get("password1")
         user = authenticate(account_id=account_id, password=password)
         login(self.request, user)
+        self.create_history(user, form)
         return response
+    
+    # 新しいUserを追加したとき，それを外部キーにもつPurchaseHistoryrを1~12月分作成
+    def create_history(self, user, form):
+        for i in range(12):
+            history = PurchaseHistory(user=user)
+            history.user = user
+            history.buy_month = i + 1
+            history .save()
+        return super().form_valid(form)
     
         #ラベルを日本語に
     def get_form(self, form_class=None):
@@ -49,15 +45,15 @@ class SignUpView(CreateView):
 # ログインビューを作成
 class LoginView(BaseLoginView):
     form_class = LoginFrom
-    template_name = "login.html"
+    template_name = "login/login.html"
     
     def get_success_url(self):
         user = self.request.user
 
         #t21cs1 @@@@aaaa superuserhome
         #t21cs0 0000aaaa userhome
-        # 所属で遷移先を分岐（総務部またはsuperuser権限を持つならsuepruserhome）
-        if user.affiliation == 'HR' or user.is_superuser:
+        # createsuperuserで作成したユーザはsupseruserhomeに遷移（superuser権限を持つならsuepruserhomeに遷移）
+        if user.is_superuser:
             return '/superuserhome/'
         else:
             return '/userhome/'
@@ -68,7 +64,6 @@ class LoginView(BaseLoginView):
         form.fields['username'].label = 'Username' 
         form.fields['password'].label = 'Password' 
         return form
-        
+
 class CustomLogoutView(LogoutView):
-    template_name = 'logout.html'
     next_page=('/login')

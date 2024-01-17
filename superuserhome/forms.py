@@ -5,6 +5,7 @@ Created on 2023/12/15
 '''
 from django import forms
 from .models import Item,ImageUpload
+from datetime import date
 
 class ItemBuy(forms.Form):
     status = (
@@ -21,7 +22,7 @@ class ItemIdForm(forms.Form):
 class ItemForm(forms.ModelForm):
     class Meta:
         model = Item
-        fields = ['name', 'item_url', 'count', 'price','state']
+        fields = ['name', 'count', 'price','state']
         
 class SignUpForm(forms.Form):
     id = forms.CharField(label='ID', required=True)
@@ -45,5 +46,12 @@ class ImageUploadForm(forms.ModelForm):
     class Meta:
         model = ImageUpload
         fields = "__all__"
+
+class RetireDateForm(forms.Form):
+    retire_date = forms.DateField(label=False)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # フォームに初期データを設定
+        self.fields['retire_date'].initial = date.today()
 
 

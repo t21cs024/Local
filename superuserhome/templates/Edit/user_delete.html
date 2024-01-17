@@ -1,15 +1,17 @@
 {% extends "base.html" %}
-{% block title %} 社員管理画面 {% endblock %}
+
+{% block title %} 退職社員管理 {% endblock %}
+
 {% block main %}
 
 <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
   <div class="container-fluid">
      <a class="navbar-brand" href="{% url 'superuserhome:userinformation' %}">
-         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
   		<path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
 	</svg>
 </a>
-      <ul class="navbar-nav m-auto">
+          <ul class="navbar-nav m-auto">
       	<li class="nav-item">
           <a class="navbar-brand" href="{% url 'superuserhome:home' %}">AutoOrder</a>
         </li>
@@ -23,28 +25,21 @@
 		　</svg></a>
         </li>
       </ul>
-  </div>
+    </div>
 </nav>
-
 
 <nav class="ms-3 my-2" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="{% url 'superuserhome:home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'superuserhome:useredit' %}">社員管理</a></li>
     <li class="breadcrumb-item"><a href="{% url 'superuserhome:userinformation' %}">社員検索</a></li>
-    <li class="breadcrumb-item active" aria-current="page">社員情報</li>
+    <li class="breadcrumb-item active" aria-current="page">退職社員</li>
   </ol>
 </nav>
 
-{% if user.is_active == True %} 
-<div class="right-align">
-    <a href="{% url 'superuserhome:userdelete' emp_num=user.emp_num %}"><button class="btn btn-danger" type="button">退職社員として登録</button></a>
-</div>
-{% endif %}
+<br>
 
-
-{% if user %}
-	<table class="show-table">
+	<table class="show-table m-top-20px m-bottom-20px">
 		<tr><th>社員番号</th>
 			<td>{{ user.emp_num }}</td></tr>
 		<tr><th>氏名</th>
@@ -59,21 +54,41 @@
         </td></tr>
 		<tr><th>メールアドレス</th>
 			<td>{{ user.email }}</td></tr>	
-		{% if user.is_active == False %}
-		<tr><th></th><td><font color='red'>退職済み</font> {% endif %}</td>
-   </tr>
 	</table>
+	
 
+<!-- フォーマットエラーメッセージを表示 -->
+{% if messages %}
+<div class="center">
+    {% for message in messages %}
+      <span style="color: red;">{% if 'format-error' in message.extra_tags %}{{ message }}{% endif %}</span>
+    {% endfor %}
 {% endif %}
-
-<div class="center" >
-<form method="post" action="{% url 'superuserhome:deductionoutput' emp_num=user.emp_num %}" >
-	{% csrf_token %}
-	<span class="mgr-r">{{ form_month }}月</span>
-	<input  class="btn btn-success w-30 h-50px" type="submit" value="控除額出力">
-</form>
 </div>
 
+{% if not messages %}
+<br>
+{% endif %}
 
+{% if user.is_active == True %} 
+<div class="message-box">
+<dl class="m-bottom-5px">上記の社員を退職社員としてよろしいですか？</dl>
+<form method="post" action="{% url 'superuserhome:userdelete' emp_num=user.emp_num %}" >
+	{% csrf_token %}
+	退職日{{ form_date }}
+<div class="btn-side">
+<a href="{% url 'superuserhome:userinformation' %}">
+<input class="btn btn-outline-secondary  w-100px h-35px" type="button" value="キャンセル">
+</a>
+<input class="btn btn-danger w-100px h-35px" type="submit" value="確定">
+</div>
+</form>
+{% endif %}
+
+{% if user.is_active == False %} 
+<div class="center">
+<dl><font color='red'>既に退職済みの社員です</font></dl>
+</div>
+{% endif %}
 
 {% endblock %}

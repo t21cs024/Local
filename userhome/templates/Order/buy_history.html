@@ -4,6 +4,8 @@
 
 {% block main %}
 
+<body>
+
 <nav class="navbar navbar-expand-xl navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="{% url 'userhome:home' %}">
@@ -34,5 +36,32 @@
     <li class="breadcrumb-item active" aria-current="page">食品購入履歴</li>
   </ol>
 </nav>
+
+<div class="history-show">
+<table class="table v-a-mid">
+  <thead class="table-secondary">
+    <tr>
+      <th></th>
+      <th>商品名</th>
+      <th>個数</th>
+      <th>価格</th>
+      <th>購入日</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  {% for buyhistory in object_list %}
+    <tr>
+      <td><img class="thumbnail" src="../../../../media/img/{{ buyhistory.item.id }}.png" alt="Image {{ buyhistory.item.id }}"></td>
+      <td>{{ buyhistory.item.name }}</td>
+      <td>{{ buyhistory.quantity }}</td>
+      <td>&yen{{ buyhistory.price }}</td>
+      <td>{{ buyhistory.buy_date }}</td>
+</tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+</body>
 
 {% endblock %}

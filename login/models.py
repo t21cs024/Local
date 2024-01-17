@@ -85,7 +85,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         max_length=10, 
         verbose_name=_("affiliation"),
         choices=AFFILIATION_CHOICES,
-         default='Sales')
+         default='HR',
+         )
+    
+    # 退職日
+    retire_date = models.DateField(
+        blank = True, 
+        null = True,
+        verbose_name=_("retire_date"),
+        )
     
     is_superuser = models.BooleanField(
         verbose_name=_("is_superuer"),
@@ -106,4 +114,3 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return '{}(社員番号：{})'.format(self.account_id, self.emp_num)
-
